@@ -1,0 +1,93 @@
+{"frames": {
+
+"_0008_frame1.png":
+{
+	"frame": {"x":0,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0007_frame2.png":
+{
+	"frame": {"x":30,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0006_frame3.png":
+{
+	"frame": {"x":60,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0005_frame4.png":
+{
+	"frame": {"x":90,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0004_frame5.png":
+{
+	"frame": {"x":120,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0003_frame6.png":
+{
+	"frame": {"x":150,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0002_frame7.png":
+{
+	"frame": {"x":180,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0001_jump.png":
+{
+	"frame": {"x":210,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"_0000_slide.png":
+{
+	"frame": {"x":240,"y":0,"w":30,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":53},
+	"sourceSize": {"w":30,"h":53},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "sticky.png",
+	"format": "RGBA8888",
+	"size": {"w":270,"h":53},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:bf5bc711f966790d69221705cddf0b9f:8b2fe2afbb821e4db3847c6ddcb1704a:f83ff3f872c51a9c6e9ec9eb8801c7d7$"
+}
+}
