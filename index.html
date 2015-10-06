@@ -15,24 +15,24 @@
 		<script src="library/engine.js"></script>
 	</head>
 	<body>
-	<script>
-	  window.fbAsyncInit = function(){
-		FB.init({
-		  appId      : '497001937125988',
-		  xfbml      : true,
-		  version    : 'v2.4'
-		});
-	}
-	// Place following code after FB.init call.
-	function onLogin(response){
-	  if (response.status == 'connected') {
-		FB.api('/me?fields=first_name', function(data) {
-		  var welcomeBlock = document.getElementById('fb-welcome');
-		  welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
-		});
-	  }
-	}
-	</script>
+		<script>
+		  window.fbAsyncInit = function(){
+				FB.init({
+				  appId      : '497001937125988',
+				  xfbml      : true,
+				  version    : 'v2.4'
+				});
+			}
+		// Place following code after FB.init call.
+		function onLogin(response){
+		  if (response.status == 'connected') {
+				FB.api('/me?fields=first_name', function(data) {
+				  var welcomeBlock = document.getElementById('fb-welcome');
+				  welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+				});
+		  }
+		}
+		</script>
 		<script src="js/effects.js"></script>
 		<script src="js/setup.js"></script>
 		<script src="js/play.js"></script>
