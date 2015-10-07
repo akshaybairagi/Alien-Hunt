@@ -1,6 +1,6 @@
 var g = game(800, 600, setup,
-				[	"json/sticky.png",				
-					"json/hands.png",				
+				[	"json/sticky.png",
+					"json/hands.png",
 					"json/alien.png",
 					"json/alienHunter.json",
 					"json/car.json",
@@ -39,13 +39,13 @@ function load(){
 	progressBar.create(g.canvas, assets);
 	progressBar.update();
 }
-function setup(){	
+function setup(){
 	//Remove the progress bar
-	progressBar.remove();		
-	
+	progressBar.remove();
+
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
-	
+
 	//Create the sprites
 	//1. The `titleScene` sprites
 	//The play button
@@ -58,63 +58,63 @@ function setup(){
 	//Set the `playButton`'s x property to 514 so that
 	//it's offscreen when the sprite is created
 	playButton.x = 514;
-	playButton.y = 450; 
+	playButton.y = 450;
 
 	//Set the `titleMessage` x position to -200 so that it's offscreen
-	titleMessage = text("start game", "20px puzzler", "white", -200, 420); 
-	
+	titleMessage = text("start game", "20px puzzler", "white", -200, 420);
+
 	//Game title name
-	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150); 
-	  
-	//Make the `playButton` and `titleMessage` slide in from the  
+	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150);
+
+	//Make the `playButton` and `titleMessage` slide in from the
 	//edges of the screen using the `slide` function
 	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
-	
+
 	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
 
 	//Create the `titleScene` group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
- 
+
  	//2. The 'gameScene' sprites
 	//Make the sky background
 	sky = tilingSprite(1024,1024,assets["sky.png"],0,0);
-	
+
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
 	topBar.create();
-	
+
 	//make player and set initials
-	player = makePlayer(); 
+	player = makePlayer();
 	player.walk();
 	player.breath();
-	
-	//Power Ups 
-	gun = createGun();	
+
+	//Power Ups
+	gun = createGun();
 	bike = createBike();
 	car = createCar();
 	mGun = createMGun();
-	
+
 	//Create Player Group as a container
 	playerGroup = createPlayerGroup();
-	
+
 	//space ship sprites
 	ship = createShip();
-	
+
 	//Create  buildings
 	createBuildings();
-	
+
 	//Assign the key events
 	keyHandler();
-	
+
 	//Add the game sprites to the `gameScene` group
 	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
 	//Position the `gameScene` offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
-	
-	playButton.press = function(){		
+
+	playButton.press = function(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
@@ -137,28 +137,28 @@ function keyHandler(){
 		if(playerGroup.item.type=="gun"){
 			playerGroup.item.visible = false;
 			player.walk();
-		}	
+		}
 		if(playerGroup.item.type=="mg"){
 			player.walk();
-		}		
+		}
 	};
 	//Jump the player with upArrow
 	var upArrow = keyboard(38);
 	upArrow.press = function(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
-			playerGroup.vy = -jumpForce;			
+			playerGroup.vy = -jumpForce;
 			player.jump();
-		}			
-	};	
+		}
+	};
 	//slide the player with downArrow
 	var dwnArrow = keyboard(40);
 	dwnArrow.press = function(){
 		playerGroup.rotation = -1.45;
-		player.slide();		
+		player.slide();
 	};
 	//unslide the player
-	dwnArrow.release = function(){	
+	dwnArrow.release = function(){
 		playerGroup.rotation = 0;
 		player.unSlide();
 	};
@@ -167,15 +167,15 @@ function makePlayer(){
 	var o = {};
 	//States
 	o.state = "";
-	o.sticky = sprite(filmstrip(assets["json/sticky.png"],30,53));	 
-	o.sticky.states = { 	
+	o.sticky = sprite(filmstrip(assets["json/sticky.png"],30,53));
+	o.sticky.states = {
 		stand:0,
 		walk: [1,6],
 		jump: 7,
 		slide: 8
 	};
 	//Set the player's `fps`
-	o.sticky.fps = 12;	
+	o.sticky.fps = 12;
 	o.sticky.sliding = false;
 	//hands
 	o.hands = sprite(filmstrip(assets["json/hands.png"],30,21));
@@ -188,14 +188,14 @@ function makePlayer(){
 		mg: 10
 	};
 	o.hands.setPosition(0,21);
-	
+
 	//eyes
 	o.leye = ellipse(7,4.2,2,5);
 	o.reye = ellipse(10,4.2,2,5);
-	
+
 	//group to assemble player parts
 	o.grp = group([o.sticky,o.hands,o.leye,o.reye]);
-	
+
 	o.walk = function(){
 		if(o.state !== "walk"){
 			o.state = "walk";
@@ -215,20 +215,20 @@ function makePlayer(){
 		}
 	};
 	o.slide = function(){
-		if(o.state !== "slide"){		
+		if(o.state !== "slide"){
 			o.state = "slide";
-			o.sticky.sliding = true;		
+			o.sticky.sliding = true;
 			o.sticky.show(o.sticky.states.slide);
-			o.hands.show(o.hands.states.slide);	
+			o.hands.show(o.hands.states.slide);
 		}
 	};
 	o.unSlide = function(){
 		if(o.state !== "unslide"){
 			o.state = "unslide";
-			o.sticky.sliding = false;	
+			o.sticky.sliding = false;
 			o.walk();
 		}
-	};	
+	};
 	o.shoot = function(shooter){
 		if(o.state !== "shoot"){
 			o.state = "shoot";
@@ -251,7 +251,7 @@ function makePlayer(){
 		}
 	};
 	o.stop = function(){
-		if(o.state !== "stopped"){		
+		if(o.state !== "stopped"){
 			o.state = "stopped";
 			o.sticky.stop();
 			o.hands.stop();
@@ -264,47 +264,47 @@ function createCar(){
 	var cLWheel = sprite(assets["carWheel.png"],14.6,17.2);
 	var cRWheel = sprite(assets["carWheel.png"],56,17.2);
 	var driver =  sprite(assets["driver.png"],38,2);
-	
+
 	cLWheel.rotate =0.1;
 	cRWheel.rotate =0.1;
 	var car = group([cBody,cLWheel,cRWheel,driver]);
-	
+
 	car.type = "car";
-	car.visible = false;	
-	
+	car.visible = false;
+
 	car.start = function(){
 			cLWheel.rotation += cLWheel.rotate;
 			cRWheel.rotation += cRWheel.rotate;
 			var carWobble = wobble(car, 1, 1.1);
-	};	
-	car.remove = function(){						
-		car.visible = false;						
+	};
+	car.remove = function(){
+		car.visible = false;
 		stage.addChild(car);
-		
-		player.grp.visible = true;					
-		
+
+		player.grp.visible = true;
+
 		playerGroup.addChild(player.grp);
 		playerGroup.addChild(gun);
 		playerGroup.item = gun;
-	}	
+	}
 	return car;// return a car object
 }
 function createAlien(){
 	var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
-	alien.states = { 	
+	alien.states = {
 		stand: 0,
 		walk: [1,6],
 		jump: 7
 	};
 	//Set the player's 'fps'
-	alien.fps = 12;		
-	alien.vx=0;	
+	alien.fps = 12;
+	alien.vx=0;
 	alien.accelerationX = 0;
 	alien.isOnGround = false;
-	alien.isTouching = false;	
+	alien.isTouching = false;
 	alien.setPosition(ship.centerX,ship.centerY);
 	alien.state = "";
-	
+
 	alien.walk = function(){
 		if(alien.state!== "walk"){
 			alien.state = "walk";
@@ -330,26 +330,26 @@ function createAlien(){
 		}
 	};
 
-	aliens.push(alien);	
-	
+	aliens.push(alien);
+
 	return alien;
 }
 function createItemCollector(X,Y,width){
 	var itemNo = randomInt(1,4);
 	var item;
 	switch (itemNo) {
-		case 1: 
+		case 1:
 			item = sprite(assets["bike_snap.png"]);
 			item.type = "bike";
 			break;
-		case 2: 
+		case 2:
 			item = sprite(assets["heart.png"]);
 			item.type = "heart";
-			break;	
+			break;
 		case 3:
 			item = sprite(assets["mGun.png"]);
 			item.type = "mg";
-			break;	
+			break;
 		case 4:
 			item = sprite(assets["car_snap.png"]);
 			item.type = "car";
@@ -373,8 +373,8 @@ function createShip(){
 }
 function createPlayerGroup(){
 	var o = group([player.grp,gun]);
-	o.isOnGround = false;	
-	o.building_id = "";	
+	o.isOnGround = false;
+	o.building_id = "";
 	o.item = gun;
 	o.setPosition(150,300);
 	return	o;
@@ -383,12 +383,12 @@ function createBike(){
 	var bike = sprite(assets["images/bike.png"]);
 	bike.type = "bike";
 	bike.visible = false;
-	bike.remove = function(){						
-		bike.visible = false;						
+	bike.remove = function(){
+		bike.visible = false;
 		stage.addChild(bike);
-		
-		player.grp.visible = true;					
-		
+
+		player.grp.visible = true;
+
 		playerGroup.addChild(player.grp);
 		playerGroup.addChild(gun);
 		playerGroup.item = gun;
@@ -405,10 +405,10 @@ function createMGun(){
 	var mGun = sprite(assets["mGun.png"]);
 	mGun.type = "mg";
 	mGun.visible = false;
-	mGun.remove = function(){						
-		mGun.visible = false;						
+	mGun.remove = function(){
+		mGun.visible = false;
 		stage.addChild(mGun);
-						
+
 		playerGroup.addChild(gun);
 		playerGroup.item = gun;
 	}
@@ -418,18 +418,18 @@ function end(){
 	//Display the `titleScene` and hide the `gameScene`
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
-	
+
 	//remove game objects and references
 	blocks.removeHierarchy(blocks.children);
-	itemGroup.removeHierarchy(itemGroup.children);	
-	topBar.removeHierarchy(topBar.children);	
-	
+	itemGroup.removeHierarchy(itemGroup.children);
+	topBar.removeHierarchy(topBar.children);
+
 	remove(aliens);
-	
+
 	items = [];
 	bullets = [];
-	aliens = [];	
-	
+	aliens = [];
+
 	gameScene.remove(itemGroup.children);
 
 	//Assign a new button `press` action to restart the game
@@ -438,94 +438,94 @@ function end(){
 	};
 }
 
-function restart(){	
+function restart(){
 	sky = tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"],0,0);
-	
+
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
 	topBar.create();
-	
+
 	//make player and set initials
-	player = makePlayer(); 
+	player = makePlayer();
 	player.walk();
 	player.breath();
-	
-	//Power Ups 
-	gun = createGun();	
+
+	//Power Ups
+	gun = createGun();
 	bike = createBike();
 	car = createCar();
 	mGun = createMGun();
-	
+
 	//Create Player Group as a container
 	playerGroup = createPlayerGroup();
-	
+
 	//space ship sprites
 	ship = createShip();
-	
+
 	//Create  buildings
 	createBuildings();
-	
+
 	//Add the game sprites to the `gameScene` group
 	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
-	
+
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);	
-	
+	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
+
 	//Set the game state to `play` and `resume` the game
 	g.state = play;
 	g.resume();
 }
 function createBuildings(){
 	//Create a `group` for all the buildings
-	blocks = group([]);	
-	itemGroup = group([]);	
-	
+	blocks = group([]);
+	itemGroup = group([]);
+
 	//variables for building blocks
 	var numOfBuilding = 100;
 	var row=9;
 	var coloums=13;
 	var buildingWidth = 300;
 	var buildingHeight;
-	var nextPos = { X: 32, Y:400 };	
-	
+	var nextPos = { X: 32, Y:400 };
+
 	//Procedural Generation of buildings
-	for (var k =0; k < numOfBuilding; k++){	
+	for (var k =0; k < numOfBuilding; k++){
 		buildingHeight = g.canvas.height - nextPos.Y;
-		
+
 		var building =rectangle(buildingWidth,buildingHeight,"#989892","grey",2,
 								nextPos.X,nextPos.Y);
 		building.id = k+1;
-		
+
 		if((k+1)%3 == 0){
 			var item = createItemCollector(nextPos.X,nextPos.Y,buildingWidth);
 			itemGroup.addChild(item);
 		}
-		
+
 		nextPos.X=building.x + randomInt(350,400);
 		nextPos.Y=400 + randomInt(-50,50);
-		
+
 		var width = building.width /row;
 		var height = building.height/coloums;
-		
+
 		for(var i = 0; i < coloums; i++) {
 			for(var j = 0; j < row; j++){
 				if ( j % 2 !== 0 && i % 2 !== 0){
 					//create the windows
-					var window = rectangle(width,height,"grey","black",1);	
+					var window = rectangle(width,height,"grey","black",1);
 					window.x = width*j;
 					window.y = height*i;
-					building.addChild(window);						
+					building.addChild(window);
 				}
 			}
 		}
 		blocks.addChild(building);
-	}		
+	}
 }
 function createTopBar(){
 	var o = group([]);
 	o.life = 3;
-	
+
 	o.create = function(){
 		for (i = 0; i < o.life; i++){
 			o.addChild(sprite(assets["life.png"],11*i,5));
@@ -536,10 +536,10 @@ function createTopBar(){
 		o.life += lifeCounter;
 		if(o.life >= 1){
 			o.remove(o.children);
-			o.create();		
-		}	
+			o.create();
+		}
 		else{
-			playerGroup.vy = 0;	
+			playerGroup.vy = 0;
 			player.stop();
 			g.pause();
 			setTimeout(end,1000);
