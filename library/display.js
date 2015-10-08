@@ -12,7 +12,7 @@ function makeCanvas(width, height,border,backgroundColor) {
 		height = height || 256,
 		border	= border || "1px dashed black",
 		backgroundColor = backgroundColor || "white";
-		
+
 	//Make the canvas element and add it to the DOM
 	var canvas = document.createElement("canvas");
 	canvas.id = "canvas";
@@ -35,14 +35,14 @@ function DisplayObject(){
 	this.y = 0;
 	this.width = 0;
 	this.height = 0;
-	
+
 	//Rotation, alpha, visible, and scale properties
 	this.rotation = 0;
 	this.alpha = 1;
 	this.visible = true;
 	this.scaleX = 1;
 	this.scaleY = 1;
-	
+
 	//`pivotX` and `pivotY` let you set the sprite's axis of rotation
 	//(o.5 represents the sprite's center point)
 	this.pivotX = 0.5;
@@ -51,20 +51,20 @@ function DisplayObject(){
 	//Add `vx` and `vy` (velocity) variables that will help you move the sprite
 	this.vx = 0;
 	this.vy = 0;
-	
+
 	//A "private" `_layer` property
 	this._layer = 0;
-	
+
 	//A `children` array on the sprite that will contain all the
 	//child sprites in this container
 	this.children = [];
-	
+
 	//The sprite's `parent` property
 	this.parent = undefined;
-	
+
 	//The sprite's `children` array
 	//this.children = [];
-	
+
 	//Optional drop shadow properties.
 	//Set `shadow` to `true` if you want the sprite to display a shadow
 	this.shadow = false;
@@ -72,37 +72,37 @@ function DisplayObject(){
 	this.shadowOffsetX = 3;
 	this.shadowOffsetY = 3;
 	this.shadowBlur = 3;
-	
+
 	//Optional blend mode property
 	this.blendMode = undefined;
-	
+
 	//Properties for advanced features:
 	//Image states and animation
 	this.frames = [];
 	this.loop = true;
 	this._currentFrame = 0;
 	this.playing = false;
-	
+
 	//Can the sprite be dragged?
 	this._draggable = undefined;
-	
+
 	//Is the sprite circular? If it is, it will be given a `radius`
 	//and `diameter`
 	this._circular = false;
-	
+
 	//Is the sprite `interactive`? If it is, it can become clickable
 	//or touchable
 	this._interactive = false;
-	
+
 	//To move the object as per frames angle -- custome animation
-	this.animate = {};	
+	this.animate = {};
 }
 
 DisplayObject.prototype = {
 	//Global position
 	get gx() {
 			if (this.parent) {
-				
+
 				//The sprite's global x position is a combination of
 				//its local x value and its parent's global x value
 				return this.x + this.parent.gx;
@@ -110,7 +110,7 @@ DisplayObject.prototype = {
 				return this.x;
 			}
 		},
-	
+
 	get gy() {
 		if (this.parent) {
 		return this.y + this.parent.gy;
@@ -118,20 +118,20 @@ DisplayObject.prototype = {
 		return this.y;
 		}
 	},
-	
+
 	//Depth layer
 	get layer() {
 		return this._layer;
 	},
-	
+
 	set layer(value) {
 		this._layer = value;
 		if (this.parent) {
 			this.parent.children.sort(function(a, b) {return a.layer - b.layer});
 		}
 	},
-	
-	
+
+
 	//The `addChild` method lets you add sprites to this container
 	addChild: function(sprite) {
 		if (sprite.parent) {
@@ -140,7 +140,7 @@ DisplayObject.prototype = {
 		sprite.parent = this;
 		this.children.push(sprite);
 	},
-	
+
 	removeChild: function(sprite) {
 		if(sprite.parent === this) {
 			this.children.splice(this.children.indexOf(sprite), 1);
@@ -148,36 +148,36 @@ DisplayObject.prototype = {
 			throw new Error(sprite + "is not a child of " + this);
 		}
 	},
-	
+
 	//Getters that return useful points on the sprite
 	get halfWidth() {
 		return this.width / 2;
 	},
-	
+
 	get halfHeight() {
 		return this.height / 2;
 	},
-	
+
 	get centerX() {
 		return this.x + this.halfWidth;
 	},
-	
+
 	get centerY() {
 		return this.y + this.halfHeight;
 	},
-	
+
 	/* Conveniences */
 	//A `position` getter. It returns an object with x and y properties
 	get position() {
 		return {x: this.x, y: this.y};
 	},
-	
+
 	//A `setPosition` method to quickly set the sprite's x and y values
 	setPosition: function(x, y) {
 		this.x = x;
 		this.y = y;
 	},
-	
+
 	//The `localBounds` and `globalBounds` methods return an object
 	//with `x`, `y`, `width`, and `height` properties that define
 	//the dimensions and position of the sprite. This is a convenience
@@ -190,7 +190,7 @@ DisplayObject.prototype = {
 			width: this.width,
 			height: this.height
 		};
-	},	
+	},
 	get globalBounds() {
 		return {
 			x: this.gx,
@@ -199,7 +199,7 @@ DisplayObject.prototype = {
 			height: this.gy + this.height
 		};
 	},
-	
+
 	//`empty` is a convenience property that will return `true` or
 	//`false` depending on whether this sprite's `children`
 	//array is empty
@@ -210,7 +210,7 @@ DisplayObject.prototype = {
 			return false;
 		}
 	},
-	
+
 	//The following "put" methods help you position
 	//another sprite in and around this sprite. You can position
 	//sprites relative to this sprite's center, top, right, bottom or
@@ -236,7 +236,7 @@ DisplayObject.prototype = {
 		b.x = (a.x + a.halfWidth - b.halfWidth) + xOffset;
 		b.y = (a.y - b.height) + yOffset;
 	},
-	
+
 	//Position `b` to the right of `a`
 	putRight: function(b, xOffset, yOffset) {
 		var a = this,
@@ -245,7 +245,7 @@ DisplayObject.prototype = {
 		b.x = (a.x + a.width) + xOffset;
 		b.y = (a.y + a.halfHeight - b.halfHeight) + yOffset;
 	},
-	
+
 	//Position `b` below `a`
 	putBottom: function(b, xOffset , yOffset) {
 		var a = this,
@@ -254,7 +254,7 @@ DisplayObject.prototype = {
 		b.x = (a.x + a.halfWidth - b.halfWidth) + xOffset;
 		b.y = (a.y + a.height) + yOffset;
 	},
-	
+
 	//Position `b` to the left of `a`
 	putLeft: function(b, xOffset, yOffset) {
 		var a = this,
@@ -263,7 +263,7 @@ DisplayObject.prototype = {
 		b.x = (a.x - b.width) + xOffset;
 		b.y = (a.y + a.halfHeight - b.halfHeight) + yOffset;
 	},
-	
+
 	//Some extra conveniences for working with child sprites
 	//Swap the depth layer positions of two child sprites
 	swapChildren: function(child1, child2) {
@@ -280,7 +280,7 @@ DisplayObject.prototype = {
 			throw new Error('Both objects must be a child of the caller ' + this);
 		}
 	},
-	
+
 	//`add` and `remove` let you add and remove many sprites at the same time
 	add: function(spritesToAdd) {
 		spritesToAdd.forEach(function(sprite){ this.addChild(sprite);},this);
@@ -290,7 +290,7 @@ DisplayObject.prototype = {
 		for(var i = spritesToRemove.length-1; i >= 0; i--){
 			this.removeChild(spritesToRemove[i]);
 		}
-	},	
+	},
 	removeHierarchy: function(spritesToRemove){
 		for(var i = spritesToRemove.length -1; i >= 0; i--){
 			if(spritesToRemove[i].children && spritesToRemove[i].children.length > 0){
@@ -305,15 +305,15 @@ DisplayObject.prototype = {
 	get currentFrame() {
 		return this._currentFrame;
 	},
-	
+
 	//The `circular` property lets you define whether a sprite
 	//should be interpreted as a circular object. If you set
 	//`circular` to `true`, the sprite is given `radius` and `diameter`
 	//properties. If you set `circular` to `false`, the `radius`
-	//and `diameter` properties are deleted from the sprite	
+	//and `diameter` properties are deleted from the sprite
 	get circular() {
 		return this._circular;
-	},	
+	},
 	set circular (value) {
 		//Give the sprite `diameter` and `radius` properties
 		//if `circular` is `true`
@@ -351,14 +351,14 @@ DisplayObject.prototype = {
 			this._circular = false;
 		}
 	},
-	
+
 	//Is the sprite draggable by the pointer? If `draggable` is set
 	//to `true`, the sprite is added to a `draggableSprites`
 	//array. All the sprites in `draggableSprites` are updated each
-	//frame to check whether they're being dragged.	
+	//frame to check whether they're being dragged.
 	get draggable() {
 		return this._draggable;
-	},	
+	},
 	set draggable(value) {
 		if (value === true) {
 			draggableSprites.push(this);
@@ -377,7 +377,7 @@ DisplayObject.prototype = {
 	//(You’ll learn how to implement this in Chapter 6.)
 	get interactive() {
 		return this._interactive;
-	},	
+	},
 	set interactive(value) {
 		if (value === true) {
 			//Add interactive properties to the sprite
@@ -397,12 +397,12 @@ DisplayObject.prototype = {
 			this._interactive = false;
 		}
 	}
-	
+
 };
 //General Purpose remove function
 function remove(spritesToRemove){
 	for(var i = spritesToRemove.length-1; i >= 0; i--){
-		spritesToRemove[i].parent.removeChild(spritesToRemove[i]);			
+		spritesToRemove[i].parent.removeChild(spritesToRemove[i]);
 	}
 }
 
@@ -412,12 +412,12 @@ var stage = new DisplayObject();
 function render(canvas) {
 	//Get a reference to the context
 	var ctx = canvas.ctx;
-	
+
 	//Clear the canvas
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	//Loop through each sprite object in the stage's `children` array
-	
-	stage.children.forEach(displaySprite);	
+
+	stage.children.forEach(displaySprite);
 	function displaySprite(sprite) {
 		//Only display the sprite if it's visible
 		//and within the area of the canvas
@@ -430,7 +430,7 @@ function render(canvas) {
 		) {
 			//Save the canvas's present state
 			ctx.save();
-					
+
 			//Shift the canvas to the center of the sprite's position
 			ctx.translate(
 			sprite.x + (sprite.width * sprite.pivotX),
@@ -449,10 +449,10 @@ function render(canvas) {
 			}
 			//Display the optional blend mode
 			if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
-			
+
 			//Use the sprite's own `render` method to draw the sprite
 			if (sprite.render) sprite.render(ctx);
-			
+
 			if (sprite.children && sprite.children.length > 0) {
 				//Reset the context back to the parent sprite's top-left corner,
 				//relative to the pivot point
@@ -473,7 +473,7 @@ function Group(spritesToGroup){
 	DisplayObject.call(this);
 
 	spritesToGroup.forEach(function(sprite){this.addChild(sprite);},this);
-	
+
 }
 Group.prototype = new DisplayObject();
 Group.prototype.constructor = Group;
@@ -498,7 +498,7 @@ Group.prototype.removeChild = function(sprite) {
 };
 Group.prototype.calculateSize = function() {
 //Calculate the width based on the size of the largest child
-//that this sprite contains	
+//that this sprite contains
 	if (this.children.length > 0) {
 		//Some temporary private variables to help track the new
 		//calculated width and height
@@ -507,7 +507,7 @@ Group.prototype.calculateSize = function() {
 		//Find the width and height of the child sprites furthest
 		//from the top left corner of the group
 		this.children.forEach(function(child){
-			
+
 			//Find child sprites that combined x value and width
 			//that's greater than the current value of `_newWidth`
 			if (child.x + child.width > this._newWidth) {
@@ -530,7 +530,7 @@ function group(spritesToGroup) {
 	var sprite = new Group(spritesToGroup);
 	stage.addChild(sprite);
 	return sprite;
-} 
+}
 
 function Sprite(source,x,y) {
 	//Call the DisplayObject's constructor
@@ -550,14 +550,14 @@ function Sprite(source,x,y) {
 		//(It is if it has a `frame` property)
 		else if (source.frame) {
 			this.createFromAtlas(source);
-		}		
+		}
 		//If the source contains an `image` subproperty, this must
 		//be a `frame` object that's defining the rectangular area of an inner subimage.
 		//Use that subimage to make the sprite. If it doesn't contain a
 		//`data` property, then it must be a single frame
 		else if (source.image && !source.data) {
 			this.createFromTileset(source);
-		}	
+		}
 		//If the source contains an `image` subproperty
 		//and a `data` property, then it contains multiple frames
 		else if (source.image && source.data) {
@@ -575,12 +575,12 @@ function Sprite(source,x,y) {
 			//throw an error if the sources in the array aren't recognized
 			else {
 				throw new Error('The image sources in '+source+' are not recognized');
-			}		
-		}	
+			}
+		}
 		//Throw an error if the source is something we can't interpret
 		else {
 			throw new Error('The image source '+source+' is not recognized');
-		}	
+		}
 	}
 }
 
@@ -603,7 +603,7 @@ Sprite.prototype.createFromImage = function(source) {
 };
 
  Sprite.prototype.createFromAtlas = function(source) {
-    this.tilesetFrame = source; 
+    this.tilesetFrame = source;
     this.source = this.tilesetFrame.source;
     this.sourceX = this.tilesetFrame.frame.x;
     this.sourceY = this.tilesetFrame.frame.y;
@@ -612,12 +612,12 @@ Sprite.prototype.createFromImage = function(source) {
     this.sourceWidth = this.tilesetFrame.frame.w;
     this.sourceHeight = this.tilesetFrame.frame.h;
 };
- 
+
 Sprite.prototype.createFromTileset = function(source) {
 	//Throw an error if the source is not an image object
 	if (!(source.image instanceof Image)) {
 	  throw new Error(source.image + ' is not an image object');
-	} 
+	}
 	else {
 	  this.source = source.image;
 	  this.sourceX = source.x;
@@ -628,7 +628,7 @@ Sprite.prototype.createFromTileset = function(source) {
 	  this.sourceHeight = source.height;
 	}
 };
- 
+
 Sprite.prototype.createFromTilesetFrames = function(source) {
 	//Throw an error if the source is not an Image object
 	if (!(source.image instanceof Image)) {
@@ -656,7 +656,7 @@ Sprite.prototype.createFromAtlasFrames = function(source) {
 	this.sourceWidth = source[0].frame.w;
 	this.sourceHeight = source[0].frame.h;
 };
-  
+
 Sprite.prototype.createFromImages = function(source) {
 	this.frames = source;
 	this.source = source[0];
@@ -671,7 +671,7 @@ Sprite.prototype.createFromImages = function(source) {
 Sprite.prototype.gotoAndStop = function(frameNumber) {
     if (this.frames.length > 0 && frameNumber < this.frames.length) {
 
-      //a. Frames made from tileset sub-images. 
+      //a. Frames made from tileset sub-images.
       //If each frame is an array, then the frames were made from an
       //ordinary Image object using the `frames` method
       if (this.frames[0] instanceof Array) {
@@ -706,7 +706,7 @@ Sprite.prototype.gotoAndStop = function(frameNumber) {
       }
       //Set the `_currentFrame` value to the chosen frame
       this._currentFrame = frameNumber;
-    } 
+    }
     //Throw an error if this sprite doesn't contain any frames
     else {
       throw new Error('Frame number ' + frameNumber +' does not exist');
@@ -760,7 +760,7 @@ function contain (sprite, bounds, _bounce, _extra){
 	y = bounds.y,
 	width = bounds.width,
 	height = bounds.height;
-	
+
 	var bounce = _bounce || false;
 	var extra = _extra || undefined;
 	//The `collision` object is used to store which
@@ -808,7 +808,7 @@ function contain (sprite, bounds, _bounce, _extra){
 function renderWithInterpolation(canvas, lagOffset){
   //Get a reference to the context
   var ctx = canvas.ctx;
-  
+
   //Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -839,7 +839,7 @@ function renderWithInterpolation(canvas, lagOffset){
 		  } else {
 			sprite.renderY = sprite.y;
 		  }
-		  
+
 		  //Draw the sprite at its interpolated position
 		  ctx.translate(
 			sprite.renderX + (sprite.width * sprite.pivotX),
@@ -879,11 +879,11 @@ function renderWithInterpolation(canvas, lagOffset){
 		  //Restore the canvas to its previous state
 		  ctx.restore();
 		}
-  }  
+  }
 }
 
 function Button(source, x, y){
-	Sprite.call(this,source,x,y);	
+	Sprite.call(this,source,x,y);
 	this.x = (typeof x !== 'undefined') ? x : 0;
 	this.y = (typeof y !== 'undefined') ? y : 0;
 	this.interactive = true;
@@ -1036,7 +1036,7 @@ function grid(
     makeSprite,
     extra
   ){
-	  
+
 	var columns = (typeof columns !== 'undefined') ? columns : 0,
 	rows = (typeof rows !== 'undefined') ? rows : 0,
 	cellWidth = (typeof cellWidth !== 'undefined') ? cellWidth : 32,
@@ -1046,7 +1046,7 @@ function grid(
 	yOffset = (typeof yOffset !== 'undefined') ? yOffset : 0,
 	makeSprite = (typeof makeSprite !== 'undefined') ? makeSprite : undefined,
 	extra = (typeof extra !== 'undefined') ? extra : undefined;
-	
+
   //Create an empty group called `container`. This `container`
   //group is what the function returns back to the main program.
   //All the sprites in the grid cells will be added
@@ -1084,11 +1084,11 @@ function grid(
 
       //Yes, it should be centered
       else {
-        sprite.x 
-          = x + (cellWidth / 2) 
+        sprite.x
+          = x + (cellWidth / 2)
           - sprite.halfWidth + xOffset;
-        sprite.y 
-          = y + (cellHeight / 2) 
+        sprite.y
+          = y + (cellHeight / 2)
           - sprite.halfHeight + yOffset;
       }
       //Run any optional extra code. This calls the
@@ -1171,7 +1171,7 @@ function stop() {
 
 		//Calculate the frame rate. Set the default fps to 12
 		if (!sprite.fps) sprite.fps = 12;
-		
+
 		var frameRate = 1000 / sprite.fps;
 
 		//Set the sprite to the starting frame
@@ -1238,7 +1238,7 @@ function filmstrip(image, frameWidth, frameHeight, spacing){
 	rows = image.height / frameHeight;
 	//Find the total number of frames
 	var numberOfFrames = columns * rows;
-	
+
 	for(var i = 0; i < numberOfFrames; i++) {
 		//Find the correct row and column for each frame
 		//and figure out its x and y position
@@ -1304,7 +1304,7 @@ var progressBar = {
 		//`assets.loaded` means that the loading bar will appear at 100%
 		//when the last asset is being loaded, which is reassuring for the
 		//player observing the load progress
-		
+
 		var ratio = (this.assets.loaded + 1) / this.assets.toLoad;
 		this.frontBar.width = this.maxWidth * ratio;
 		//Display the percentage
@@ -1387,7 +1387,7 @@ function shake(sprite, magnitude, angular){
 	//The `angularShake` function
 	//First set the initial tilt angle to the right (+1)
 	var tiltAngle = 1;
-	
+
 	function angularShake() {
 		if (counter < numberOfShakes) {
 			//Reset the sprite's rotation
