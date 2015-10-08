@@ -12,12 +12,12 @@ var assets = {
     //The `load` method creates and loads all the assets. Use it like this:
     //`assets.load(["images/anyImage.png", "fonts/anyFont.otf"]);`
     load: function (sources,startFunction) {
-		
+
 		var _this = this;
-		
+
         var loadHandler = function () {
             _this.loaded += 1;
-			
+
 			console.log(assets.loaded);
             //Check whether everything has loaded
             if (_this.toLoad === _this.loaded) {
@@ -38,7 +38,7 @@ var assets = {
         console.log("Loading assets...");
         //Find the number of files that need to be loaded
         this.toLoad = sources.length;
-		
+
         sources.forEach(function (source) {
             //Find the file extension of the asset
             var extension = source.split(".").pop();
@@ -49,7 +49,7 @@ var assets = {
             //Load images that have file extensions that match the imageExtensions array
             else if (this.imageExtensions.indexOf(extension) !== -1) {
                 this.loadImage(source, loadHandler);
-            }        
+            }
                 //Load JSON files
             else if (this.jsonExtensions.indexOf(extension) !== -1) {
                 this.loadJson(source, loadHandler,this);
@@ -167,7 +167,7 @@ var assets = {
             //Alert the load handler that the file has loaded
             loadHandler();
         };
-		
+
         //Load the tileset image
         var image = new Image();
         image.addEventListener("load", imageLoadHandler, false);
@@ -175,14 +175,14 @@ var assets = {
     },
 
     loadSound: function (source, loadHandler) {
-        //Create a sound object and alert the `loadHandler`
-		//when the sound file has loaded
-		var sound = makeSound(source, loadHandler);
-		//Get the sound file name
-		sound.name = source;
-		//Assign the sound as a property of the assets object so
-		//we can access it this way: `assets["sounds/sound.mp3"]`
-		this[sound.name] = sound;
+      //Create a sound object and alert the `loadHandler`
+  		//when the sound file has loaded
+  		var sound = makeSound(source, loadHandler);
+  		//Get the sound file name
+  		sound.name = source;
+  		//Assign the sound as a property of the assets object so
+  		//we can access it this way: `assets["sounds/sound.mp3"]`
+  		this[sound.name] = sound;
     },
 };
 
@@ -265,7 +265,7 @@ function outsideBounds(sprite, bounds, extra){
 	y = bounds.y,
 	width = bounds.width,
 	height = bounds.height;
-	
+
 	//var extra = (typeof extra !== 'undefined') ? extra : 'undefined'
 	//The `collision` object is used to store which
 	//side of the containing rectangle the sprite hits

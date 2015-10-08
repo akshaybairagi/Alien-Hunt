@@ -4,7 +4,6 @@ var g = game(800, 600, setup,
 					"json/alien.png",
 					"json/alienHunter.json",
 					"json/car.json",
-					"images/bike.png",
 					"sounds/shot.wav",
 					"fonts/puzzler.otf"
 				]
@@ -47,7 +46,7 @@ function setup(){
 	shotSound = assets["sounds/shot.wav"];
 
 	//Create the sprites
-	//1. The `titleScene` sprites
+	//1. The 'titleScene' sprites
 	//The play button
 	playButton = button([
 		assets["up.png"],
@@ -55,30 +54,30 @@ function setup(){
 		assets["down.png"]
 	]);
 
-	//Set the `playButton`'s x property to 514 so that
+	//Set the 'playButton''s x property to 514 so that
 	//it's offscreen when the sprite is created
 	playButton.x = 514;
 	playButton.y = 450;
 
-	//Set the `titleMessage` x position to -200 so that it's offscreen
+	//Set the 'titleMessage' x position to -200 so that it's offscreen
 	titleMessage = text("start game", "20px puzzler", "white", -200, 420);
 
 	//Game title name
 	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150);
 
-	//Make the `playButton` and `titleMessage` slide in from the
-	//edges of the screen using the `slide` function
+	//Make the 'playButton' and 'titleMessage' slide in from the
+	//edges of the screen using the 'slide' function
 	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
 	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
 
-	//Create the `titleScene` group
+	//Create the 'titleScene' group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
 
  	//2. The 'gameScene' sprites
 	//Make the sky background
-	sky = tilingSprite(1024,1024,assets["sky.png"],0,0);
+	sky = getSkyBackground();
 
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
@@ -107,10 +106,10 @@ function setup(){
 	//Assign the key events
 	keyHandler();
 
-	//Add the game sprites to the `gameScene` group
+	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
-	//Position the `gameScene` offscreen at 814 so that its
+	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
 
@@ -174,7 +173,7 @@ function makePlayer(){
 		jump: 7,
 		slide: 8
 	};
-	//Set the player's `fps`
+	//Set the player's 'fps'
 	o.sticky.fps = 12;
 	o.sticky.sliding = false;
 	//hands
@@ -380,7 +379,7 @@ function createPlayerGroup(){
 	return	o;
 }
 function createBike(){
-	var bike = sprite(assets["images/bike.png"]);
+	var bike = sprite(assets["bike.png"]);
 	bike.type = "bike";
 	bike.visible = false;
 	bike.remove = function(){
@@ -415,7 +414,7 @@ function createMGun(){
 	return mGun;
 }
 function end(){
-	//Display the `titleScene` and hide the `gameScene`
+	//Display the 'titleScene' and hide the 'gameScene'
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
@@ -432,14 +431,14 @@ function end(){
 
 	gameScene.remove(itemGroup.children);
 
-	//Assign a new button `press` action to restart the game
+	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
 		restart();
 	};
 }
 
 function restart(){
-	sky = tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"],0,0);
+	sky = getSkyBackground();
 
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
@@ -465,19 +464,19 @@ function restart(){
 	//Create  buildings
 	createBuildings();
 
-	//Add the game sprites to the `gameScene` group
+	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 
-	//Set the game state to `play` and `resume` the game
+	//Set the game state to 'play' and 'resume' the game
 	g.state = play;
 	g.resume();
 }
 function createBuildings(){
-	//Create a `group` for all the buildings
+	//Create a 'group' for all the buildings
 	blocks = group([]);
 	itemGroup = group([]);
 
@@ -546,4 +545,8 @@ function createTopBar(){
 		}
 	};
 	return o;
+}
+function getSkyBackground(){
+	//return tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"],0,0);
+		return tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"]);
 }
