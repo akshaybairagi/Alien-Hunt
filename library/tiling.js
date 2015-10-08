@@ -119,11 +119,10 @@ function tilingSprite(width, height, source, x, y) {
           if (child.x < 0 - tileWidth - difference) {
             child.x = (columns - 1) * tileWidth;
           }
-		  child.x = Math.floor(child.x);
         });
 
         //Set the private `_tileX` property to the new value
-        tileGrid._tileX = Math.floor(value);
+        tileGrid._tileX = value;
       },
       enumerable: true, configurable: true
     },
@@ -140,8 +139,7 @@ function tilingSprite(width, height, source, x, y) {
           if (child.y > (rows - 1) * tileHeight) child.y = 0 - tileHeight + difference;
           if (child.y < 0 - tileHeight - difference) child.y = (rows - 1) * tileHeight;
         });
-        tileGrid._tileY = Math.floor(value);
-		child.y = Math.floor(child.y);
+        tileGrid._tileY = value;
       },
       enumerable: true, configurable: true
     }

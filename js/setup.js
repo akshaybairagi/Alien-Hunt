@@ -117,7 +117,6 @@ function setup(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-		//stage.addChild([sky,player.grp,ship,car,bike,mGun,gun,blocks,playerGroup]);
 	};
 }
 function keyHandler(){
@@ -547,6 +546,5 @@ function createTopBar(){
 	return o;
 }
 function getSkyBackground(){
-	//return tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"],0,0);
 		return tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"]);
 }
