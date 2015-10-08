@@ -86,16 +86,14 @@ function play(){
 					else{
 						alien.stand();
 					}
-
-					shake(block, 3.5, false);
-					block.vy = -0.3;
-
 					if(block.gx >= alien.x){
 						alien.vy = -jumpForce;
 						alien.vx += -2;
 						alien.isOnGround = false;
 						alien.jump();
 					}
+					block.y += -1;
+					shake(block,10, false);
 				}
 		});
 	});

@@ -491,7 +491,7 @@ function createBuildings(){
 	for (var k =0; k < numOfBuilding; k++){
 		buildingHeight = g.canvas.height - nextPos.Y;
 
-		var building =rectangle(buildingWidth,buildingHeight,"#989892","grey",2,
+		var building =rectangle(buildingWidth,buildingHeight,"#black","grey",2,
 								nextPos.X,nextPos.Y);
 		building.id = k+1;
 
