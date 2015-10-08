@@ -2,7 +2,7 @@ function play(){
 	//count the frames
 	g.noOfFrame += 1;
 	//tiling sky background
-	sky.tileX += 10;
+	sky.tileX += 1;
 	//buildings blocks in the game world
 	blocks.x -= speed;
 	itemGroup.x -= speed;
