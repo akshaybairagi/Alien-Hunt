@@ -546,5 +546,5 @@ function createTopBar(){
 	return o;
 }
 function getSkyBackground(){
-		return tilingSprite(g.canvas.width,g.canvas.height,assets["sky.png"]);
+		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
 }

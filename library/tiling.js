@@ -25,7 +25,7 @@ function tilingSprite(width, height, source, x, y) {
 
 	//done to hide the blank line appearing b/w the tiling sprites issue resolved
 	tileWidth = tileWidth-1;
-	tileHeight = tileHeight-1;
+	tileHeight = tileHeight-2;
 
   //Figure out the rows and columns.
   //The number of rows and columns should always be
