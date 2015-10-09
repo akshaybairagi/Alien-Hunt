@@ -31,6 +31,7 @@ var bullets = [],items = [],aliens = [];
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
 var gravity = 5,speed = 20,jumpForce = 32;
+var bulletSpeed = 50;
 
 //For activities to be performed while assets are loading
 function load(){
@@ -78,6 +79,11 @@ function setup(){
  	//2. The 'gameScene' sprites
 	//Make the sky background
 	sky = getSkyBackground();
+
+	var moon = circle(50);
+	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
+	moon.blendMode = "hard-light";
+	moon.setPosition(150,320);
 
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
@@ -362,9 +368,9 @@ function createItemCollector(X,Y,width){
 	}
 }
 function createShip(){
-	var ship = sprite(assets["spaceship.png"]);
+	console.log(assets)
+	var ship = sprite(assets["ship.png"]);
 	ship.setPosition(600,32);
-	ship.rotation = -0.3;
 	ship.startTime = Date.now();
 	ship.lastUpdateTime = ship.startTime;
 	return ship;
@@ -491,7 +497,7 @@ function createBuildings(){
 	for (var k =0; k < numOfBuilding; k++){
 		buildingHeight = g.canvas.height - nextPos.Y;
 
-		var building =rectangle(buildingWidth,buildingHeight,"#black","grey",2,
+		var building =rectangle(buildingWidth,buildingHeight,"#272726","grey",2,
 								nextPos.X,nextPos.Y);
 		building.id = k+1;
 
@@ -513,6 +519,11 @@ function createBuildings(){
 					var window = rectangle(width,height,"grey","black",1);
 					window.x = width*j;
 					window.y = height*i;
+					if(randomInt(0,1)){
+						window.setRadialGradient("white","grey",0,0,3,0,0,17);
+						//window.gradient = false;
+					}
+					window.blendMode = "hard-light";
 					building.addChild(window);
 				}
 			}

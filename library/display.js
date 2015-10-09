@@ -76,6 +76,9 @@ function DisplayObject(){
 	//Optional blend mode property
 	this.blendMode = undefined;
 
+	//radial gradient
+	this.gradient = false;
+
 	//Properties for advanced features:
 	//Image states and animation
 	this.frames = [];
@@ -176,6 +179,14 @@ DisplayObject.prototype = {
 	setPosition: function(x, y) {
 		this.x = x;
 		this.y = y;
+	},
+
+	//method to create and intialize radial gradient variables
+	setRadialGradient: function(startColor,endColor,x0, y0, r0, x1, y1, r1){
+		this.gradient = true;
+		this.gradient = canvas.ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+		this.gradient.addColorStop(0,startColor);
+		this.gradient.addColorStop(1,endColor);
 	},
 
 	//The `localBounds` and `globalBounds` methods return an object
@@ -842,25 +853,27 @@ function renderWithInterpolation(canvas, lagOffset){
 
 		  //Draw the sprite at its interpolated position
 		  ctx.translate(
-			sprite.renderX + (sprite.width * sprite.pivotX),
-			sprite.renderY + (sprite.height * sprite.pivotY)
+				sprite.renderX + (sprite.width * sprite.pivotX),
+				sprite.renderY + (sprite.height * sprite.pivotY)
 		  );
 
 		  //Set the sprite's `rotation`, `alpha` and `scale`
 		  ctx.rotate(sprite.rotation);
 		  ctx.globalAlpha = sprite.alpha * sprite.parent.alpha;
-		 // ctx.scale(sprite.scaleX, sprite.scaleY);
+		 	ctx.scale(sprite.scaleX, sprite.scaleY);
 
 		  //Display the sprite's optional drop shadow
 		  if(sprite.shadow) {
-			ctx.shadowColor = sprite.shadowColor;
-			ctx.shadowOffsetX = sprite.shadowOffsetX;
-			ctx.shadowOffsetY = sprite.shadowOffsetY;
-			ctx.shadowBlur = sprite.shadowBlur;
+				ctx.shadowColor = sprite.shadowColor;
+				ctx.shadowOffsetX = sprite.shadowOffsetX;
+				ctx.shadowOffsetY = sprite.shadowOffsetY;
+				ctx.shadowBlur = sprite.shadowBlur;
 		  }
 
 		  //Display the optional blend mode
 		  if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
+
+			if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
 
 		  //Use the sprite's own `render` method to draw the sprite
 		  if (sprite.render) sprite.render(ctx);

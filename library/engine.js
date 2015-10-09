@@ -1,12 +1,12 @@
 //Game engine class
 function Game(width, height, setup, assetsToLoad, load){
-	
+
 		//Make the canvas and initialize the stage
 		this.canvas = makeCanvas(width, height, "none");
 		this.canvas.style.backgroundColor = "white";
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
-		
+
 		//Make the pointer
 		this.pointer = makePointer(this.canvas);
 		//The game's scale
@@ -20,13 +20,16 @@ function Game(width, height, setup, assetsToLoad, load){
 		this.assetsToLoad = assetsToLoad;
 		//A Boolean to let us pause the game
 		this.paused = false;
-		
+
 		//Variables for interpolation
+		this.interpolation = true;
 		this.fps = 15,
 		this.previous = 0,
 		this.frameDuration = 1000 / this.fps,
 		this.lag = 0;
+
 		_this = this;
+
 
 		//The `setup` function is required, so throw an error if it's//missing
 		if (!setup) {
@@ -36,31 +39,49 @@ function Game(width, height, setup, assetsToLoad, load){
 Game.prototype = {
 	//The game loop
 	gameLoop: function(timestamp){
-		
 		requestAnimationFrame(this.gameLoop.bind(this));
-		
+		if(this.interpolation)
+			this.withInterpolation(timestamp);
+		else {
+			this.noInterpolation();
+		}
+	},
+	//render without interpolation
+	noInterpolation: function(){
+		//update game tween, shaking sprites, particle effect
+		this.updateGameEffects();
+		//Run the current game `state` function if it's been defined and
+    //the game isn't `paused`
+    if(this.state && !this.paused) {
+      this.state();
+    }
+    //Render the canvas
+    render(this.canvas);
+	},
+	//render with interpolation
+	withInterpolation: function(timestamp){
 		//Calculate the time that has elapsed since the last frame
 		if (!timestamp) timestamp = 0;
 		var elapsed = timestamp - this.previous;
-		
+
 		//Optionally correct any unexpected huge gaps in the elapsed time
 		if (elapsed > 1000) elapsed = this.frameDuration;
 		//Add the elapsed time to the lag counter
 		this.lag += elapsed;
-		
+
 		//Update the frame if the lag counter is greater than or
 		//equal to the frame duration
-		while (this.lag >= this.frameDuration) {			
-			capturePreviousPositions(stage);			
-			
+		while (this.lag >= this.frameDuration) {
+			capturePreviousPositions(stage);
+
 			//Run the current game `state` function if it's been defined and
 			//the game isn't `paused`
 			if(this.state && !this.paused){
-				this.state();				
+				this.state();
 			}
 			//Reduce the lag counter by the frame duration
 			this.lag -= this.frameDuration;
-		}	
+		}
 		//update game tween, shaking sprites, particle effect
 		this.updateGameEffects();
 		//Calculate the lag offset. This tells us how far
@@ -87,7 +108,7 @@ Game.prototype = {
 									//Clear the game `state` function for now to stop the loop
 									_this.state = undefined;
 									//Call the `setup` function that was supplied by the user in
-									//the Game class’s constructor
+									//the Game classï¿½s constructor
 									_this.setup();
 								});
 				}
@@ -95,7 +116,7 @@ Game.prototype = {
 			//While the assets are loading, set the user-defined `load`
 			//function as the game state. That will make it run in a loop.
 			//You can use the `load` state to create a loading progress bar
-			
+
 			if (this.load){
 				this.state = this.load;
 			}
@@ -118,7 +139,7 @@ Game.prototype = {
 	},
 	scaleToWindow: function(backgroundColor){
 		var backgroundColor = checkIfUndefined(backgroundColor,"#2C3539");
-		
+
 		var scaleX, scaleY, scale, center;
 		//1. Scale the canvas to the correct size
 		//Figure out the scale amount on each axis
@@ -139,7 +160,7 @@ Game.prototype = {
 			center = "horizontally";
 		}
 		//Center horizontally (for square or tall canvases)
-		if (center === "horizontally"){		
+		if (center === "horizontally"){
 			var margin =(window.innerHeight - this.canvas.height * scaleX) / 2;
 			this.canvas.style.marginTop = margin + "px";
 			this.canvas.style.marginBottom = margin + "px";
@@ -187,7 +208,7 @@ Game.prototype = {
 		if (tweens.length > 0){
 			for(var i = tweens.length - 1; i >= 0; i--){
 				var tween = tweens[i];
-				if (tween) 
+				if (tween)
 					tween.update();
 			}
 		}
@@ -196,7 +217,7 @@ Game.prototype = {
 		if (shakingSprites.length > 0){
 			for(var i = shakingSprites.length - 1; i >= 0; i--) {
 				var shakingSprite = shakingSprites[i];
-				if (shakingSprite.updateShake) 
+				if (shakingSprite.updateShake)
 						shakingSprite.updateShake();
 			}
 		}
@@ -219,7 +240,7 @@ function capturePreviousPositions(stage){
 		setPreviousPosition(sprite);
 	});
 	function setPreviousPosition(sprite){
-		//Set the sprite’s `previousX` and `previousY`
+		//Set the spriteï¿½s `previousX` and `previousY`
 		sprite.previousX = sprite.x;
 		sprite.previousY = sprite.y;
 		//Loop through all the sprite's children

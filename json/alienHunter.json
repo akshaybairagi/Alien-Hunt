@@ -1,53 +1,26 @@
 {"frames": {
 
-"life.png":
-{
-	"frame": {"x":0,"y":0,"w":10,"h":10},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
-	"sourceSize": {"w":10,"h":10},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"smoke.png":
-{
-	"frame": {"x":10,"y":0,"w":10,"h":10},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
-	"sourceSize": {"w":10,"h":10},
-	"pivot": {"x":0.5,"y":0.5}
-},
 "gun.png":
 {
-	"frame": {"x":20,"y":0,"w":15,"h":8},
+	"frame": {"x":0,"y":0,"w":15,"h":8},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":8},
 	"sourceSize": {"w":15,"h":8},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"favicon.png":
+"smoke.png":
 {
-	"frame": {"x":35,"y":0,"w":16,"h":16},
+	"frame": {"x":15,"y":0,"w":10,"h":10},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
-	"sourceSize": {"w":16,"h":16},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"heart.png":
-{
-	"frame": {"x":51,"y":0,"w":20,"h":20},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
-	"sourceSize": {"w":20,"h":20},
+	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
+	"sourceSize": {"w":10,"h":10},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "car_snap.png":
 {
-	"frame": {"x":71,"y":0,"w":25,"h":10},
+	"frame": {"x":25,"y":0,"w":25,"h":10},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":10},
@@ -56,20 +29,47 @@
 },
 "bike_snap.png":
 {
-	"frame": {"x":96,"y":0,"w":25,"h":10},
+	"frame": {"x":50,"y":0,"w":25,"h":10},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":10},
 	"sourceSize": {"w":25,"h":10},
 	"pivot": {"x":0.5,"y":0.5}
 },
+"life.png":
+{
+	"frame": {"x":75,"y":0,"w":10,"h":10},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
+	"sourceSize": {"w":10,"h":10},
+	"pivot": {"x":0.5,"y":0.5}
+},
 "mGun.png":
 {
-	"frame": {"x":121,"y":0,"w":40,"h":12},
+	"frame": {"x":85,"y":0,"w":40,"h":12},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":12},
 	"sourceSize": {"w":40,"h":12},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"favicon.png":
+{
+	"frame": {"x":125,"y":0,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"heart.png":
+{
+	"frame": {"x":141,"y":0,"w":20,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
+	"sourceSize": {"w":20,"h":20},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "bike.png":
@@ -81,27 +81,18 @@
 	"sourceSize": {"w":70,"h":27},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"spaceship.png":
+"up.png":
 {
-	"frame": {"x":231,"y":0,"w":175,"h":88},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":175,"h":88},
-	"sourceSize": {"w":175,"h":88},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"down.png":
-{
-	"frame": {"x":0,"y":88,"w":192,"h":96},
+	"frame": {"x":231,"y":0,"w":192,"h":96},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
 	"sourceSize": {"w":192,"h":96},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"up.png":
+"down.png":
 {
-	"frame": {"x":192,"y":88,"w":192,"h":96},
+	"frame": {"x":0,"y":96,"w":192,"h":96},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
@@ -110,29 +101,29 @@
 },
 "over.png":
 {
-	"frame": {"x":0,"y":184,"w":192,"h":96},
+	"frame": {"x":192,"y":96,"w":192,"h":96},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
 	"sourceSize": {"w":192,"h":96},
 	"pivot": {"x":0.5,"y":0.5}
 },
+"ship.png":
+{
+	"frame": {"x":384,"y":96,"w":102,"h":111},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":102,"h":111},
+	"sourceSize": {"w":102,"h":111},
+	"pivot": {"x":0.5,"y":0.5}
+},
 "snow.png":
 {
-	"frame": {"x":0,"y":280,"w":512,"h":256},
+	"frame": {"x":0,"y":207,"w":512,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":256},
 	"sourceSize": {"w":512,"h":256},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"sky.png":
-{
-	"frame": {"x":0,"y":536,"w":512,"h":512},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
-	"sourceSize": {"w":512,"h":512},
 	"pivot": {"x":0.5,"y":0.5}
 }},
 "meta": {
@@ -140,8 +131,8 @@
 	"version": "1.0",
 	"image": "alienHunter.png",
 	"format": "RGBA8888",
-	"size": {"w":512,"h":1048},
+	"size": {"w":512,"h":463},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:472ee8173c9c2121b4d2fa85936a33cd:94045a6c4de2c2873e2abfaf152eaefe:66a975b4b3fb090e41e66cc7977fb663$"
+	"smartupdate": "$TexturePacker:SmartUpdate:e182fd03ba70f49625d8f45a090e9079:dd46baa698c4e65a203d7bca6b55a902:66a975b4b3fb090e41e66cc7977fb663$"
 }
 }

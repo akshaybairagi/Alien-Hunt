@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>E:/Apps/Game Art/Alient hunter/texture packer/alienHunter.tps</string>
+        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/alienHunter.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename>../../../GitHub/Alient-Hunter/json/alienHunter.png</filename>
+        <filename>../json/alienHunter.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -88,7 +88,7 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>1024</int>
+            <int>16384</int>
             <key>height</key>
             <int>16384</int>
         </QSize>
@@ -147,7 +147,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../GitHub/Alient-Hunter/json/alienHunter.json</filename>
+                <filename>../json/alienHunter.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -190,21 +190,20 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../GitHub/Alient-Hunter/images/smoke.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/snow.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/spaceship.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/up.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/bike_snap.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/car_snap.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/down.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/favicon.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/gun.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/heart.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/life.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/mGun.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/over.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/sky.png</filename>
-            <filename>../../../GitHub/Alient-Hunter/images/bike.png</filename>
+            <filename>../images/smoke.png</filename>
+            <filename>../images/snow.png</filename>
+            <filename>../images/up.png</filename>
+            <filename>../images/bike_snap.png</filename>
+            <filename>../images/car_snap.png</filename>
+            <filename>../images/down.png</filename>
+            <filename>../images/favicon.png</filename>
+            <filename>../images/gun.png</filename>
+            <filename>../images/heart.png</filename>
+            <filename>../images/life.png</filename>
+            <filename>../images/mGun.png</filename>
+            <filename>../images/over.png</filename>
+            <filename>../images/bike.png</filename>
+            <filename>../images/ship.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -93,7 +93,7 @@ function play(){
 						alien.jump();
 					}
 					block.y += -1;
-					shake(block,10, false);
+					shake(block,5, false);
 				}
 		});
 	});
