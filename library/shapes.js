@@ -19,11 +19,11 @@ Rectangle.prototype.constructor=Rectangle;
 Rectangle.prototype.render= function(ctx) {
 		ctx.strokeStyle = this.strokeStyle;
 		ctx.lineWidth = this.lineWidth;
-		if (!this.gradient){
-			ctx.fillStyle = this.fillStyle;
+		if (this.gradient){
+			ctx.fillStyle = this.gradient;
 		}
 		else{
-			ctx.fillStyle = this.gradient;
+				ctx.fillStyle = this.fillStyle;
 		}
 		ctx.beginPath();
 		ctx.rect(
@@ -71,7 +71,12 @@ Circle.prototype.constructor=Circle;
 Circle.prototype.render= function(ctx) {
 			ctx.strokeStyle = this.strokeStyle;
 			ctx.lineWidth = this.lineWidth;
-			ctx.fillStyle = this.fillStyle;
+			if (this.gradient){
+				ctx.fillStyle = this.gradient;
+			}
+			else{
+					ctx.fillStyle = this.fillStyle;
+			}
 			ctx.beginPath();
 			ctx.arc(
 				this.radius + (-this.diameter * this.pivotX),

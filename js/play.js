@@ -6,6 +6,7 @@ function play(){
 	//buildings blocks in the game world
 	blocks.x -= speed;
 	itemGroup.x -= speed;
+
 	//Apply gravity to the vertical velocity
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += gravity;

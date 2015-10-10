@@ -80,11 +80,7 @@ function setup(){
 	//Make the sky background
 	sky = getSkyBackground();
 
-	var moon = circle(50);
-	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
-	moon.blendMode = "hard-light";
-	moon.setPosition(150,320);
-
+	moon = drawMoon();
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
 	topBar.create();
@@ -113,7 +109,7 @@ function setup(){
 	keyHandler();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
@@ -368,7 +364,6 @@ function createItemCollector(X,Y,width){
 	}
 }
 function createShip(){
-	console.log(assets)
 	var ship = sprite(assets["ship.png"]);
 	ship.setPosition(600,32);
 	ship.startTime = Date.now();
@@ -470,7 +465,7 @@ function restart(){
 	createBuildings();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
@@ -558,4 +553,11 @@ function createTopBar(){
 }
 function getSkyBackground(){
 		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
+}
+function drawMoon(){
+	var moon = circle(50);
+	moon.blendMode = "hard-light";
+	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
+	moon.setPosition(150,200);
+	return moon;
 }
