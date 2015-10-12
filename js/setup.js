@@ -3,10 +3,13 @@ var g = game(800, 600, setup,
 					"json/hands.png",
 					"json/alien.png",
 					"json/alienHunter.json",
-					"json/textures.json",
+					"images/texture.png",
+					"images/texture2.png",
+					"images/texture3.png",
 					"json/car.json",
 					"sounds/shot.wav",
-					"fonts/puzzler.otf"
+					"fonts/puzzler.otf",
+					"images/texture.png",
 				]
 				,load
 			);
@@ -27,7 +30,7 @@ g.noOfFrame = 0;
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
 //Global Arrays
-var bullets = [],items = [],aliens = [];
+var bullets = [],items = [],aliens = [],designs = [];
 //Global groups
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
@@ -43,6 +46,8 @@ function load(){
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
+
+	initDesigns();
 
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
@@ -480,28 +485,9 @@ function createBuildings(){
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	itemGroup = group([]);
-	var pattern;
 
-	var design = {
-		0: {
-			pattern: assets["texture.png"],
-			color:"white"
-		},
-		1: {
-			pattern: assets["texture.png"],
-			color:"#f00e2e"
-		},
-		2: {
-			pattern: assets["texture2.png"],
-			color:"black"
-		},
-		3: {
-			pattern: assets["texture3.png"],
-			color:"black"
-		},
-	};
-console.log(assets);
 	//variables for building blocks
+	this.pattern = designs[0];
 	this.numOfBuilding = 100;
 	this.buildingWidth = 300;
 	this.buildingHeight;
@@ -514,12 +500,10 @@ console.log(assets);
 			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
-		if(k%2 == 0)
-			pattern = design[randomInt(0,3)];
-			else {
-				pattern = design[0];
-			}
-		var building = designBuidlings(this.buildingWidth,this.buildingHeight,pattern,
+		if(k%25 === 0)
+			this.pattern = designs[randomInt(0,3)];
+
+		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
 			this.nextPos.X,this.nextPos.Y);
 
 		blocks.addChild(building);
@@ -528,14 +512,13 @@ console.log(assets);
 		this.nextPos.Y=400 + randomInt(-50,50);
 	}
 }
-function designBuidlings(width,height,design,x,y){
+function designBuidlings(width,height,pattern,x,y){
 	var row=9;
 	var coloums=13;
-
 	var building =rectangle(width,height,"#272726","grey",2,x,y);
-	if(design.pattern){
-		building.setPattern(design.pattern,"repeat");
-	}
+	if(pattern.image)
+		building.setPattern(pattern.image,"repeat");
+
 	var windowWidth = building.width /row;
 	var windowHeight = building.height/coloums;
 
@@ -547,7 +530,7 @@ function designBuidlings(width,height,design,x,y){
 				window.x = windowWidth*j;
 				window.y = windowHeight*i;
 				if(randomInt(0,1)){
-					window.setRadialGradient(design.color,"grey",0,0,3,0,0,17);
+					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
 				window.blendMode = "hard-light";
 				building.addChild(window);
@@ -582,7 +565,7 @@ function createTopBar(){
 	return o;
 }
 function getSkyBackground(){
-		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
+		return tilingSprite(g.canvas.width,g.canvas.height,assets["aurora.png"]);
 }
 function drawMoon(){
 	var moon = circle(50);
@@ -590,4 +573,34 @@ function drawMoon(){
 	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
 	moon.setPosition(150,200);
 	return moon;
+}
+function initDesigns(){
+	var design1 = {
+			image: undefined,
+			color: "white",
+			startR: 3,
+			endR: 17
+	};
+	var design2 = {
+			image: assets["images/texture.png"],
+			color:"#f00e2e",
+			startR: 10,
+			endR: 17
+	};
+	var design3 = {
+			image: assets["images/texture2.png"],
+			color:"black",
+			startR: 15,
+			endR: 17
+	};
+	var design4 = {
+			image: assets["images/texture3.png"],
+			color:"black",
+			startR: 15,
+			endR: 17
+	};
+	designs.push(design1);
+	designs.push(design2);
+	designs.push(design3);
+	designs.push(design4);
 }

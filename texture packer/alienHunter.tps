@@ -203,6 +203,9 @@
             <filename>../images/over.png</filename>
             <filename>../images/bike.png</filename>
             <filename>../images/ship.png</filename>
+            <filename>../images/aurora.png</filename>
+            <filename>../images/sky.png</filename>
+            <filename>../images/snow.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

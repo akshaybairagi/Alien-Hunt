@@ -27,7 +27,7 @@ Rectangle.prototype.render= function(ctx) {
 			ctx.fillStyle = this.fillStyle;
 		ctx.beginPath();
 		ctx.rect(
-		//Draw the sprite around its `pivotX` and `pivotY` point
+		//Draw the sprite around its 'pivotX' and 'pivotY' point
 		-this.width * this.pivotX,
 		-this.height * this.pivotY,
 		this.width,

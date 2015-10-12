@@ -121,7 +121,7 @@
             <key>basic</key>
             <struct type="AlgorithmBasicSettings">
                 <key>sortBy</key>
-                <enum type="AlgorithmBasicSettings::SortBy">Best</enum>
+                <enum type="AlgorithmBasicSettings::SortBy">Width</enum>
                 <key>order</key>
                 <enum type="AlgorithmBasicSettings::Order">Ascending</enum>
             </struct>
@@ -190,12 +190,9 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../images/aurora.png</filename>
-            <filename>../images/snow.png</filename>
             <filename>../images/texture.png</filename>
             <filename>../images/texture2.png</filename>
             <filename>../images/texture3.png</filename>
-            <filename>../images/texture4.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
