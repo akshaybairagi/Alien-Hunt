@@ -1,44 +1,71 @@
 {"frames": {
 
+"bike.png":
+{
+	"frame": {"x":0,"y":0,"w":70,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":27},
+	"sourceSize": {"w":70,"h":27},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"bike_snap.png":
+{
+	"frame": {"x":70,"y":0,"w":25,"h":10},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":10},
+	"sourceSize": {"w":25,"h":10},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"car_snap.png":
+{
+	"frame": {"x":95,"y":0,"w":25,"h":10},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":10},
+	"sourceSize": {"w":25,"h":10},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"down.png":
+{
+	"frame": {"x":120,"y":0,"w":192,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
+	"sourceSize": {"w":192,"h":96},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"favicon.png":
+{
+	"frame": {"x":312,"y":0,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
 "gun.png":
 {
-	"frame": {"x":0,"y":0,"w":15,"h":8},
+	"frame": {"x":328,"y":0,"w":15,"h":8},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":8},
 	"sourceSize": {"w":15,"h":8},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"smoke.png":
+"heart.png":
 {
-	"frame": {"x":15,"y":0,"w":10,"h":10},
+	"frame": {"x":343,"y":0,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
-	"sourceSize": {"w":10,"h":10},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"car_snap.png":
-{
-	"frame": {"x":25,"y":0,"w":25,"h":10},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":10},
-	"sourceSize": {"w":25,"h":10},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"bike_snap.png":
-{
-	"frame": {"x":50,"y":0,"w":25,"h":10},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":10},
-	"sourceSize": {"w":25,"h":10},
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
+	"sourceSize": {"w":20,"h":20},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "life.png":
 {
-	"frame": {"x":75,"y":0,"w":10,"h":10},
+	"frame": {"x":363,"y":0,"w":10,"h":10},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
@@ -47,61 +74,16 @@
 },
 "mGun.png":
 {
-	"frame": {"x":85,"y":0,"w":40,"h":12},
+	"frame": {"x":373,"y":0,"w":40,"h":12},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":12},
 	"sourceSize": {"w":40,"h":12},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"favicon.png":
-{
-	"frame": {"x":125,"y":0,"w":16,"h":16},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
-	"sourceSize": {"w":16,"h":16},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"heart.png":
-{
-	"frame": {"x":141,"y":0,"w":20,"h":20},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
-	"sourceSize": {"w":20,"h":20},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"bike.png":
-{
-	"frame": {"x":161,"y":0,"w":70,"h":27},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":27},
-	"sourceSize": {"w":70,"h":27},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"up.png":
-{
-	"frame": {"x":231,"y":0,"w":192,"h":96},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
-	"sourceSize": {"w":192,"h":96},
-	"pivot": {"x":0.5,"y":0.5}
-},
-"down.png":
-{
-	"frame": {"x":0,"y":96,"w":192,"h":96},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
-	"sourceSize": {"w":192,"h":96},
-	"pivot": {"x":0.5,"y":0.5}
-},
 "over.png":
 {
-	"frame": {"x":192,"y":96,"w":192,"h":96},
+	"frame": {"x":413,"y":0,"w":192,"h":96},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
@@ -110,20 +92,29 @@
 },
 "ship.png":
 {
-	"frame": {"x":384,"y":96,"w":102,"h":111},
+	"frame": {"x":605,"y":0,"w":102,"h":111},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":102,"h":111},
 	"sourceSize": {"w":102,"h":111},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"snow.png":
+"smoke.png":
 {
-	"frame": {"x":0,"y":207,"w":512,"h":256},
+	"frame": {"x":707,"y":0,"w":10,"h":10},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":256},
-	"sourceSize": {"w":512,"h":256},
+	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
+	"sourceSize": {"w":10,"h":10},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"up.png":
+{
+	"frame": {"x":717,"y":0,"w":192,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":96},
+	"sourceSize": {"w":192,"h":96},
 	"pivot": {"x":0.5,"y":0.5}
 }},
 "meta": {
@@ -131,8 +122,8 @@
 	"version": "1.0",
 	"image": "alienHunter.png",
 	"format": "RGBA8888",
-	"size": {"w":512,"h":463},
+	"size": {"w":909,"h":111},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:e182fd03ba70f49625d8f45a090e9079:dd46baa698c4e65a203d7bca6b55a902:66a975b4b3fb090e41e66cc7977fb663$"
+	"smartupdate": "$TexturePacker:SmartUpdate:1a620ef87fd15310605e862332557f60:52b6a3a17cac1fab7b5e2fe5a5f7d021:66a975b4b3fb090e41e66cc7977fb663$"
 }
 }

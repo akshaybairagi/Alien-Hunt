@@ -19,12 +19,12 @@ Rectangle.prototype.constructor=Rectangle;
 Rectangle.prototype.render= function(ctx) {
 		ctx.strokeStyle = this.strokeStyle;
 		ctx.lineWidth = this.lineWidth;
-		if (this.gradient){
+		if (this.gradient)
 			ctx.fillStyle = this.gradient;
-		}
-		else{
-				ctx.fillStyle = this.fillStyle;
-		}
+		else if(this.pattern)
+			ctx.fillStyle = this.pattern;
+		else
+			ctx.fillStyle = this.fillStyle;
 		ctx.beginPath();
 		ctx.rect(
 		//Draw the sprite around its `pivotX` and `pivotY` point

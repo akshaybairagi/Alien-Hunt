@@ -79,6 +79,9 @@ function DisplayObject(){
 	//radial gradient
 	this.gradient = false;
 
+	//pattern
+	this.pattern = false;
+
 	//Properties for advanced features:
 	//Image states and animation
 	this.frames = [];
@@ -187,6 +190,11 @@ DisplayObject.prototype = {
 		this.gradient = canvas.ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
 		this.gradient.addColorStop(0,startColor);
 		this.gradient.addColorStop(1,endColor);
+	},
+	//method to create and intialize pattern
+	setPattern: function(image,pattern){
+		this.pattern = true;
+		this.pattern = canvas.ctx.createPattern(image,pattern);
 	},
 
 	//The `localBounds` and `globalBounds` methods return an object

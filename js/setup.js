@@ -3,6 +3,7 @@ var g = game(800, 600, setup,
 					"json/hands.png",
 					"json/alien.png",
 					"json/alienHunter.json",
+					"json/textures.json",
 					"json/car.json",
 					"sounds/shot.wav",
 					"fonts/puzzler.otf"
@@ -479,52 +480,81 @@ function createBuildings(){
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	itemGroup = group([]);
+	var pattern;
 
+	var design = {
+		0: {
+			pattern: assets["texture.png"],
+			color:"white"
+		},
+		1: {
+			pattern: assets["texture.png"],
+			color:"#f00e2e"
+		},
+		2: {
+			pattern: assets["texture2.png"],
+			color:"black"
+		},
+		3: {
+			pattern: assets["texture3.png"],
+			color:"black"
+		},
+	};
+console.log(assets);
 	//variables for building blocks
-	var numOfBuilding = 100;
-	var row=9;
-	var coloums=13;
-	var buildingWidth = 300;
-	var buildingHeight;
-	var nextPos = { X: 32, Y:400 };
+	this.numOfBuilding = 100;
+	this.buildingWidth = 300;
+	this.buildingHeight;
+	this.nextPos = { X: 32, Y:400 };
 
 	//Procedural Generation of buildings
-	for (var k =0; k < numOfBuilding; k++){
-		buildingHeight = g.canvas.height - nextPos.Y;
-
-		var building =rectangle(buildingWidth,buildingHeight,"#272726","grey",2,
-								nextPos.X,nextPos.Y);
-		building.id = k+1;
-
+	for (var k =0; k < this.numOfBuilding; k++){
+		this.buildingHeight = g.canvas.height - this.nextPos.Y;
 		if((k+1)%3 == 0){
-			var item = createItemCollector(nextPos.X,nextPos.Y,buildingWidth);
+			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
+		if(k%2 == 0)
+			pattern = design[randomInt(0,3)];
+			else {
+				pattern = design[0];
+			}
+		var building = designBuidlings(this.buildingWidth,this.buildingHeight,pattern,
+			this.nextPos.X,this.nextPos.Y);
 
-		nextPos.X=building.x + randomInt(350,400);
-		nextPos.Y=400 + randomInt(-50,50);
+		blocks.addChild(building);
 
-		var width = building.width /row;
-		var height = building.height/coloums;
+		this.nextPos.X=building.x + randomInt(350,400);
+		this.nextPos.Y=400 + randomInt(-50,50);
+	}
+}
+function designBuidlings(width,height,design,x,y){
+	var row=9;
+	var coloums=13;
 
-		for(var i = 0; i < coloums; i++) {
-			for(var j = 0; j < row; j++){
-				if ( j % 2 !== 0 && i % 2 !== 0){
-					//create the windows
-					var window = rectangle(width,height,"grey","black",1);
-					window.x = width*j;
-					window.y = height*i;
-					if(randomInt(0,1)){
-						window.setRadialGradient("white","grey",0,0,3,0,0,17);
-						//window.gradient = false;
-					}
-					window.blendMode = "hard-light";
-					building.addChild(window);
+	var building =rectangle(width,height,"#272726","grey",2,x,y);
+	if(design.pattern){
+		building.setPattern(design.pattern,"repeat");
+	}
+	var windowWidth = building.width /row;
+	var windowHeight = building.height/coloums;
+
+	for(var i = 0; i < coloums; i++){
+		for(var j = 0; j < row; j++){
+			if ( j % 2 !== 0 && i % 2 !== 0){
+				//create the windows
+				var window = rectangle(windowWidth,windowHeight,"grey","black",1);
+				window.x = windowWidth*j;
+				window.y = windowHeight*i;
+				if(randomInt(0,1)){
+					window.setRadialGradient(design.color,"grey",0,0,3,0,0,17);
 				}
+				window.blendMode = "hard-light";
+				building.addChild(window);
 			}
 		}
-		blocks.addChild(building);
 	}
+	return building;
 }
 function createTopBar(){
 	var o = group([]);

@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.9.4</string>
         <key>fileName</key>
-        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/alienHunter.tps</string>
+        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/textures.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename>../json/alienHunter.png</filename>
+        <filename></filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -88,9 +88,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>16384</int>
+            <int>2048</int>
             <key>height</key>
-            <int>16384</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -147,7 +147,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../json/alienHunter.json</filename>
+                <filename>../json/textures.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -190,19 +190,12 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../images/smoke.png</filename>
-            <filename>../images/up.png</filename>
-            <filename>../images/bike_snap.png</filename>
-            <filename>../images/car_snap.png</filename>
-            <filename>../images/down.png</filename>
-            <filename>../images/favicon.png</filename>
-            <filename>../images/gun.png</filename>
-            <filename>../images/heart.png</filename>
-            <filename>../images/life.png</filename>
-            <filename>../images/mGun.png</filename>
-            <filename>../images/over.png</filename>
-            <filename>../images/bike.png</filename>
-            <filename>../images/ship.png</filename>
+            <filename>../images/aurora.png</filename>
+            <filename>../images/snow.png</filename>
+            <filename>../images/texture.png</filename>
+            <filename>../images/texture2.png</filename>
+            <filename>../images/texture3.png</filename>
+            <filename>../images/texture4.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
