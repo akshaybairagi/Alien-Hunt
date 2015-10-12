@@ -500,7 +500,7 @@ function createBuildings(){
 			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
-		if(k%25 === 0)
+		if(k%5 === 0)
 			this.pattern = designs[randomInt(0,3)];
 
 		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
@@ -533,6 +533,7 @@ function designBuidlings(width,height,pattern,x,y){
 					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
 				window.blendMode = "hard-light";
+
 				building.addChild(window);
 			}
 		}
@@ -603,4 +604,6 @@ function initDesigns(){
 	designs.push(design2);
 	designs.push(design3);
 	designs.push(design4);
+	console.log(designs[0]);
+
 }
