@@ -7,6 +7,7 @@ var g = game(800, 600, setup,
 					"images/texture2.png",
 					"images/texture3.png",
 					"json/car.json",
+					"sounds/retro-action.wav",
 					"sounds/shot.wav",
 					"fonts/puzzler.otf",
 					"images/texture.png",
@@ -51,6 +52,10 @@ function setup(){
 
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
+	bgMusic = assets["sounds/retro-action.wav"];
+	bgMusic.loop = true;
+	bgMusic.volume= 0.5;
+
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -125,6 +130,7 @@ function setup(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
+		bgMusic.play();
 	};
 }
 function keyHandler(){
@@ -488,7 +494,7 @@ function createBuildings(){
 
 	//variables for building blocks
 	this.pattern = designs[0];
-	this.numOfBuilding = 100;
+	this.numOfBuilding = 500;
 	this.buildingWidth = 300;
 	this.buildingHeight;
 	this.nextPos = { X: 32, Y:400 };
@@ -500,7 +506,7 @@ function createBuildings(){
 			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
-		if(k%5 === 0)
+		if(k%101 === 0)
 			this.pattern = designs[randomInt(0,3)];
 
 		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
@@ -566,7 +572,7 @@ function createTopBar(){
 	return o;
 }
 function getSkyBackground(){
-		return tilingSprite(g.canvas.width,g.canvas.height,assets["aurora.png"]);
+		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
 }
 function drawMoon(){
 	var moon = circle(50);
