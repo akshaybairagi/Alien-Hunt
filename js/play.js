@@ -14,22 +14,24 @@ function play(){
 
 	//move aliens
 	aliens = aliens.filter(function(alien){
+		if(alien.visible == false ){
+			stage.removeHierarchy(alien);
+			return false;
+		}
 		alien.vy += gravity;
 		alien.y += alien.vy;
 		alien.vx += alien.accelerationX;
 		alien.x += alien.vx;
-
-		if(alien.visible == false ){
-			return false;
-		}
 		return true;
 	});
 	//Move the bullet
 	bullets = bullets.filter(function(bullet){
+		if(bullet.x > g.canvas.width){
+			stage.removeHierarchy(bullet);
+			return false;
+		}
 		bullet.x += bullet.vx;
 		bullet.y += bullet.vy;
-		if(bullet.x > g.canvas.width) return false;
-
 		return true;
 	});
 
@@ -108,7 +110,9 @@ function play(){
 				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
 				explosionSound();
 				bullet.visible = false;
+				remove(bullet);
 				alien.visible = false;
+				remove(alien);
 				return false;
 			}
 			return true;
@@ -143,6 +147,7 @@ function play(){
 					player.grp.visible = false;
 					gun.visible = false;
 					item.visible = false;
+					remove(item);
 					stage.addChild(player.grp);
 					stage.addChild(gun);
 
@@ -186,5 +191,4 @@ function play(){
 			}
 		}
 	});
-
 }
