@@ -15,9 +15,9 @@ function smokeEmitter(x,y,source){
 	);
 }
 function fire(shooter){
-	shootBullets(shooter, shooter.rotation, 0, 65, bullets,
-				function(){ 
-					return rectangle(15,4, "black"); 
+	shootBullets(shooter, shooter.rotation, 0, bulletSpeed, bullets,
+				function(){
+					return rectangle(15,4, "black");
 				}
 			);
 	shotSound.play();
@@ -33,13 +33,12 @@ function shootBullets(shooter,angle,offsetFromCenter,bulletSpeed,bulletArray,bul
 	//Set the bullet's velocity
 	bullet.vx = Math.cos(angle) * bulletSpeed;
 	bullet.vy = Math.sin(angle) * bulletSpeed;
-	
+
 	var cBox = rectangle(60,2,"red","red",1)
 	bullet.addChild(cBox);
 	bullet.cBox = cBox;
 	cBox.visible = false;
-	
+
 	//Push the bullet into the`bulletArray`
 	bulletArray.push(bullet);
 }
-
