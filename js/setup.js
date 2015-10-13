@@ -3,9 +3,13 @@ var g = game(800, 600, setup,
 					"json/hands.png",
 					"json/alien.png",
 					"json/alienHunter.json",
+					"images/texture.png",
+					"images/texture2.png",
+					"images/texture3.png",
 					"json/car.json",
 					"sounds/shot.wav",
-					"fonts/puzzler.otf"
+					"fonts/puzzler.otf",
+					"images/texture.png",
 				]
 				,load
 			);
@@ -26,11 +30,12 @@ g.noOfFrame = 0;
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
 //Global Arrays
-var bullets = [],items = [],aliens = [];
+var bullets = [],items = [],aliens = [],designs = [];
 //Global groups
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
 var gravity = 5,speed = 20,jumpForce = 32;
+var bulletSpeed = 50;
 
 //For activities to be performed while assets are loading
 function load(){
@@ -41,6 +46,8 @@ function load(){
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
+
+	initDesigns();
 
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
@@ -79,6 +86,7 @@ function setup(){
 	//Make the sky background
 	sky = getSkyBackground();
 
+	moon = drawMoon();
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
 	topBar.create();
@@ -107,7 +115,7 @@ function setup(){
 	keyHandler();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
@@ -362,9 +370,8 @@ function createItemCollector(X,Y,width){
 	}
 }
 function createShip(){
-	var ship = sprite(assets["spaceship.png"]);
+	var ship = sprite(assets["ship.png"]);
 	ship.setPosition(600,32);
-	ship.rotation = -0.3;
 	ship.startTime = Date.now();
 	ship.lastUpdateTime = ship.startTime;
 	return ship;
@@ -464,7 +471,7 @@ function restart(){
 	createBuildings();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
@@ -480,45 +487,58 @@ function createBuildings(){
 	itemGroup = group([]);
 
 	//variables for building blocks
-	var numOfBuilding = 100;
-	var row=9;
-	var coloums=13;
-	var buildingWidth = 300;
-	var buildingHeight;
-	var nextPos = { X: 32, Y:400 };
+	this.pattern = designs[0];
+	this.numOfBuilding = 100;
+	this.buildingWidth = 300;
+	this.buildingHeight;
+	this.nextPos = { X: 32, Y:400 };
 
 	//Procedural Generation of buildings
-	for (var k =0; k < numOfBuilding; k++){
-		buildingHeight = g.canvas.height - nextPos.Y;
-
-		var building =rectangle(buildingWidth,buildingHeight,"#black","grey",2,
-								nextPos.X,nextPos.Y);
-		building.id = k+1;
-
+	for (var k =0; k < this.numOfBuilding; k++){
+		this.buildingHeight = g.canvas.height - this.nextPos.Y;
 		if((k+1)%3 == 0){
-			var item = createItemCollector(nextPos.X,nextPos.Y,buildingWidth);
+			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
+		if(k%5 === 0)
+			this.pattern = designs[randomInt(0,3)];
 
-		nextPos.X=building.x + randomInt(350,400);
-		nextPos.Y=400 + randomInt(-50,50);
+		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
+			this.nextPos.X,this.nextPos.Y);
 
-		var width = building.width /row;
-		var height = building.height/coloums;
+		blocks.addChild(building);
 
-		for(var i = 0; i < coloums; i++) {
-			for(var j = 0; j < row; j++){
-				if ( j % 2 !== 0 && i % 2 !== 0){
-					//create the windows
-					var window = rectangle(width,height,"grey","black",1);
-					window.x = width*j;
-					window.y = height*i;
-					building.addChild(window);
+		this.nextPos.X=building.x + randomInt(350,400);
+		this.nextPos.Y=400 + randomInt(-50,50);
+	}
+}
+function designBuidlings(width,height,pattern,x,y){
+	var row=9;
+	var coloums=13;
+	var building =rectangle(width,height,"#272726","grey",2,x,y);
+	if(pattern.image)
+		building.setPattern(pattern.image,"repeat");
+
+	var windowWidth = building.width /row;
+	var windowHeight = building.height/coloums;
+
+	for(var i = 0; i < coloums; i++){
+		for(var j = 0; j < row; j++){
+			if ( j % 2 !== 0 && i % 2 !== 0){
+				//create the windows
+				var window = rectangle(windowWidth,windowHeight,"grey","black",1);
+				window.x = windowWidth*j;
+				window.y = windowHeight*i;
+				if(randomInt(0,1)){
+					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
+				window.blendMode = "hard-light";
+
+				building.addChild(window);
 			}
 		}
-		blocks.addChild(building);
 	}
+	return building;
 }
 function createTopBar(){
 	var o = group([]);
@@ -546,5 +566,42 @@ function createTopBar(){
 	return o;
 }
 function getSkyBackground(){
-		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
+		return tilingSprite(g.canvas.width,g.canvas.height,assets["aurora.png"]);
+}
+function drawMoon(){
+	var moon = circle(50);
+	moon.blendMode = "hard-light";
+	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
+	moon.setPosition(150,200);
+	return moon;
+}
+function initDesigns(){
+	var design1 = {
+			image: undefined,
+			color: "white",
+			startR: 3,
+			endR: 17
+	};
+	var design2 = {
+			image: assets["images/texture.png"],
+			color:"#f00e2e",
+			startR: 10,
+			endR: 17
+	};
+	var design3 = {
+			image: assets["images/texture2.png"],
+			color:"black",
+			startR: 15,
+			endR: 17
+	};
+	var design4 = {
+			image: assets["images/texture3.png"],
+			color:"black",
+			startR: 15,
+			endR: 17
+	};
+	designs.push(design1);
+	designs.push(design2);
+	designs.push(design3);
+	designs.push(design4);
 }
