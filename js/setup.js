@@ -604,6 +604,4 @@ function initDesigns(){
 	designs.push(design2);
 	designs.push(design3);
 	designs.push(design4);
-	console.log(designs[0]);
-
 }
