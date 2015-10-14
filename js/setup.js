@@ -7,9 +7,9 @@ var g = game(800, 600, setup,
 					"images/texture2.png",
 					"images/texture3.png",
 					"json/car.json",
+					"sounds/retro-action.wav",
 					"sounds/shot.wav",
-					"fonts/puzzler.otf",
-					"images/texture.png",
+					"fonts/puzzler.otf"
 				]
 				,load
 			);
@@ -30,7 +30,11 @@ g.noOfFrame = 0;
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
 //Global Arrays
-var bullets = [],items = [],aliens = [],designs = [];
+var items = [],designs = [];
+//aliens Pool and active Pool
+var alienPool = [],activeAliens=[];
+//bullet Pool and active Pool
+var bulletPool = [],activeBullets=[];
 //Global groups
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
@@ -47,10 +51,11 @@ function setup(){
 	//Remove the progress bar
 	progressBar.remove();
 
-	initDesigns();
-
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
+	bgMusic = assets["sounds/retro-action.wav"];
+	bgMusic.loop = true;
+	bgMusic.volume= 0.5;
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -85,6 +90,10 @@ function setup(){
  	//2. The 'gameScene' sprites
 	//Make the sky background
 	sky = getSkyBackground();
+	//Initialize designs
+	initDesigns();
+	//space ship sprites
+	ship = createShip();
 
 	moon = drawMoon();
 	//Add a black border along the top of the screen
@@ -105,9 +114,6 @@ function setup(){
 	//Create Player Group as a container
 	playerGroup = createPlayerGroup();
 
-	//space ship sprites
-	ship = createShip();
-
 	//Create  buildings
 	createBuildings();
 
@@ -117,6 +123,19 @@ function setup(){
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
+	//Create Aliens
+	for(var i=0;i < 5;i++){
+		var alien = createAlien();
+		alien.visible = false;
+		alien.setPosition(ship.centerX,ship.centerY);
+		alienPool.push(alien);
+	}
+	//Create Bullets
+	for(var i=0;i < 5;i++){
+		var bullet = createBullet();
+		bullet.visible = false;
+		bulletPool.push(bullet);
+	}
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
@@ -125,6 +144,7 @@ function setup(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
+		bgMusic.play();
 	};
 }
 function keyHandler(){
@@ -308,7 +328,6 @@ function createAlien(){
 	alien.accelerationX = 0;
 	alien.isOnGround = false;
 	alien.isTouching = false;
-	alien.setPosition(ship.centerX,ship.centerY);
 	alien.state = "";
 
 	alien.walk = function(){
@@ -335,10 +354,35 @@ function createAlien(){
 			alien.stop();
 		}
 	};
-
-	aliens.push(alien);
-
 	return alien;
+}
+function getAlien(){
+	var alien = null;
+	if(alienPool.length > 0){
+		alien = alienPool.pop();
+
+		alien.vx=0;
+		alien.vy = 0;
+		alien.accelerationX = 0;
+		alien.isOnGround = false;
+		alien.isTouching = false;
+		alien.state = "";
+		alien.act = "";
+	}
+	else {
+		alien = createAlien();
+	}
+	alien.setPosition(ship.centerX,ship.centerY);
+	alien.visible = true;
+	activeAliens.push(alien);
+	return alien;
+}
+function freeAlien(alien){
+	alien.visible = false;
+	alien.setPosition(ship.centerX,ship.centerY);
+	activeAliens.splice(activeAliens.indexOf(alien), 1);
+	// return the alien back into the pool
+	alienPool.push(alien);
 }
 function createItemCollector(X,Y,width){
 	var itemNo = randomInt(1,4);
@@ -429,11 +473,8 @@ function end(){
 	itemGroup.removeHierarchy(itemGroup.children);
 	topBar.removeHierarchy(topBar.children);
 
-	remove(aliens);
-
 	items = [];
 	bullets = [];
-	aliens = [];
 
 	gameScene.remove(itemGroup.children);
 
@@ -488,28 +529,27 @@ function createBuildings(){
 
 	//variables for building blocks
 	this.pattern = designs[0];
-	this.numOfBuilding = 100;
+	this.numOfBuilding = 5;
 	this.buildingWidth = 300;
 	this.buildingHeight;
-	this.nextPos = { X: 32, Y:400 };
+	blocks.nextPos = { X: 32, Y:400 };
 
 	//Procedural Generation of buildings
 	for (var k =0; k < this.numOfBuilding; k++){
-		this.buildingHeight = g.canvas.height - this.nextPos.Y;
+		this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
 		if((k+1)%3 == 0){
-			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
+			var item = createItemCollector(blocks.nextPos.X,blocks.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
-		if(k%5 === 0)
 			this.pattern = designs[randomInt(0,3)];
 
 		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
-			this.nextPos.X,this.nextPos.Y);
+			blocks.nextPos.X,blocks.nextPos.Y);
 
 		blocks.addChild(building);
 
-		this.nextPos.X=building.x + randomInt(350,400);
-		this.nextPos.Y=400 + randomInt(-50,50);
+		blocks.nextPos.X=building.x + randomInt(350,400);
+		blocks.nextPos.Y=400 + randomInt(-50,50);
 	}
 }
 function designBuidlings(width,height,pattern,x,y){
@@ -529,6 +569,8 @@ function designBuidlings(width,height,pattern,x,y){
 				var window = rectangle(windowWidth,windowHeight,"grey","black",1);
 				window.x = windowWidth*j;
 				window.y = windowHeight*i;
+				window.i = i;
+				window.j = j;
 				if(randomInt(0,1)){
 					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
@@ -542,7 +584,7 @@ function designBuidlings(width,height,pattern,x,y){
 }
 function createTopBar(){
 	var o = group([]);
-	o.life = 3;
+	o.life = 5;
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){
@@ -566,7 +608,7 @@ function createTopBar(){
 	return o;
 }
 function getSkyBackground(){
-		return tilingSprite(g.canvas.width,g.canvas.height,assets["aurora.png"]);
+		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
 }
 function drawMoon(){
 	var moon = circle(50);

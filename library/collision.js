@@ -3,7 +3,7 @@ hitTestPoint
 ------------
 
 Use it to find out if a point is touching a circlular or rectangular sprite.
-Parameters: 
+Parameters:
 a. An object with `x` and `y` properties.
 b. A sprite object with `x`, `y`, `centerX` and `centerY` properties.
 If the sprite has a `radius` property, the function will interpret
@@ -53,7 +53,7 @@ hitTestCircle
 -------------
 
 Use it to find out if two circular sprites are touching.
-Parameters: 
+Parameters:
 a. A sprite object with `centerX`, `centerY` and `radius` properties.
 b. A sprite object with `centerX`, `centerY` and `radius`.
 */
@@ -94,7 +94,7 @@ circleCollision
 
 Use it to prevent a moving circular sprite from overlapping and optionally
 bouncing off a non-moving circular sprite.
-Parameters: 
+Parameters:
 a. A sprite object with `x`, `y` `centerX`, `centerY` and `radius` properties.
 b. A sprite object with `x`, `y` `centerX`, `centerY` and `radius` properties.
 c. Optional: true or false to indicate whether or not the first sprite
@@ -176,7 +176,7 @@ movingCircleCollision
 ---------------------
 
 Use it to make two moving circles bounce off each other.
-Parameters: 
+Parameters:
 a. A sprite object with `x`, `y` `centerX`, `centerY` and `radius` properties.
 b. A sprite object with `x`, `y` `centerX`, `centerY` and `radius` properties.
 The sprites can contain an optional mass property that should be greater than 1.
@@ -321,7 +321,7 @@ Checks all the circles in an array for a collision against
 all the other circles in an array, using `movingCircleCollision` (above)
 */
 function multipleCircleCollision(arrayOfCircles, global) {
-	
+
 	var global = (typeof global !== 'undefined')? global : false;
   //marble collisions
   for (var i = 0; i < arrayOfCircles.length; i++) {
@@ -344,7 +344,7 @@ hitTestCirclePoint
 ------------------
 
 Use it to find out if a circular shape is touching a point
-Parameters: 
+Parameters:
 a. A sprite object with `centerX`, `centerY`, and `radius` properties.
 b. A point object with `x` and `y` properties.
 
@@ -370,7 +370,7 @@ circlePointCollision
 --------------------
 
 Use it to boucnce a circle off a point.
-Parameters: 
+Parameters:
 a. A sprite object with `centerX`, `centerY`, and `radius` properties.
 b. A point object with `x` and `y` properties.
 
@@ -397,7 +397,7 @@ hitTestRectangle
 ----------------
 
 Use it to find out if two rectangular sprites are touching.
-Parameters: 
+Parameters:
 a. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 
@@ -449,9 +449,9 @@ function hitTestRectangle(r1, r2, global) {
 rectangleCollision
 ------------------
 
-Use it to prevent two rectangular sprites from overlapping. 
+Use it to prevent two rectangular sprites from overlapping.
 Optionally, make the first rectangle bounce off the second rectangle.
-Parameters: 
+Parameters:
 a. A sprite object with `x`, `y` `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 b. A sprite object with `x`, `y` `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 c. Optional: true or false to indicate whether or not the first sprite
@@ -461,9 +461,9 @@ function rectangleCollision(r1, r2, bounce, global) {
 
   var collision, combinedHalfWidths, combinedHalfHeights,
     overlapX, overlapY, vx, vy;
-	
-  var global = (typeof global !== 'undefined')? global : false,
-  bounce = (typeof bounce !== 'undefined')? bounce : false;
+
+  var global = global || false,
+  bounce =bounce || false;
 
   //Calculate the distance vector
   if (global) {
@@ -570,7 +570,7 @@ hitTestCircleRectangle
 ----------------
 
 Use it to find out if a circular shape is touching a rectangular shape
-Parameters: 
+Parameters:
 a. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 
@@ -596,7 +596,7 @@ function hitTestCircleRectangle(c1, r1, global) {
   //Is the circle above the rectangle's top edge?
   if (c1y < r1y - r1.halfHeight) {
 
-    //If it is, we need to check whether it's in the 
+    //If it is, we need to check whether it's in the
     //top left, top center or top right
     //(Increasing the size of the region by 2 pixels slightly weights
     //the text in favor of a rectangle vs. rectangle collision test.
@@ -688,7 +688,7 @@ circleRectangleCollision
 ------------------------
 
 Use it to bounce a circular shape off a rectangular shape
-Parameters: 
+Parameters:
 a. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` properties.
 
@@ -712,7 +712,7 @@ function circleRectangleCollision(c1, r1, bounce, global){
 
   //Is the circle above the rectangle's top edge?
   if (c1y < r1y - r1.halfHeight) {
-    //If it is, we need to check whether it's in the 
+    //If it is, we need to check whether it's in the
     //top left, top center or top right
     if (c1x < r1x - 1 - r1.halfWidth) {
       region = "topLeft";
@@ -820,7 +820,7 @@ function hit(a, b, react, bounce, global, extra) {
   }
 
   //Return the result of the collision.
-  //It will be `undefined` if there's no collision and `true` if 
+  //It will be `undefined` if there's no collision and `true` if
   //there is a collision. `rectangleCollision` sets `collsision` to
   //"top", "bottom", "left" or "right" depeneding on which side the
   //collision is occuring on
@@ -912,4 +912,3 @@ function hit(a, b, react, bounce, global, extra) {
     }
   }
 }
-

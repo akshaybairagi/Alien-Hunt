@@ -378,13 +378,13 @@ DisplayObject.prototype = {
 	get draggable() {
 		return this._draggable;
 	},
-	set draggable(value) {
-		if (value === true) {
+	set draggable(value){
+		if (value === true){
 			draggableSprites.push(this);
 			this._draggable = true;
 		}
 		//If it's `false`, remove it from the `draggableSprites` array
-		if (value === false) {
+		if (value === false){
 			draggableSprites.splice(draggableSprites.indexOf(this), 1);
 		}
 	},
@@ -394,11 +394,11 @@ DisplayObject.prototype = {
 	//actions. It also adds the sprite to the `buttons` array,
 	//which is updated each frame.
 	//(You’ll learn how to implement this in Chapter 6.)
-	get interactive() {
+	get interactive(){
 		return this._interactive;
 	},
-	set interactive(value) {
-		if (value === true) {
+	set interactive(value){
+		if (value === true){
 			//Add interactive properties to the sprite
 			//so that it can act like a button
 			makeInteractive(this);
@@ -408,7 +408,7 @@ DisplayObject.prototype = {
 			//Set this sprite’s private `_interactive` property to `true`
 			this._interactive = true;
 		}
-		if (value === false) {
+		if (value === false){
 			//Remove the sprite's reference from the
 			//`buttons` array so that it's no longer affected
 			//by mouse and touch interactivity
@@ -416,7 +416,6 @@ DisplayObject.prototype = {
 			this._interactive = false;
 		}
 	}
-
 };
 //General Purpose remove function
 function remove(spritesToRemove){
