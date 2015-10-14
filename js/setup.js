@@ -584,7 +584,7 @@ function designBuidlings(width,height,pattern,x,y){
 }
 function createTopBar(){
 	var o = group([]);
-	o.life = 3;
+	o.life = 5;
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){

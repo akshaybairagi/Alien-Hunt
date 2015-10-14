@@ -3,7 +3,7 @@ function smokeEmitter(x,y,source){
 		x, //The particle's starting x position
 		y, //The particle's starting y position
 		function () { return sprite(source); },
-		20, //Number of particles
+		5, //Number of particles
 		0, //Gravity
 		true, //Random spacing
 		2.4, 3.6, //Min/max angle

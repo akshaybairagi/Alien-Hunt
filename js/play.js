@@ -46,16 +46,6 @@ function play(){
 			}
 	});
 	//Move the bullet
-	// bullets = bullets.filter(function(bullet){
-	// 	if(bullet.x > g.canvas.width){
-	// 		stage.removeHierarchy(bullet);
-	// 		return false;
-	// 	}
-	// 	bullet.x += bullet.vx;
-	// 	bullet.y += bullet.vy;
-	// 	return true;
-	// });
-	//Move the bullet
 	activeBullets.forEach(function(bullet){
 		// body...
 		bullet.x += bullet.vx;
