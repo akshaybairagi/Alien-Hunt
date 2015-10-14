@@ -46,14 +46,23 @@ function play(){
 			}
 	});
 	//Move the bullet
-	bullets = bullets.filter(function(bullet){
-		if(bullet.x > g.canvas.width){
-			stage.removeHierarchy(bullet);
-			return false;
-		}
+	// bullets = bullets.filter(function(bullet){
+	// 	if(bullet.x > g.canvas.width){
+	// 		stage.removeHierarchy(bullet);
+	// 		return false;
+	// 	}
+	// 	bullet.x += bullet.vx;
+	// 	bullet.y += bullet.vy;
+	// 	return true;
+	// });
+	//Move the bullet
+	activeBullets.forEach(function(bullet){
+		// body...
 		bullet.x += bullet.vx;
 		bullet.y += bullet.vy;
-		return true;
+		if(bullet.x > g.canvas.width){
+			freeBullet(bullet);
+		}
 	});
 
 	if(playerGroup.item.type == "car"){
@@ -124,7 +133,7 @@ function play(){
 
 	// bullets and alien check collision
 	activeAliens.forEach(function(alien){
-		bullets = bullets.filter(function(bullet){
+		activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
@@ -132,10 +141,8 @@ function play(){
 				explosionSound();
 				bullet.visible = false;
 				freeAlien(alien);
-				remove(bullet);
-				return false;
+			 	freeBullet(bullet);
 			}
-			return true;
 		});
 
 		var playerAlienCollision = hitTestRectangle(playerGroup,alien);

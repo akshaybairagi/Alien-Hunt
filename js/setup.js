@@ -30,9 +30,11 @@ g.noOfFrame = 0;
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
 //Global Arrays
-var bullets = [],items = [],designs = [];
-//aliens
+var items = [],designs = [];
+//aliens Pool and active Pool
 var alienPool = [],activeAliens=[];
+//bullet Pool and active Pool
+var bulletPool = [],activeBullets=[];
 //Global groups
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
@@ -127,6 +129,12 @@ function setup(){
 		alien.visible = false;
 		alien.setPosition(ship.centerX,ship.centerY);
 		alienPool.push(alien);
+	}
+	//Create Bullets
+	for(var i=0;i < 5;i++){
+		var bullet = createBullet();
+		bullet.visible = false;
+		bulletPool.push(bullet);
 	}
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
@@ -473,8 +481,6 @@ function end(){
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
 		restart();
-		console.log(activeAliens);
-		console.log(alienPool);
 	};
 }
 
