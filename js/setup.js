@@ -9,8 +9,7 @@ var g = game(800, 600, setup,
 					"json/car.json",
 					"sounds/retro-action.wav",
 					"sounds/shot.wav",
-					"fonts/puzzler.otf",
-					"images/texture.png",
+					"fonts/puzzler.otf"
 				]
 				,load
 			);
@@ -31,7 +30,9 @@ g.noOfFrame = 0;
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
 //Global Arrays
-var bullets = [],items = [],aliens = [],designs = [];
+var bullets = [],items = [],designs = [];
+//aliens
+var alienPool = [],activeAliens=[];
 //Global groups
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
@@ -48,14 +49,11 @@ function setup(){
 	//Remove the progress bar
 	progressBar.remove();
 
-	initDesigns();
-
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
 	bgMusic.loop = true;
 	bgMusic.volume= 0.5;
-
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -90,6 +88,16 @@ function setup(){
  	//2. The 'gameScene' sprites
 	//Make the sky background
 	sky = getSkyBackground();
+	//Initialize designs
+	initDesigns();
+	//space ship sprites
+	ship = createShip();
+	//Create Aliens
+	// for(var i=0;i < 5;i++){
+	// 	var alien = createAlien();
+	// 	alienPool.push(alien);
+	// }
+	console.log(alienPool.length);
 
 	moon = drawMoon();
 	//Add a black border along the top of the screen
@@ -109,9 +117,6 @@ function setup(){
 
 	//Create Player Group as a container
 	playerGroup = createPlayerGroup();
-
-	//space ship sprites
-	ship = createShip();
 
 	//Create  buildings
 	createBuildings();
@@ -314,7 +319,6 @@ function createAlien(){
 	alien.accelerationX = 0;
 	alien.isOnGround = false;
 	alien.isTouching = false;
-	alien.setPosition(ship.centerX,ship.centerY);
 	alien.state = "";
 
 	alien.walk = function(){
@@ -341,10 +345,33 @@ function createAlien(){
 			alien.stop();
 		}
 	};
-
-	aliens.push(alien);
-
 	return alien;
+}
+function getAlien(){
+	var alien = null;
+	if(alienPool.length > 0){
+		alien = alienPool.pop();
+		alien.fps = 12;
+		alien.vx=0;
+		alien.accelerationX = 0;
+		alien.isOnGround = false;
+		alien.isTouching = false;
+		alien.state = "";
+	}
+	else {
+		alien = createAlien();
+	}
+	alien.setPosition(ship.centerX,ship.centerY);
+	alien.visible = true;
+	activeAliens.push(alien);
+	return alien;
+}
+function freeAlien(alien){
+	//alien.visible = false;
+	activeAliens.slice(activeAliens.indexOf(alien), 1);
+
+	// return the alien back into the pool
+	alienPool.push(alien);
 }
 function createItemCollector(X,Y,width){
 	var itemNo = randomInt(1,4);
@@ -439,7 +466,6 @@ function end(){
 
 	items = [];
 	bullets = [];
-	aliens = [];
 
 	gameScene.remove(itemGroup.children);
 
@@ -516,7 +542,6 @@ function createBuildings(){
 		blocks.nextPos.X=building.x + randomInt(350,400);
 		blocks.nextPos.Y=400 + randomInt(-50,50);
 	}
-	console.log(blocks.children.length);
 }
 function designBuidlings(width,height,pattern,x,y){
 	var row=9;

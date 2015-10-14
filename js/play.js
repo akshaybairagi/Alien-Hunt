@@ -36,16 +36,11 @@ function play(){
 	});
 
 	//move aliens
-	aliens = aliens.filter(function(alien){
-		if(alien.visible == false ){
-			stage.removeHierarchy(alien);
-			return false;
-		}
-		alien.vy += gravity;
-		alien.y += alien.vy;
-		alien.vx += alien.accelerationX;
-		alien.x += alien.vx;
-		return true;
+	activeAliens.forEach(function(alien){
+			alien.vy += gravity;
+			alien.y += alien.vy;
+			alien.vx += alien.accelerationX;
+			alien.x += alien.vx;
 	});
 	//Move the bullet
 	bullets = bullets.filter(function(bullet){
@@ -63,7 +58,7 @@ function play(){
 	}
 	//insert aliens in the game every 120th frame
 	if (g.noOfFrame % 30 == 0){
-		var alien = createAlien();
+		var alien = getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -85,21 +80,21 @@ function play(){
 		}
 	}
 	//Check collision for various objects
-	blocks.children.forEach(function(block){
+	blocks.children.forEach(function(building){
 		//Check players and block collision (buildings)
-		var colliPlayerBlock = rectangleCollision(playerGroup,block,false,true);
+		var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
 		if(colliPlayerBlock){
 			if(colliPlayerBlock == "bottom"){
 				playerGroup.isOnGround = true;
-				playerGroup.building_id = block.id;
+				playerGroup.building_id = building.id;
 				playerGroup.vy = 0;
 				if(player.state == "jump")	player.walk();
 			}
 		}
 
 		//Check alien and collision with buildings
-		aliens.forEach(function(alien){
-			var colliAlienBlock = rectangleCollision(alien,block,false,true);
+		activeAliens.forEach(function(alien){
+			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
 					alien.vy = 0;
@@ -112,20 +107,20 @@ function play(){
 					else{
 						alien.stand();
 					}
-					if(block.gx >= alien.x){
+					if(building.gx >= alien.x){
 						alien.vy = -jumpForce;
 						alien.vx += -2;
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					block.y += -1;
+					building.y += -1;
 					//shake(block,5, false);
 				}
 		});
 	});
 
 	// bullets and alien check collision
-	aliens.forEach(function(alien){
+	activeAliens.forEach(function(alien){
 		bullets = bullets.filter(function(bullet){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
@@ -133,9 +128,8 @@ function play(){
 				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
 				explosionSound();
 				bullet.visible = false;
+				freeAlien(alien);
 				remove(bullet);
-				alien.visible = false;
-				remove(alien);
 				return false;
 			}
 			return true;
@@ -155,7 +149,7 @@ function play(){
 				alien.vx  = 10;
 				var fadeOutTweenAlien = fadeOut(alien,30);
 				fadeOutTweenAlien.onComplete = function(){
-													alien.visible = false;
+													freeAlien(alien);
 												};
 			}
 		}
