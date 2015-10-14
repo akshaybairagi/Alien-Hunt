@@ -4,7 +4,6 @@ function play(){
 	//tiling sky background
 	sky.tileX += 1;
 	//buildings blocks in the game world
-	blocks.x -= speed;
 	itemGroup.x -= speed;
 
 	//Apply gravity to the vertical velocity
@@ -12,27 +11,48 @@ function play(){
 	playerGroup.vy += gravity;
 	playerGroup.y += playerGroup.vy;
 
-	//move aliens
-	aliens = aliens.filter(function(alien){
-		if(alien.visible == false ){
-			stage.removeHierarchy(alien);
-			return false;
+	blocks.children.forEach(function(building){
+		building.x -= speed;
+		if(building.x <= 0-building.width-speed){
+			building.x = blocks.nextPos.X;
+			building.y = blocks.nextPos.Y;
+			building.height = g.canvas.height - blocks.nextPos.Y;
+
+			//code to adjust the windows heigh and width
+			var row=9;
+			var coloums=13;
+			var width = building.width /row;
+			var height = building.height/coloums;
+			building.children.forEach(function(window){
+						//update the windows
+						window.x = width*window.j;
+						window.y = height*window.i;
+						window.width =width;
+						window.height = height;
+			});
 		}
-		alien.vy += gravity;
-		alien.y += alien.vy;
-		alien.vx += alien.accelerationX;
-		alien.x += alien.vx;
-		return true;
+		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
+		blocks.nextPos.Y=400 + randomInt(-50,50);
+	});
+
+	//move aliens
+	activeAliens.forEach(function(alien){
+			alien.vy += gravity;
+			alien.y += alien.vy;
+			alien.vx += alien.accelerationX;
+			alien.x += alien.vx;
+			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
+				freeAlien(alien);
+			}
 	});
 	//Move the bullet
-	bullets = bullets.filter(function(bullet){
-		if(bullet.x > g.canvas.width){
-			stage.removeHierarchy(bullet);
-			return false;
-		}
+	activeBullets.forEach(function(bullet){
+		// body...
 		bullet.x += bullet.vx;
 		bullet.y += bullet.vy;
-		return true;
+		if(bullet.x > g.canvas.width){
+			freeBullet(bullet);
+		}
 	});
 
 	if(playerGroup.item.type == "car"){
@@ -40,7 +60,7 @@ function play(){
 	}
 	//insert aliens in the game every 120th frame
 	if (g.noOfFrame % 30 == 0){
-		var alien = createAlien();
+		var alien = getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -62,21 +82,21 @@ function play(){
 		}
 	}
 	//Check collision for various objects
-	blocks.children.forEach(function(block){
+	blocks.children.forEach(function(building){
 		//Check players and block collision (buildings)
-		var colliPlayerBlock = rectangleCollision(playerGroup,block,false,true);
+		var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
 		if(colliPlayerBlock){
 			if(colliPlayerBlock == "bottom"){
 				playerGroup.isOnGround = true;
-				playerGroup.building_id = block.id;
+				playerGroup.building_id = building.id;
 				playerGroup.vy = 0;
 				if(player.state == "jump")	player.walk();
 			}
 		}
 
 		//Check alien and collision with buildings
-		aliens.forEach(function(alien){
-			var colliAlienBlock = rectangleCollision(alien,block,false,true);
+		activeAliens.forEach(function(alien){
+			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
 					alien.vy = 0;
@@ -89,33 +109,30 @@ function play(){
 					else{
 						alien.stand();
 					}
-					if(block.gx >= alien.x){
+					if(building.gx >= alien.x){
 						alien.vy = -jumpForce;
 						alien.vx += -2;
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					block.y += -1;
-					shake(block,5, false);
+					building.y += -1;
+					//shake(block,5, false);
 				}
 		});
 	});
 
 	// bullets and alien check collision
-	aliens.forEach(function(alien){
-		bullets = bullets.filter(function(bullet){
+	activeAliens.forEach(function(alien){
+		activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
 				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
 				explosionSound();
 				bullet.visible = false;
-				remove(bullet);
-				alien.visible = false;
-				remove(alien);
-				return false;
+				freeAlien(alien);
+			 	freeBullet(bullet);
 			}
-			return true;
 		});
 
 		var playerAlienCollision = hitTestRectangle(playerGroup,alien);
@@ -132,7 +149,7 @@ function play(){
 				alien.vx  = 10;
 				var fadeOutTweenAlien = fadeOut(alien,30);
 				fadeOutTweenAlien.onComplete = function(){
-													alien.visible = false;
+													freeAlien(alien);
 												};
 			}
 		}
