@@ -4,13 +4,36 @@ function play(){
 	//tiling sky background
 	sky.tileX += 1;
 	//buildings blocks in the game world
-	blocks.x -= speed;
 	itemGroup.x -= speed;
 
 	//Apply gravity to the vertical velocity
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += gravity;
 	playerGroup.y += playerGroup.vy;
+
+	blocks.children.forEach(function(building){
+		building.x -= speed;
+		if(building.x <= 0-building.width-speed){
+			building.x = blocks.nextPos.X;
+			building.y = blocks.nextPos.Y;
+			building.height = g.canvas.height - blocks.nextPos.Y;
+
+			//code to adjust the windows heigh and width
+			var row=9;
+			var coloums=13;
+			var width = building.width /row;
+			var height = building.height/coloums;
+			building.children.forEach(function(window){
+						//update the windows
+						window.x = width*window.j;
+						window.y = height*window.i;
+						window.width =width;
+						window.height = height;
+			});
+		}
+		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
+		blocks.nextPos.Y=400 + randomInt(-50,50);
+	});
 
 	//move aliens
 	aliens = aliens.filter(function(alien){
@@ -96,7 +119,7 @@ function play(){
 						alien.jump();
 					}
 					block.y += -1;
-					shake(block,5, false);
+					//shake(block,5, false);
 				}
 		});
 	});

@@ -494,29 +494,29 @@ function createBuildings(){
 
 	//variables for building blocks
 	this.pattern = designs[0];
-	this.numOfBuilding = 500;
+	this.numOfBuilding = 5;
 	this.buildingWidth = 300;
 	this.buildingHeight;
-	this.nextPos = { X: 32, Y:400 };
+	blocks.nextPos = { X: 32, Y:400 };
 
 	//Procedural Generation of buildings
 	for (var k =0; k < this.numOfBuilding; k++){
-		this.buildingHeight = g.canvas.height - this.nextPos.Y;
+		this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
 		if((k+1)%3 == 0){
-			var item = createItemCollector(this.nextPos.X,this.nextPos.Y,this.buildingWidth);
+			var item = createItemCollector(blocks.nextPos.X,blocks.nextPos.Y,this.buildingWidth);
 			itemGroup.addChild(item);
 		}
-		if(k%101 === 0)
 			this.pattern = designs[randomInt(0,3)];
 
 		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
-			this.nextPos.X,this.nextPos.Y);
+			blocks.nextPos.X,blocks.nextPos.Y);
 
 		blocks.addChild(building);
 
-		this.nextPos.X=building.x + randomInt(350,400);
-		this.nextPos.Y=400 + randomInt(-50,50);
+		blocks.nextPos.X=building.x + randomInt(350,400);
+		blocks.nextPos.Y=400 + randomInt(-50,50);
 	}
+	console.log(blocks.children.length);
 }
 function designBuidlings(width,height,pattern,x,y){
 	var row=9;
@@ -535,6 +535,8 @@ function designBuidlings(width,height,pattern,x,y){
 				var window = rectangle(windowWidth,windowHeight,"grey","black",1);
 				window.x = windowWidth*j;
 				window.y = windowHeight*i;
+				window.i = i;
+				window.j = j;
 				if(randomInt(0,1)){
 					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
