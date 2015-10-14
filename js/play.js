@@ -41,6 +41,9 @@ function play(){
 			alien.y += alien.vy;
 			alien.vx += alien.accelerationX;
 			alien.x += alien.vx;
+			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
+				freeAlien(alien);
+			}
 	});
 	//Move the bullet
 	bullets = bullets.filter(function(bullet){

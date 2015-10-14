@@ -92,12 +92,6 @@ function setup(){
 	initDesigns();
 	//space ship sprites
 	ship = createShip();
-	//Create Aliens
-	// for(var i=0;i < 5;i++){
-	// 	var alien = createAlien();
-	// 	alienPool.push(alien);
-	// }
-	console.log(alienPool.length);
 
 	moon = drawMoon();
 	//Add a black border along the top of the screen
@@ -127,6 +121,13 @@ function setup(){
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
 
+	//Create Aliens
+	for(var i=0;i < 5;i++){
+		var alien = createAlien();
+		alien.visible = false;
+		alien.setPosition(ship.centerX,ship.centerY);
+		alienPool.push(alien);
+	}
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
@@ -351,12 +352,14 @@ function getAlien(){
 	var alien = null;
 	if(alienPool.length > 0){
 		alien = alienPool.pop();
-		alien.fps = 12;
+
 		alien.vx=0;
+		alien.vy = 0;
 		alien.accelerationX = 0;
 		alien.isOnGround = false;
 		alien.isTouching = false;
 		alien.state = "";
+		alien.act = "";
 	}
 	else {
 		alien = createAlien();
@@ -367,9 +370,9 @@ function getAlien(){
 	return alien;
 }
 function freeAlien(alien){
-	//alien.visible = false;
-	activeAliens.slice(activeAliens.indexOf(alien), 1);
-
+	alien.visible = false;
+	alien.setPosition(ship.centerX,ship.centerY);
+	activeAliens.splice(activeAliens.indexOf(alien), 1);
 	// return the alien back into the pool
 	alienPool.push(alien);
 }
@@ -462,8 +465,6 @@ function end(){
 	itemGroup.removeHierarchy(itemGroup.children);
 	topBar.removeHierarchy(topBar.children);
 
-	remove(aliens);
-
 	items = [];
 	bullets = [];
 
@@ -472,6 +473,8 @@ function end(){
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
 		restart();
+		console.log(activeAliens);
+		console.log(alienPool);
 	};
 }
 
