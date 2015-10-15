@@ -129,6 +129,7 @@ function play(){
 			if(collision){
 				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
 				//explosionSound();
+				explosionSound.play();
 				bullet.visible = false;
 				freeAlien(alien);
 			 	freeBullet(bullet);

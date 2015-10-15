@@ -7,8 +7,10 @@ var g = game(800, 600, setup,
 					"images/texture2.png",
 					"images/texture3.png",
 					"json/car.json",
-					// "sounds/retro-action.wav",
-					// "sounds/shot.wav",
+					"sounds/retro-action.wav",
+					"sounds/shot.wav",
+					"sounds/explosion.wav",
+					"sounds/bounce.mp3",
 					"fonts/puzzler.otf"
 				]
 				,load
@@ -52,21 +54,23 @@ function setup(){
 	progressBar.remove();
 
 	//Sound and music
-	// shotSound = assets["sounds/shot.wav"];
-	// bgMusic = assets["sounds/retro-action.wav"];
-	// bgMusic.loop = true;
-	// bgMusic.volume= 0.5;
-
-	var bgMusic = new Audio("sounds/retro-action.wav");
+	soundPool(10);
+	shotSound = assets["sounds/shot.wav"];
+	bgMusic = assets["sounds/retro-action.wav"];
 	bgMusic.loop = true;
-	bgMusic.play();
+	bgMusic.volume= 0.5;
+	explosionSound = assets["sounds/explosion.wav"];
+	jumpSound = assets["sounds/bounce.mp3"];
 
-	shotSound = new Audio("sounds/shot.wav");
-	shotSound.addEventListener("ended", function() {
-			console.log("shot sound ended");
-			},
-		true);
-	//shotSound.play();
+	// bgMusic = new Audio("sounds/retro-action.wav");
+	// bgMusic.loop = true;
+	// bgMusic.play();
+	//
+	// shotSound = new Audio("sounds/shot.wav");
+	// shotSound.addEventListener("ended", function() {
+	// 		console.log("shot sound ended");
+	// 		},
+	// 	true);
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -155,10 +159,14 @@ function setup(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-		// bgMusic.play();
+		bgMusic.play();
 	};
 }
 function keyHandler(){
+	keyboard(90).press = function() {
+		// body...
+	//	bgMusic.pause();
+	}
 	//fire the bullets with space key
 	var space = keyboard(32);
 	space.press = function(){
@@ -248,7 +256,7 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			// jumpSound();
+			jumpSound.play();
 		}
 	};
 	o.slide = function(){
@@ -595,7 +603,7 @@ function designBuidlings(width,height,pattern,x,y){
 }
 function createTopBar(){
 	var o = group([]);
-	o.life = 100;
+	o.life = 5;
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){
