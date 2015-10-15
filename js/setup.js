@@ -9,6 +9,8 @@ var g = game(800, 600, setup,
 					"json/car.json",
 					"sounds/retro-action.wav",
 					"sounds/shot.wav",
+					"sounds/explosion.wav",
+					"sounds/bounce.mp3",
 					"fonts/puzzler.otf"
 				]
 				,load
@@ -52,10 +54,23 @@ function setup(){
 	progressBar.remove();
 
 	//Sound and music
+	soundPool(10);
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
 	bgMusic.loop = true;
 	bgMusic.volume= 0.5;
+	explosionSound = assets["sounds/explosion.wav"];
+	jumpSound = assets["sounds/bounce.mp3"];
+
+	// bgMusic = new Audio("sounds/retro-action.wav");
+	// bgMusic.loop = true;
+	// bgMusic.play();
+	//
+	// shotSound = new Audio("sounds/shot.wav");
+	// shotSound.addEventListener("ended", function() {
+	// 		console.log("shot sound ended");
+	// 		},
+	// 	true);
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -148,6 +163,10 @@ function setup(){
 	};
 }
 function keyHandler(){
+	keyboard(90).press = function() {
+		// body...
+	//	bgMusic.pause();
+	}
 	//fire the bullets with space key
 	var space = keyboard(32);
 	space.press = function(){
@@ -237,7 +256,7 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			jumpSound();
+			jumpSound.play();
 		}
 	};
 	o.slide = function(){

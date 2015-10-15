@@ -30,7 +30,6 @@ function Game(width, height, setup, assetsToLoad, load){
 
 		_this = this;
 
-
 		//The `setup` function is required, so throw an error if it's//missing
 		if (!setup) {
 			throw new Error("Please supply the setup function in the constructor");
@@ -240,7 +239,7 @@ function capturePreviousPositions(stage){
 		setPreviousPosition(sprite);
 	});
 	function setPreviousPosition(sprite){
-		//Set the sprite�s `previousX` and `previousY`
+		//Set the sprite's `previousX` and `previousY`
 		sprite.previousX = sprite.x;
 		sprite.previousY = sprite.y;
 		//Loop through all the sprite's children
