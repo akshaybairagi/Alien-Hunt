@@ -7,8 +7,8 @@ var g = game(800, 600, setup,
 					"images/texture2.png",
 					"images/texture3.png",
 					"json/car.json",
-					"sounds/retro-action.wav",
-					"sounds/shot.wav",
+					// "sounds/retro-action.wav",
+					// "sounds/shot.wav",
 					"fonts/puzzler.otf"
 				]
 				,load
@@ -52,10 +52,21 @@ function setup(){
 	progressBar.remove();
 
 	//Sound and music
-	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.wav"];
+	// shotSound = assets["sounds/shot.wav"];
+	// bgMusic = assets["sounds/retro-action.wav"];
+	// bgMusic.loop = true;
+	// bgMusic.volume= 0.5;
+
+	var bgMusic = new Audio("sounds/retro-action.wav");
 	bgMusic.loop = true;
-	bgMusic.volume= 0.5;
+	bgMusic.play();
+
+	shotSound = new Audio("sounds/shot.wav");
+	shotSound.addEventListener("ended", function() {
+			console.log("shot sound ended");
+			},
+		true);
+	//shotSound.play();
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -144,7 +155,7 @@ function setup(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-		bgMusic.play();
+		// bgMusic.play();
 	};
 }
 function keyHandler(){
@@ -237,7 +248,7 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			jumpSound();
+			// jumpSound();
 		}
 	};
 	o.slide = function(){

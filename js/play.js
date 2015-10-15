@@ -128,7 +128,7 @@ function play(){
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
 				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
-				explosionSound();
+				//explosionSound();
 				bullet.visible = false;
 				freeAlien(alien);
 			 	freeBullet(bullet);
