@@ -34,7 +34,7 @@ Sound.prototype.load = function(){
   //Use xhr to load the sound file
   var xhr = new XMLHttpRequest();
   xhr.open("GET", this.source, true);
-  //xhr.responseType = "arraybuffer";
+  xhr.responseType = "arraybuffer";
   xhr.addEventListener("load", function(){
       //  _this.buffer = xhr.response;
         _this.hasLoaded = true;

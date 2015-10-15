@@ -163,10 +163,6 @@ function setup(){
 	};
 }
 function keyHandler(){
-	keyboard(90).press = function() {
-		// body...
-	//	bgMusic.pause();
-	}
 	//fire the bullets with space key
 	var space = keyboard(32);
 	space.press = function(){
