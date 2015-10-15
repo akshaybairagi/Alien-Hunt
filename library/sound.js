@@ -166,9 +166,9 @@ Sound.prototype = {
 	},
 	setReverb: function(duration, decay, reverse) {
 		var
-			duration = (typeof duration !== 'undefined')? duration : 2,
-			decay = (typeof decay !== 'undefined')? decay : 2,
-			reverse = (typeof reverse !== 'undefined')? reverse : false;
+			duration = duration || 2,
+			decay = decay || 2,
+			reverse = reverse || false;
 
 		this.reverbImpulse = impulseResponse(duration, decay, reverse);
 		this.reverb = true;
