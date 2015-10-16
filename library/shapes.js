@@ -4,8 +4,8 @@ function Rectangle(width, height, fillStyle, strokeStyle, lineWidth, x, y){
 
 	this.width = width || 32;
 	this.height = height || 32;
-	this.fillStyle = fillStyle || "gray";
-	this.strokeStyle = strokeStyle || "none";
+	this.fillStyle = fillStyle || "#d3d3d3";
+	this.strokeStyle = strokeStyle || "#d3d3d3";
 	this.lineWidth = lineWidth || 0;
 	this.x = x || 0;
 	this.y = y || 0;
@@ -57,8 +57,8 @@ function Circle(diameter,fillStyle,strokeStyle,lineWidth,x,y) {
 
 	//Assign the argument values to this sprite
 	this.diameter = (typeof diameter !== 'undefined') ? diameter : 32;
-	this.fillStyle = (typeof fillStyle !== 'undefined') ? fillStyle : "gray";
-	this.strokeStyle = (typeof strokeStyle !== 'undefined') ? strokeStyle : "none";
+	this.fillStyle = (typeof fillStyle !== 'undefined') ? fillStyle : "#d3d3d3";
+	this.strokeStyle = (typeof strokeStyle !== 'undefined') ? strokeStyle : "#d3d3d3";
 	this.lineWidth = (typeof lineWidth !== 'undefined') ? lineWidth : 0;
 	this.x = (typeof x !== 'undefined') ? x : 0;
 	this.y = (typeof y !== 'undefined') ? y : 0;
@@ -106,7 +106,7 @@ function Ellipse(x, y, width, height,fillStyle, strokeStyle, lineWidth){
 	this.height = height;
 
 	this.fillStyle = (typeof fillStyle !== 'undefined') ? fillStyle : "black";
-	this.strokeStyle = (typeof strokeStyle !== 'undefined') ? strokeStyle : "none";
+	this.strokeStyle = (typeof strokeStyle !== 'undefined') ? strokeStyle : "#d3d3d3";
 	this.lineWidth = (typeof lineWidth !== 'undefined') ? lineWidth : 0;
 
 	//Add a `mask` property to enable optional masking
@@ -158,7 +158,7 @@ function Line(strokeStyle,lineWidth,ax,ay,bx,by) {
 	this.bx = (typeof bx !== 'undefined') ? bx : 32;
 	this.by = (typeof by !== 'undefined') ? by : 32;
 
-	this.strokeStyle = strokeStyle || "none";
+	this.strokeStyle = strokeStyle || "#d3d3d3";
 	this.lineWidth = lineWidth || 0;
 
 	//The `lineJoin` style.
@@ -191,7 +191,7 @@ function Text(content,font,fillStyle,x,y) {
 
 	this.content = content || "Hello";
 	this.font = font || "12px sans-serif";
-	this.fillStyle = fillStyle || "red";
+	this.fillStyle = fillStyle || "#d3d3d3";
 	this.x = x || 0;
 	this.y = y || 0;
 
@@ -206,7 +206,7 @@ Text.prototype.constructor = Text;
 //The `render` method describes how to draw the sprite
 Text.prototype.render = function(ctx) {
 		ctx.font = this.font;
-		ctx.strokeStyle = this.strokeStyle;
+	//	ctx.strokeStyle = this.strokeStyle;
 		ctx.lineWidth = this.lineWidth;
 		ctx.fillStyle = this.fillStyle;
 		//Measure the width and height of the text

@@ -91,20 +91,19 @@ function setup(){
 
 	//Game title name
 	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150);
-
+	
 	//Make the 'playButton' and 'titleMessage' slide in from the
 	//edges of the screen using the 'slide' function
 	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
 	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
-
 	//Create the 'titleScene' group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
 
  	//2. The 'gameScene' sprites
 	//Make the sky background
-	sky = getSkyBackground();
+	sky = getSkyBackground(); sky.visible = false;
 	//Initialize designs
 	initDesigns();
 	//space ship sprites
@@ -137,7 +136,6 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
-
 	//Create Aliens
 	for(var i=0;i < 5;i++){
 		var alien = createAlien();
