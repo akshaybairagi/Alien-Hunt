@@ -11,7 +11,7 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					"fonts/puzzler.otf"
+					//"fonts/puzzler.otf"
 				]
 				,load
 			);
@@ -54,7 +54,7 @@ function setup(){
 	progressBar.remove();
 
 	//Sound and music
-	soundPool(10);
+	//soundPool(10);
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
 	bgMusic.loop = true;
@@ -163,6 +163,15 @@ function setup(){
 	};
 }
 function keyHandler(){
+	//pause the game with Q  keyboard key
+	keyboard(81).press = function(){
+		if(g.paused){
+			g.resume();
+		}
+		else {
+			g.pause();
+		}
+	};
 	//fire the bullets with space key
 	var space = keyboard(32);
 	space.press = function(){
@@ -599,7 +608,7 @@ function designBuidlings(width,height,pattern,x,y){
 }
 function createTopBar(){
 	var o = group([]);
-	o.life = 5;
+	o.life = 50;
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){

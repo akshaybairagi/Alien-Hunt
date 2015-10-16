@@ -880,8 +880,6 @@ function renderWithInterpolation(canvas, lagOffset){
 		  //Display the optional blend mode
 		  if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
 
-			if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
-
 		  //Use the sprite's own `render` method to draw the sprite
 		  if (sprite.render) sprite.render(ctx);
 
