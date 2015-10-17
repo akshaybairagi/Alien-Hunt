@@ -21,7 +21,7 @@ function Game(width, height, setup, assetsToLoad, load){
 		this.paused = false;
 
 		//Variables for interpolation
-		this.interpolation = true;
+		this.interpolation = false;
 		this.fps = 15,
 		this.previous = 0,
 		this.frameDuration = 1000 / this.fps,
