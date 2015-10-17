@@ -40,8 +40,8 @@ var bulletPool = [],activeBullets=[];
 //Global groups
 var blocks,playerGroup,itemGroup;
 //force of gravity/speed and jump force
-var gravity = 5,speed = 20,jumpForce = 32;
-var bulletSpeed = 50;
+var gravity = 0.4,speed = 5,jumpForce = 8.5;
+var bulletSpeed = 18;
 
 //For activities to be performed while assets are loading
 function load(){
@@ -54,7 +54,6 @@ function setup(){
 	progressBar.remove();
 
 	//Sound and music
-	//soundPool(10);
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
 	bgMusic.loop = true;
