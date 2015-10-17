@@ -59,7 +59,7 @@ function play(){
 		car.start();
 	}
 	//insert aliens in the game every 120th frame
-	if (g.noOfFrame % 30 == 0){
+	if (g.noOfFrame % 120 == 0){
 		var alien = getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
@@ -76,7 +76,7 @@ function play(){
 			playerGroup.setPosition(150,300);
 			speed = 0;
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
-				fadeOutTweenPlayer.onComplete = function(){speed = 20;
+				fadeOutTweenPlayer.onComplete = function(){speed = 5;
 													var fadeInTween = fadeIn(player.grp,50);
 												};
 		}
@@ -103,7 +103,7 @@ function play(){
 					alien.vx = -speed;
 
 					if(alien.act=="run"){
-						alien.vx += -10;
+						alien.vx += -3;
 						alien.walk();
 					}
 					else{
@@ -115,7 +115,7 @@ function play(){
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					building.y += -1;
+					building.y += -0.1;
 					//shake(block,5, false);
 				}
 		});
