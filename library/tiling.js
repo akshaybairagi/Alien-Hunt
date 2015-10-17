@@ -75,7 +75,7 @@ function tilingSprite(width, height, source, x, y) {
 
   //Create an empty rectangle sprite without a fill or stoke color.
   //Set it to the supplied `width` and `height`
-  var container = rectangle(width, height, "none", "none");
+  var container = rectangle(width, height, "#d3d3d3", "#d3d3d3");
   container.x = x;
   container.y = y;
 

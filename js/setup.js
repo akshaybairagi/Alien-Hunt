@@ -91,7 +91,7 @@ function setup(){
 
 	//Game title name
 	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150);
-	
+
 	//Make the 'playButton' and 'titleMessage' slide in from the
 	//edges of the screen using the 'slide' function
 	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
@@ -103,7 +103,7 @@ function setup(){
 
  	//2. The 'gameScene' sprites
 	//Make the sky background
-	sky = getSkyBackground(); sky.visible = false;
+	sky = getSkyBackground(); 
 	//Initialize designs
 	initDesigns();
 	//space ship sprites
