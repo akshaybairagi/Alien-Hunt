@@ -20,28 +20,30 @@ function Sound(source,loadHandler){
 		//Values to help track and set the start and pause times
 		this.startTime = 0;
 		this.startOffset = 0;
-		
+
 		this.playbackRate = 1;
-		
+
 		this.echo = false;
 		this.delayValue = 0.3;
 		this.feedbackValue = 0.3;
 		this.filterValue = 0;
-				
+
 		this.delayNode = this.actx.createDelay();
 		this.feedbackNode = this.actx.createGain();
 		this.filterNode = this.actx.createBiquadFilter();
-		
+
 		//reverb effect implementation
 		this.convolverNode = this.actx.createConvolver();
 		this.reverb = false;
 		this.reverbImpulse = null;
 
+		this.off = false;
+
 		//Load the sound
-		this.load();		
+		this.load();
 }
 
-Sound.prototype = {		
+Sound.prototype = {
 	//The sound object's methods
 	load: function() {
 		var _this = this;
@@ -72,7 +74,8 @@ Sound.prototype = {
 		//Send the request to load the file
 		xhr.send();
 	},
-	play: function() {
+	play: function(){
+		if(this.off) return;
 		//Set the start time (it will be `0` when the first sound starts)
 		this.startTime = this.actx.currentTime;
 		//Create a sound node
@@ -82,7 +85,7 @@ Sound.prototype = {
 		//Connect the sound to the volume, connect the volume to the
 		//pan, and connect the pan to the destination
 		this.soundNode.connect(this.volumeNode);
-		
+
 		//If there's no reverb, bypass the convolverNode
 		if (this.reverb === false) {
 			this.volumeNode.connect(this.panNode);
@@ -94,11 +97,11 @@ Sound.prototype = {
 			this.convolverNode.connect(this.panNode);
 			this.convolverNode.buffer = this.reverbImpulse;
 		}
-		
+
 		this.panNode.connect(this.actx.destination);
-		
+
 		//Add optional echo
-		if (this.echo) {
+		if (this.echo){
 			//Set the values
 			this.feedbackNode.gain.value = this.feedbackValue;
 			this.delayNode.delayTime.value = this.delayValue;
@@ -117,10 +120,10 @@ Sound.prototype = {
 			this.volumeNode.connect(this.delayNode);
 			this.delayNode.connect(this.panNode);
 		}
-		
+
 		//Will the sound loop? This can be `true` or `false`
 		this.soundNode.loop = this.loop;
-		
+
 		this.soundNode.playbackRate.value = this.playbackRate;
 		//Finally, use the `start` method to play the sound.
 		//The start time will be either `0`,
@@ -165,11 +168,11 @@ Sound.prototype = {
 		this.echo = true;
 	},
 	setReverb: function(duration, decay, reverse) {
-		var 
-			duration = (typeof duration !== 'undefined')? duration : 2,
-			decay = (typeof decay !== 'undefined')? decay : 2,
-			reverse = (typeof reverse !== 'undefined')? reverse : false;
-			
+		var
+			duration = duration || 2,
+			decay = decay || 2,
+			reverse = reverse || false;
+
 		this.reverbImpulse = impulseResponse(duration, decay, reverse);
 		this.reverb = true;
 	},
@@ -193,9 +196,8 @@ function makeSound(source, loadHandler) {
 	return new Sound(source, loadHandler);
 }
 
-
 function impulseResponse(duration, decay, reverse){
-	var 
+	var
 		duration = (typeof duration !== 'undefined')? duration : 2,
 		decay = (typeof decay !== 'undefined')? decay : 2,
 		reverse = (typeof reverse !== 'undefined')? reverse : false;
@@ -229,7 +231,7 @@ function impulseResponse(duration, decay, reverse){
 }
 
 function playNote(frequency, decay, type){
-	var 
+	var
 		decay = (typeof decay !== 'undefined')? decay : 1,
 		type = (typeof type !== 'undefined')? type : 'sine';
 	//Create an oscillator and a gain node, and connect them
@@ -263,8 +265,8 @@ function soundEffect(
 	dissonance,
 	echo,
 	reverb
-){	
-	var 
+){
+	var
 		attack = checkIfUndefined(attack,0),
 		decay = checkIfUndefined(decay,1),
 		type = checkIfUndefined(type,'sine'),
@@ -277,7 +279,7 @@ function soundEffect(
 		dissonance = checkIfUndefined(dissonance,0),
 		echo = checkIfUndefined(echo,undefined),
 		reverb = checkIfUndefined(reverb,undefined);
-		
+
 		//console.log(panValue);
 	//Create oscillator, gain and pan nodes, and connect them
 	//together to the destination
@@ -455,8 +457,8 @@ function soundEffect(
 	function play(oscillatorNode) {
 		oscillatorNode.start(actx.currentTime + wait);
 	}
-}	
-	
+}
+
 
 function shootSound() {
 	soundEffect(

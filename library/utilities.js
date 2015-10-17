@@ -100,7 +100,6 @@ var assets = {
 		var image = new Image;
 		image.src = source;
 		image.onerror = function() {
-			console.log(source);
 			loadHandler();
 		};
 		//loadHandler();
