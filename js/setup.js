@@ -103,7 +103,7 @@ function setup(){
 
  	//2. The 'gameScene' sprites
 	//Make the sky background
-	sky = getSkyBackground(); 
+	sky = getSkyBackground();
 	//Initialize designs
 	initDesigns();
 	//space ship sprites
