@@ -2,8 +2,7 @@
 function Game(width, height, setup, assetsToLoad, load){
 
 		//Make the canvas and initialize the stage
-		this.canvas = makeCanvas(width, height, "none");
-		this.canvas.style.backgroundColor = "white";
+		this.canvas = makeCanvas(width, height, "#cccccc","#ff9999");
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 
@@ -70,7 +69,7 @@ Game.prototype = {
 
 		//Update the frame if the lag counter is greater than or
 		//equal to the frame duration
-		while (this.lag >= this.frameDuration) {
+		while (this.lag >= this.frameDuration){
 			capturePreviousPositions(stage);
 
 			//Run the current game `state` function if it's been defined and

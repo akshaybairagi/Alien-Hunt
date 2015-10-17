@@ -11,7 +11,7 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					"fonts/puzzler.otf"
+					//"fonts/puzzler.otf"
 				]
 				,load
 			);
@@ -54,7 +54,7 @@ function setup(){
 	progressBar.remove();
 
 	//Sound and music
-	soundPool(10);
+	//soundPool(10);
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
 	bgMusic.loop = true;
@@ -98,7 +98,6 @@ function setup(){
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
 	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
-
 	//Create the 'titleScene' group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
 
@@ -137,7 +136,6 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
-
 	//Create Aliens
 	for(var i=0;i < 5;i++){
 		var alien = createAlien();
@@ -163,10 +161,15 @@ function setup(){
 	};
 }
 function keyHandler(){
-	keyboard(90).press = function() {
-		// body...
-	//	bgMusic.pause();
-	}
+	//pause the game with Q  keyboard key
+	keyboard(81).press = function(){
+		if(g.paused){
+			g.resume();
+		}
+		else {
+			g.pause();
+		}
+	};
 	//fire the bullets with space key
 	var space = keyboard(32);
 	space.press = function(){
@@ -603,7 +606,7 @@ function designBuidlings(width,height,pattern,x,y){
 }
 function createTopBar(){
 	var o = group([]);
-	o.life = 5;
+	o.life = 50;
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){

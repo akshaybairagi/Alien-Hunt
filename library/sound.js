@@ -37,6 +37,8 @@ function Sound(source,loadHandler){
 		this.reverb = false;
 		this.reverbImpulse = null;
 
+		this.off = false;
+
 		//Load the sound
 		this.load();
 }
@@ -72,7 +74,8 @@ Sound.prototype = {
 		//Send the request to load the file
 		xhr.send();
 	},
-	play: function() {
+	play: function(){
+		if(this.off) return;
 		//Set the start time (it will be `0` when the first sound starts)
 		this.startTime = this.actx.currentTime;
 		//Create a sound node
@@ -98,7 +101,7 @@ Sound.prototype = {
 		this.panNode.connect(this.actx.destination);
 
 		//Add optional echo
-		if (this.echo) {
+		if (this.echo){
 			//Set the values
 			this.feedbackNode.gain.value = this.feedbackValue;
 			this.delayNode.delayTime.value = this.delayValue;
@@ -192,7 +195,6 @@ Sound.prototype = {
 function makeSound(source, loadHandler) {
 	return new Sound(source, loadHandler);
 }
-
 
 function impulseResponse(duration, decay, reverse){
 	var

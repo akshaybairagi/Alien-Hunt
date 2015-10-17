@@ -68,7 +68,7 @@ function DisplayObject(){
 	//Optional drop shadow properties.
 	//Set `shadow` to `true` if you want the sprite to display a shadow
 	this.shadow = false;
-	this.shadowColor = "rgba(100, 100, 100, 0.5)";
+	this.shadowColor = "black";
 	this.shadowOffsetX = 3;
 	this.shadowOffsetY = 3;
 	this.shadowBlur = 3;
@@ -880,21 +880,19 @@ function renderWithInterpolation(canvas, lagOffset){
 		  //Display the optional blend mode
 		  if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
 
-			if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
-
 		  //Use the sprite's own `render` method to draw the sprite
 		  if (sprite.render) sprite.render(ctx);
 
 		  //If the sprite contains child sprites in its
 		  //`children` array, display them by recursively calling this very same
 		  //`displaySprite` function again
-
+``
 		  if (sprite.children && sprite.children.length > 0){
-			//Reset the context back to the parent sprite's top left corner,
-			//relative to the pivot point
-			ctx.translate(-sprite.width * sprite.pivotX , -sprite.height * sprite.pivotY);
-			//Loop through the parent sprite's children
-			sprite.children.forEach(displaySprite);
+				//Reset the context back to the parent sprite's top left corner,
+				//relative to the pivot point
+				ctx.translate(-sprite.width * sprite.pivotX , -sprite.height * sprite.pivotY);
+				//Loop through the parent sprite's children
+				sprite.children.forEach(displaySprite);
 		  }
 		  //Restore the canvas to its previous state
 		  ctx.restore();
