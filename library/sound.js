@@ -37,7 +37,6 @@ function Sound(source,loadHandler){
 		this.reverb = false;
 		this.reverbImpulse = null;
 
-		this.off = false;
 
 		//Load the sound
 		this.load();
@@ -75,7 +74,7 @@ Sound.prototype = {
 		xhr.send();
 	},
 	play: function(){
-		if(this.off) return;
+	
 		//Set the start time (it will be `0` when the first sound starts)
 		this.startTime = this.actx.currentTime;
 		//Create a sound node
