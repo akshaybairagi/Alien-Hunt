@@ -11,7 +11,7 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					//"fonts/puzzler.otf"
+					"fonts/puzzler.otf"
 				]
 				,load
 			);
@@ -544,7 +544,7 @@ function createBuildings(){
 
 	//variables for building blocks
 	this.pattern = designs[0];
-	this.numOfBuilding = 3;
+	this.numOfBuilding = 4;
 	this.buildingWidth = 300;
 	this.buildingHeight;
 	blocks.nextPos = { X: 32, Y:400 };
