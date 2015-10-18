@@ -1,18 +1,21 @@
 function play(){
+	var t1 = new Date().getTime(); // current time in milliseconds since midnight on 1 Jan 1970
+	dt = 0.001*(t1-t0); // time elapsed in seconds since last call
+	t0 = t1; // reset t0
+
 	//count the frames
 	g.noOfFrame += 1;
 	//tiling sky background
 	sky.tileX += 1;
 	//buildings blocks in the game world
-	itemGroup.x -= speed;
+	itemGroup.x -= speed*dt;
 
-	//Apply gravity to the vertical velocity
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += gravity;
-	playerGroup.y += playerGroup.vy;
+	playerGroup.y += playerGroup.vy*dt;
 
 	blocks.children.forEach(function(building){
-		building.x -= speed;
+		building.x -= speed*dt;
 		if(building.x <= 0-building.width-speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
@@ -38,18 +41,17 @@ function play(){
 	//move aliens
 	activeAliens.forEach(function(alien){
 			alien.vy += gravity;
-			alien.y += alien.vy;
+			alien.y += alien.vy*dt;
 			alien.vx += alien.accelerationX;
-			alien.x += alien.vx;
+			alien.x += alien.vx*dt;
 			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
 				freeAlien(alien);
 			}
 	});
 	//Move the bullet
 	activeBullets.forEach(function(bullet){
-		// body...
-		bullet.x += bullet.vx;
-		bullet.y += bullet.vy;
+		bullet.x += bullet.vx*dt;
+		bullet.y += bullet.vy*dt;
 		if(bullet.x > g.canvas.width){
 			freeBullet(bullet);
 		}
@@ -74,9 +76,10 @@ function play(){
 		topBar.update(-1);
 		if(topBar.life > 0){
 			playerGroup.setPosition(150,300);
+			var _speed = speed;
 			speed = 0;
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
-				fadeOutTweenPlayer.onComplete = function(){speed = 5;
+				fadeOutTweenPlayer.onComplete = function(){speed = _speed;
 													var fadeInTween = fadeIn(player.grp,50);
 												};
 		}
@@ -103,7 +106,7 @@ function play(){
 					alien.vx = -speed;
 
 					if(alien.act=="run"){
-						alien.vx += -3;
+						alien.vx += -200;
 						alien.walk();
 					}
 					else{
@@ -116,7 +119,6 @@ function play(){
 						alien.jump();
 					}
 					building.y += -0.1;
-					//shake(block,5, false);
 				}
 		});
 	});

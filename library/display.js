@@ -1364,7 +1364,7 @@ function shake(sprite, magnitude, angular){
 	};
 	//Add the sprite to the `shakingSprites` array if it
 	//isn't already there
-	if(shakingSprites.indexOf(sprite) === -1) {
+	if(shakingSprites.indexOf(sprite) === -1){
 		shakingSprites.push(sprite);
 		//Add an `updateShake` method to the sprite.
 		//The `updateShake` method will be called each frame
@@ -1396,7 +1396,7 @@ function shake(sprite, magnitude, angular){
 		}
 		//When the shaking is finished, restore the sprite to its original
 		//position and remove it from the `shakingSprites` array
-		if (counter >= numberOfShakes) {
+		if (counter >= numberOfShakes){
 			sprite.x = startX;
 			sprite.y = startY;
 			shakingSprites.splice(shakingSprites.indexOf(sprite), 1);

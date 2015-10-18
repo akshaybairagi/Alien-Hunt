@@ -39,9 +39,12 @@ var alienPool = [],activeAliens=[];
 var bulletPool = [],activeBullets=[];
 //Global groups
 var blocks,playerGroup,itemGroup;
-//force of gravity/speed and jump force
-var gravity = 0.4,speed = 5,jumpForce = 8.5;
-var bulletSpeed = 18;
+//force of gravity/speed and jump force in pixel per frame
+var gravity = 15,speed = 275,jumpForce = 375;
+var bulletSpeed = 1000;
+
+var t0; // time at last call
+var dt; // elapsed time between calls
 
 //For activities to be performed while assets are loading
 function load(){
@@ -60,16 +63,6 @@ function setup(){
 	bgMusic.volume= 0.5;
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
-
-	// bgMusic = new Audio("sounds/retro-action.wav");
-	// bgMusic.loop = true;
-	// bgMusic.play();
-	//
-	// shotSound = new Audio("sounds/shot.wav");
-	// shotSound.addEventListener("ended", function() {
-	// 		console.log("shot sound ended");
-	// 		},
-	// 	true);
 
 	//Create the sprites
 	//1. The 'titleScene' sprites
@@ -157,6 +150,7 @@ function setup(){
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 		bgMusic.play();
+		t0 = new Date().getTime(); // initialize value of t0
 	};
 }
 function keyHandler(){
@@ -550,7 +544,7 @@ function createBuildings(){
 
 	//variables for building blocks
 	this.pattern = designs[0];
-	this.numOfBuilding = 5;
+	this.numOfBuilding = 3;
 	this.buildingWidth = 300;
 	this.buildingHeight;
 	blocks.nextPos = { X: 32, Y:400 };
