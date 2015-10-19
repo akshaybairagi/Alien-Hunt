@@ -15,7 +15,7 @@ function smokeEmitter(x,y,source){
 	);
 }
 function fire(shooter){
-	getBullet(shooter,0,bulletSpeed);
+	getBullet(shooter,0,contr.bulletSpeed);
 	shotSound.play();
 }
 function createBullet(){

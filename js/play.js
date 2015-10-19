@@ -1,23 +1,23 @@
 function play(){
 	//variable for simulating time based physics
 	var t1 = new Date().getTime(); // current time in milliseconds since midnight on 1 Jan 1970
-	dt = 0.001*(t1-t0); // time elapsed in seconds since last call
-	t0 = t1; // reset t0
+	contr.dt = 0.001*(t1-contr.t0); // time elapsed in seconds since last call
+	contr.t0 = t1; // reset t0
 
 	//count the frames
 	g.noOfFrame += 1;
 	//tiling sky background
 	sky.tileX += 1;
 	//buildings blocks in the game world
-	itemGroup.x -= speed*dt;
+	itemGroup.x -= contr.speed*contr.dt;
 
 	//Move the player by applying the new calculated velocity
-	playerGroup.vy += gravity;
-	playerGroup.y += playerGroup.vy*dt;
+	playerGroup.vy += contr.gravity;
+	playerGroup.y += playerGroup.vy*contr.dt;
 
 	blocks.children.forEach(function(building){
-		building.x -= speed*dt;
-		if(building.x <= 0-building.width-speed){
+		building.x -= contr.speed*contr.dt;
+		if(building.x <= 0-building.width-contr.speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
@@ -41,18 +41,18 @@ function play(){
 
 	//move aliens
 	activeAliens.forEach(function(alien){
-			alien.vy += gravity;
-			alien.y += alien.vy*dt;
+			alien.vy += contr.gravity;
+			alien.y += alien.vy*contr.dt;
 			alien.vx += alien.accelerationX;
-			alien.x += alien.vx*dt;
+			alien.x += alien.vx*contr.dt;
 			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
 				freeAlien(alien);
 			}
 	});
 	//Move the bullet
 	activeBullets.forEach(function(bullet){
-		bullet.x += bullet.vx*dt;
-		bullet.y += bullet.vy*dt;
+		bullet.x += bullet.vx*contr.dt;
+		bullet.y += bullet.vy*contr.dt;
 		if(bullet.x > g.canvas.width){
 			freeBullet(bullet);
 		}
@@ -77,10 +77,10 @@ function play(){
 		topBar.update(-1);
 		if(topBar.life > 0){
 			playerGroup.setPosition(150,300);
-			var _speed = speed;
-			speed = 0;
+			var _speed = contr.speed;
+			contr.speed = 0;
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
-				fadeOutTweenPlayer.onComplete = function(){speed = _speed;
+				fadeOutTweenPlayer.onComplete = function(){contr.speed = _speed;
 													var fadeInTween = fadeIn(player.grp,50);
 												};
 		}
@@ -104,7 +104,7 @@ function play(){
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
 					alien.vy = 0;
-					alien.vx = -speed;
+					alien.vx = -contr.speed;
 
 					if(alien.act=="run"){
 						alien.vx += -200;
@@ -114,7 +114,7 @@ function play(){
 						alien.stand();
 					}
 					if(building.gx >= alien.x){
-						alien.vy = -jumpForce;
+						alien.vy = -contr.jumpForce;
 						alien.vx += -2;
 						alien.isOnGround = false;
 						alien.jump();

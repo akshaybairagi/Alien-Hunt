@@ -31,20 +31,25 @@ g.noOfFrame = 0;
 
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
+//Global groups
+var blocks,playerGroup,itemGroup;
 //Global Arrays
 var items = [],designs = [];
 //aliens Pool and active Pool
 var alienPool = [],activeAliens=[];
 //bullet Pool and active Pool
 var bulletPool = [],activeBullets=[];
-//Global groups
-var blocks,playerGroup,itemGroup;
-//force of gravity/speed and jump force in pixel per frame
-var gravity = 15,speed = 275,jumpForce = 375;
-var bulletSpeed = 1000;
 
-var t0; // time at last call
-var dt; // elapsed time between calls
+//Object to hold game variables/constants
+var controller = {
+	gravity: 15,	//force of gravity
+	speed: 275,		//speed
+	jumpForce: 375,	// force to jump
+	bulletSpeed: 1000, //speed of the bullet
+	d0: 0,	// time at last call
+	dt:	0	// elapsed time between calls
+};
+var contr = controller;
 
 //For activities to be performed while assets are loading
 function load(){
@@ -151,7 +156,7 @@ function setup(){
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 		bgMusic.play();
-		t0 = new Date().getTime(); // initialize value of t0
+		contr.t0 = new Date().getTime(); // initialize value of t0
 	};
 }
 function keyHandler(){
@@ -189,7 +194,7 @@ function keyHandler(){
 	upArrow.press = function(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
-			playerGroup.vy = -jumpForce;
+			playerGroup.vy = -contr.jumpForce;
 			player.jump();
 		}
 	};
@@ -480,11 +485,29 @@ function createMGun(){
 	return mGun;
 }
 function end(){
+	//remove aliens
+	activeAliens.forEach(function(alien){
+		freeAlien(alien);
+	});
+	//remove bullets
+	activeBullets.forEach(function(bullet){
+			freeBullet(bullet);
+	});
+	// blocks.children.forEach(function(building){
+	// 	blocks.nextPos.X= 0;
+	// 	blocks.nextPos.Y = 400;
+	// 	building.x= 	blocks.nextPos.X;
+	// 	building.y = 	blocks.nextPos.Y;
+	// 	blocks.nextPos.X=building.x + building.width + randomInt(50,100);
+	// 	blocks.nextPos.Y=400 + randomInt(-50,50);
+	// });
 	//Display the 'titleScene' and hide the 'gameScene'
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
 	gameScene.visible = false;
+
+	topBar.life = 5;
 
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
@@ -494,28 +517,13 @@ function end(){
 function restart(){
 	gameScene.visible = true;
 	playerGroup.setPosition(150,300);
-	topBar.life = 5;
 
-	blocks.children.forEach(function(building){
-		blocks.nextPos.X= 0;
-		blocks.nextPos.Y = 400;
-		building.x= 	blocks.nextPos.X;
-		building.y = 	blocks.nextPos.Y;
-		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
-		blocks.nextPos.Y=400 + randomInt(-50,50);
-	});
-
-	//move aliens
-	activeAliens.forEach(function(alien){
-		freeAlien(alien);
-	});
-	console.log(activeAliens);
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 
 	//Set the game state to 'play' and 'resume' the game
-	g.state = play;
+	contr.t0 = new Date().getTime(); // initialize value of t0
 	g.resume();
 }
 function createBuildings(){
@@ -528,7 +536,7 @@ function createBuildings(){
 	this.numOfBuilding = 4;
 	this.buildingWidth = 300;
 	this.buildingHeight;
-	blocks.nextPos = { X: 32, Y:400 };
+	blocks.nextPos = { X: 0, Y:400 };
 
 	//Procedural Generation of buildings
 	for (var k =0; k < this.numOfBuilding; k++){
