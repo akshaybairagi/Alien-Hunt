@@ -90,6 +90,7 @@ function setup(){
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
 	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
+
 	//Create the 'titleScene' group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
 
@@ -483,52 +484,32 @@ function end(){
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
-	//remove game objects and references
-	blocks.removeHierarchy(blocks.children);
-	itemGroup.removeHierarchy(itemGroup.children);
-	topBar.removeHierarchy(topBar.children);
-
-	items = [];
-	bullets = [];
-
-	gameScene.remove(itemGroup.children);
+	gameScene.visible = false;
 
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
 		restart();
 	};
 }
-
 function restart(){
-	sky = getSkyBackground();
+	gameScene.visible = true;
+	playerGroup.setPosition(150,300);
+	topBar.life = 5;
 
-	//Add a black border along the top of the screen
-	topBar = createTopBar();
-	topBar.create();
+	blocks.children.forEach(function(building){
+		blocks.nextPos.X= 0;
+		blocks.nextPos.Y = 400;
+		building.x= 	blocks.nextPos.X;
+		building.y = 	blocks.nextPos.Y;
+		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
+		blocks.nextPos.Y=400 + randomInt(-50,50);
+	});
 
-	//make player and set initials
-	player = makePlayer();
-	player.walk();
-	player.breath();
-
-	//Power Ups
-	gun = createGun();
-	bike = createBike();
-	car = createCar();
-	mGun = createMGun();
-
-	//Create Player Group as a container
-	playerGroup = createPlayerGroup();
-
-	//space ship sprites
-	ship = createShip();
-
-	//Create  buildings
-	createBuildings();
-
-	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
-
+	//move aliens
+	activeAliens.forEach(function(alien){
+		freeAlien(alien);
+	});
+	console.log(activeAliens);
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
@@ -599,7 +580,7 @@ function designBuidlings(width,height,pattern,x,y){
 }
 function createTopBar(){
 	var o = group([]);
-	o.life = 50;
+	o.life = 5;
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){
