@@ -5,7 +5,7 @@ function play(){
 	contr.t0 = t1; // reset t0
 
 	//count the frames
-	g.noOfFrame += 1;
+	score.distance += 1;
 	//tiling sky background
 	sky.tileX += 1;
 	//buildings blocks in the game world
@@ -62,13 +62,13 @@ function play(){
 		car.start();
 	}
 	//insert aliens in the game every 120th frame
-	if (g.noOfFrame % 120 == 0){
+	if(score.distance % 120 == 0){
 		var alien = getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
 		}
-		else {
+		else{
 			alien.act = "defend";
 		}
 	}
@@ -134,6 +134,7 @@ function play(){
 				//explosionSound();
 				explosionSound.play();
 				bullet.visible = false;
+				score.aliensKilled += 1;
 				freeAlien(alien);
 			 	freeBullet(bullet);
 			}

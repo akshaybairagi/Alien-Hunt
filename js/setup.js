@@ -11,7 +11,8 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					"fonts/puzzler.otf"
+					"fonts/puzzler.otf",
+					"fonts/PetMe64.ttf"
 				]
 				,load
 			);
@@ -25,9 +26,6 @@ g.scaleToWindow();
 window.addEventListener("resize", function(event){
 	g.scaleToWindow();
 });
-
-g.time = Date.now();
-g.noOfFrame = 0;
 
 //Global variables
 var player,sky,ship,gun,mGun,bike,car;
@@ -50,6 +48,11 @@ var controller = {
 	dt:	0	// elapsed time between calls
 };
 var contr = controller;
+
+var score = {
+	aliensKilled: 0,
+	distance: 0
+};
 
 //For activities to be performed while assets are loading
 function load(){
@@ -493,14 +496,6 @@ function end(){
 	activeBullets.forEach(function(bullet){
 			freeBullet(bullet);
 	});
-	// blocks.children.forEach(function(building){
-	// 	blocks.nextPos.X= 0;
-	// 	blocks.nextPos.Y = 400;
-	// 	building.x= 	blocks.nextPos.X;
-	// 	building.y = 	blocks.nextPos.Y;
-	// 	blocks.nextPos.X=building.x + building.width + randomInt(50,100);
-	// 	blocks.nextPos.Y=400 + randomInt(-50,50);
-	// });
 	//Display the 'titleScene' and hide the 'gameScene'
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
@@ -594,6 +589,9 @@ function createTopBar(){
 		for (i = 0; i < o.life; i++){
 			o.addChild(sprite(assets["life.png"],11*i,5));
 		}
+		var miles = text("Miles "+score.distance, "10px PetMe64", "black",32,32);
+		miles.setPosition(g.canvas.width-4*miles.width,0.5);
+		o.addChild(miles);
 	};
 
 	o.update = function(lifeCounter){
