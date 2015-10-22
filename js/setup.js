@@ -28,7 +28,7 @@ window.addEventListener("resize", function(event){
 });
 
 //Global variables
-var player,sky,ship,gun,mGun,bike,car;
+var player,sky,ship,gun,mGun,car;
 //Global groups
 var blocks,playerGroup,itemGroup;
 //Global Arrays
@@ -41,17 +41,20 @@ var bulletPool = [],activeBullets=[];
 //Object to hold game variables/constants
 var controller = {
 	gravity: 15,	//force of gravity
-	speed: 275,		//speed
+	speed: 275,		//speed 275
 	jumpForce: 375,	// force to jump
 	bulletSpeed: 1000, //speed of the bullet
 	d0: 0,	// time at last call
-	dt:	0	// elapsed time between calls
+	dt:	0,	// elapsed time between calls
+	design: null,
+	distance: null,
+	miles: null
 };
 var contr = controller;
 
 var score = {
 	aliensKilled: 0,
-	distance: 0
+	miles: 0
 };
 
 //For activities to be performed while assets are loading
@@ -122,7 +125,6 @@ function setup(){
 
 	//Power Ups
 	gun = createGun();
-	bike = createBike();
 	car = createCar();
 	mGun = createMGun();
 
@@ -136,7 +138,7 @@ function setup(){
 	keyHandler();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,moon,topBar,ship,car,mGun,blocks,itemGroup,playerGroup]);
 	//Create Aliens
 	for(var i=0;i < 5;i++){
 		var alien = createAlien();
@@ -413,8 +415,8 @@ function createItemCollector(X,Y,width){
 	var item;
 	switch (itemNo) {
 		case 1:
-			item = sprite(assets["bike_snap.png"]);
-			item.type = "bike";
+			item = sprite(assets["car_snap.png"]);
+			item.type = "car";
 			break;
 		case 2:
 			item = sprite(assets["heart.png"]);
@@ -423,10 +425,6 @@ function createItemCollector(X,Y,width){
 		case 3:
 			item = sprite(assets["mGun.png"]);
 			item.type = "mg";
-			break;
-		case 4:
-			item = sprite(assets["car_snap.png"]);
-			item.type = "car";
 			break;
 		default:
 			console.log("Error displaying items");
@@ -452,22 +450,6 @@ function createPlayerGroup(){
 	o.setPosition(150,300);
 	return	o;
 }
-function createBike(){
-	var bike = sprite(assets["bike.png"]);
-	bike.type = "bike";
-	bike.visible = false;
-	bike.remove = function(){
-		bike.visible = false;
-		stage.addChild(bike);
-
-		player.grp.visible = true;
-
-		playerGroup.addChild(player.grp);
-		playerGroup.addChild(gun);
-		playerGroup.item = gun;
-	}
-	return bike;
-}
 function createGun(){
 	var gun = sprite(assets["gun.png"],25,21);
 	gun.visible = false;
@@ -489,20 +471,18 @@ function createMGun(){
 }
 function end(){
 	//remove aliens
-	activeAliens.forEach(function(alien){
-		freeAlien(alien);
-	});
+	for(var i=activeAliens.length-1;i>=0;i--){
+		freeAlien(activeAliens[i]);
+	}
 	//remove bullets
-	activeBullets.forEach(function(bullet){
-			freeBullet(bullet);
-	});
+	for(var i=activeBullets.length-1;i>=0;i--){
+		freeBullet(activeBullets[i]);
+	}
 	//Display the 'titleScene' and hide the 'gameScene'
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
 	gameScene.visible = false;
-
-	topBar.life = 5;
 
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
@@ -512,6 +492,11 @@ function end(){
 function restart(){
 	gameScene.visible = true;
 	playerGroup.setPosition(150,300);
+	topBar.reset(5);
+  var pattern = designs[randomInt(0,3)];
+	contr.design = pattern;
+	contr.distance = 0;
+	resetBuildings(pattern); //reset the building designs
 
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
@@ -527,26 +512,24 @@ function createBuildings(){
 	itemGroup = group([]);
 
 	//variables for building blocks
-	this.pattern = designs[0];
 	this.numOfBuilding = 4;
 	this.buildingWidth = 300;
 	this.buildingHeight;
 	blocks.nextPos = { X: 0, Y:400 };
 
+	this.pattern = designs[randomInt(0,3)];
+
 	//Procedural Generation of buildings
 	for (var k =0; k < this.numOfBuilding; k++){
 		this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-		if((k+1)%3 == 0){
-			var item = createItemCollector(blocks.nextPos.X,blocks.nextPos.Y,this.buildingWidth);
-			itemGroup.addChild(item);
-		}
-			this.pattern = designs[randomInt(0,3)];
-
+		// if((k+1)%3 == 0){
+		// 	var item = createItemCollector(blocks.nextPos.X,blocks.nextPos.Y,this.buildingWidth);
+		// 	itemGroup.addChild(item);
+		// }
 		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
 			blocks.nextPos.X,blocks.nextPos.Y);
 
 		blocks.addChild(building);
-
 		blocks.nextPos.X=building.x + randomInt(350,400);
 		blocks.nextPos.Y=400 + randomInt(-50,50);
 	}
@@ -581,17 +564,29 @@ function designBuidlings(width,height,pattern,x,y){
 	}
 	return building;
 }
+function resetBuildings(pattern){
+	blocks.children.forEach(function(building){
+		building.pattern = false;
+		if(pattern.image)	building.setPattern(pattern.image,"repeat");
+		building.children.forEach(function(window){
+			window.gradient = false;
+			if(randomInt(0,1)){
+				window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+			}
+		});
+	});
+}
 function createTopBar(){
 	var o = group([]);
-	o.life = 5;
+			o.life = 5;
+	o.miles  = text("Miles " + score.miles, "10px PetMe64", "black",32,32);
+	o.miles.setPosition(g.canvas.width-3*o.miles.width,0.5);
 
 	o.create = function(){
 		for (i = 0; i < o.life; i++){
 			o.addChild(sprite(assets["life.png"],11*i,5));
 		}
-		var miles = text("Miles "+score.distance, "10px PetMe64", "black",32,32);
-		miles.setPosition(g.canvas.width-4*miles.width,0.5);
-		o.addChild(miles);
+		o.addChild(o.miles);
 	};
 
 	o.update = function(lifeCounter){
@@ -607,6 +602,15 @@ function createTopBar(){
 			setTimeout(end,1000);
 		}
 	};
+	o.reset = function () {
+		o.remove(o.children);
+		o.life = 5;
+		for (i = 0; i < o.life; i++){
+			o.addChild(sprite(assets["life.png"],11*i,5));
+		}
+		score.miles = 0;
+		o.addChild(o.miles);
+	}
 	return o;
 }
 function getSkyBackground(){

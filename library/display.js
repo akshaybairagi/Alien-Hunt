@@ -218,7 +218,6 @@ DisplayObject.prototype = {
 			height: this.gy + this.height
 		};
 	},
-
 	//`empty` is a convenience property that will return `true` or
 	//`false` depending on whether this sprite's `children`
 	//array is empty

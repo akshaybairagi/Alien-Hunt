@@ -5,7 +5,10 @@ function play(){
 	contr.t0 = t1; // reset t0
 
 	//count the frames
-	score.distance += 1;
+	contr.distance += 1;
+	score.miles = contr.distance/30;
+	topBar.miles.content = "Miles " + Math.ceil(score.miles);
+
 	//tiling sky background
 	sky.tileX += 1;
 	//buildings blocks in the game world
@@ -14,6 +17,11 @@ function play(){
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += contr.gravity;
 	playerGroup.y += playerGroup.vy*contr.dt;
+
+	if(score.miles % 100 === 0){
+		contr.design = designs[randomInt(0,3)];
+		resetBuildings(contr.design); //reset the building designs
+	}
 
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*contr.dt;
@@ -62,7 +70,7 @@ function play(){
 		car.start();
 	}
 	//insert aliens in the game every 120th frame
-	if(score.distance % 120 == 0){
+	if(contr.distance % 120 == 0){
 		var alien = getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
@@ -80,7 +88,8 @@ function play(){
 			var _speed = contr.speed;
 			contr.speed = 0;
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
-				fadeOutTweenPlayer.onComplete = function(){contr.speed = _speed;
+				fadeOutTweenPlayer.onComplete = function(){
+													contr.speed = _speed;
 													var fadeInTween = fadeIn(player.grp,50);
 												};
 		}
@@ -183,20 +192,6 @@ function play(){
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
-				}
-				if(item.type == "bike"){
-					player.grp.visible = false;
-					gun.visible = false;
-					item.visible = false;
-					stage.addChild(player.grp);
-					stage.addChild(gun);
-
-					bike.visible = true;
-					bike.setPosition(0,0);
-					playerGroup.addChild(bike);
-
-					playerGroup.item = bike;
-					setTimeout(bike.remove,5000);
 				}
 				if(item.type == "mg"){
 					gun.visible = false;
