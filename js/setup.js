@@ -139,6 +139,7 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar,moon,blocks,ship,car,playerGroup,itemGroup]);
+
 	//Create Aliens
 	for(var i=0;i < 5;i++){
 		var alien = createAlien();
@@ -150,7 +151,6 @@ function setup(){
 	for(var i=0;i < 5;i++){
 		var bullet = createBullet();
 		bullet.visible = false;
-		gameScene.addChild(bullet);
 		bulletPool.push(bullet);
 	}
 	//Initi items
