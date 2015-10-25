@@ -4,11 +4,12 @@ function ItemManager(){
   this.initItems = function(){
     this.car_snap = sprite(assets["car_snap.png"]);
     this.car_snap.type = "car";
+    this.car_snap.visible = false;
     this.life = sprite(assets["heart.png"]);
     this.life.type = "heart";
+    this.life.visible = false;
     gameScene.addChild(this.car_snap);
     gameScene.addChild(this.life);
-    remove(this.items);
   },
   this.getItem = function(){
   	var item;
