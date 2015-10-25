@@ -29,6 +29,12 @@ function play(){
 		contr.design = designs[randomInt(0,3)];
 		resetBuildings(contr.design); //reset the building designs
 	}
+	//Introduce the powerUps/items in the game
+	// if(score.miles % 10 === 0 && itemGroup.children.length === 0){
+	// 	var item = imgr.getItem();
+	// 	itemGroup.setPosition(blocks.nextPos.X + randomInt(150,300),blocks.nextPos.Y - 130);
+	// 	itemGroup.addChild(item);
+	// }
 
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*contr.dt;
@@ -53,12 +59,6 @@ function play(){
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=400 + randomInt(-50,50);
 	});
-	//Introduce the powerUps/items in the game
-	// if(score.miles % 10 === 0){
-	// 	var item = imgr.getItem();
-	// 	itemGroup.setPosition(blocks.nextPos.X + randomInt(150,300),blocks.nextPos.Y - 130);
-	// 	itemGroup.addChild(item);
-	// }
 
 	//move aliens
 	activeAliens.forEach(function(alien){

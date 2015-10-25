@@ -127,7 +127,6 @@ function setup(){
 	//Power Ups
 	gun = createGun();
 	car = createCar();
-	mGun = createMGun();
 
 	//Create Player Group as a container
 	playerGroup = createPlayerGroup();
@@ -139,7 +138,7 @@ function setup(){
 	keyHandler();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,moon,topBar,ship,car,mGun,blocks,playerGroup,itemGroup]);
+	gameScene = group([sky,topBar,moon,blocks,ship,car,playerGroup,itemGroup]);
 	//Create Aliens
 	for(var i=0;i < 5;i++){
 		var alien = createAlien();

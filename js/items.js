@@ -1,5 +1,4 @@
 function ItemManager(){
-  this.currItem = null,
   this.items = [],
 
   this.initItems = function(){
@@ -26,7 +25,6 @@ function ItemManager(){
         console.log("Error in getting items");
     }
     if (item !== undefined){
-      this.currItem = item;
       return item;
   	}
   }
