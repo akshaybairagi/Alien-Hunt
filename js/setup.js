@@ -100,7 +100,7 @@ function setup(){
 	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
-	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
+	frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","",1,0,0);
 
 	//Create the 'titleScene' group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
@@ -160,7 +160,10 @@ function setup(){
 	console.log(gameScene.children.length)
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
-	gameScene.x = 814;
+	// gameScene.x = 814;
+	titleScene.layer = 1;
+	stage.alpha = 1;
+	titleScene.alpha=0.95;
 
 	playButton.press = function(){
 		g.state = play;
@@ -464,7 +467,7 @@ function end(){
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
-	gameScene.visible = false;
+	//gameScene.visible = false;
 
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){

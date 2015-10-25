@@ -5,7 +5,7 @@ function ItemManager(){
     this.car_snap = sprite(assets["car_snap.png"]);
     this.car_snap.type = "car";
     this.car_snap.visible = false;
-    
+
     this.life = sprite(assets["heart.png"]);
     this.life.type = "heart";
     this.life.visible = false;
