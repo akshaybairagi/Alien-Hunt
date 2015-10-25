@@ -156,7 +156,8 @@ function setup(){
 	//Initi items
 	imgr = itemManager();
 	imgr.initItems();
-
+	
+	console.log(gameScene.children.length)
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
@@ -385,6 +386,7 @@ function createAlien(){
 			alien.stop();
 		}
 	};
+	gameScene.addChild(alien);
 	return alien;
 }
 function getAlien(){

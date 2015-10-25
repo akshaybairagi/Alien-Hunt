@@ -25,6 +25,7 @@ function createBullet(){
 	bullet.addChild(cBox);
 	bullet.cBox = cBox;
 	cBox.visible = false;
+	gameScene.addChild(bullet);
 	return bullet;
 }
 function getBullet(shooter,offsetFromCenter,bulletSpeed){
