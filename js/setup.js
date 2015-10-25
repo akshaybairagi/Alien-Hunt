@@ -3,10 +3,10 @@ var g = game(800, 600, setup,
 					"json/hands.png",
 					"json/alien.png",
 					"json/alienHunter.json",
+					"json/car.json",
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					"json/car.json",
 					"sounds/retro-action.wav",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
@@ -30,7 +30,7 @@ window.addEventListener("resize", function(event){
 //Global variables
 var player,sky,ship,gun,mGun,car;
 //Global groups
-var blocks,playerGroup,itemGroup;
+var blocks,playerGroup,itemGroup = group([]);
 //Global Arrays
 var items = [],designs = [];
 //aliens Pool and active Pool
@@ -93,7 +93,7 @@ function setup(){
 	titleMessage = text("start game", "20px puzzler", "white", -200, 420);
 
 	//Game title name
-	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150);
+	gameTitle = text("Alien Hunter", "40px PetMe64", "white", 100, 150);
 
 	//Make the 'playButton' and 'titleMessage' slide in from the
 	//edges of the screen using the 'slide' function
@@ -110,9 +110,10 @@ function setup(){
 	sky = getSkyBackground();
 	//Initialize designs
 	initDesigns();
+
 	//space ship sprites
 	ship = createShip();
-
+	//draw moon sprites
 	moon = drawMoon();
 	//Add a black border along the top of the screen
 	topBar = createTopBar();
@@ -138,7 +139,7 @@ function setup(){
 	keyHandler();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,moon,topBar,ship,car,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,moon,topBar,ship,car,mGun,blocks,playerGroup,itemGroup]);
 	//Create Aliens
 	for(var i=0;i < 5;i++){
 		var alien = createAlien();
@@ -150,8 +151,13 @@ function setup(){
 	for(var i=0;i < 5;i++){
 		var bullet = createBullet();
 		bullet.visible = false;
+		gameScene.addChild(bullet);
 		bulletPool.push(bullet);
 	}
+	//Initi items
+	imgr = itemManager();
+	imgr.initItems();
+
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
@@ -410,31 +416,6 @@ function freeAlien(alien){
 	// return the alien back into the pool
 	alienPool.push(alien);
 }
-function createItemCollector(X,Y,width){
-	var itemNo = randomInt(1,4);
-	var item;
-	switch (itemNo) {
-		case 1:
-			item = sprite(assets["car_snap.png"]);
-			item.type = "car";
-			break;
-		case 2:
-			item = sprite(assets["heart.png"]);
-			item.type = "heart";
-			break;
-		case 3:
-			item = sprite(assets["mGun.png"]);
-			item.type = "mg";
-			break;
-		default:
-			console.log("Error displaying items");
-	}
-	if (item !== undefined){
-		item.setPosition(X + randomInt(width/2,width),Y - 130);
-		items.push(item);
-		return item;
-	}
-}
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
 	ship.setPosition(600,32);
@@ -509,7 +490,6 @@ function restart(){
 function createBuildings(){
 	//Create a 'group' for all the buildings
 	blocks = group([]);
-	itemGroup = group([]);
 
 	//variables for building blocks
 	this.numOfBuilding = 4;
@@ -522,10 +502,6 @@ function createBuildings(){
 	//Procedural Generation of buildings
 	for (var k =0; k < this.numOfBuilding; k++){
 		this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-		// if((k+1)%3 == 0){
-		// 	var item = createItemCollector(blocks.nextPos.X,blocks.nextPos.Y,this.buildingWidth);
-		// 	itemGroup.addChild(item);
-		// }
 		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
 			blocks.nextPos.X,blocks.nextPos.Y);
 

@@ -4,20 +4,27 @@ function play(){
 	contr.dt = 0.001*(t1-contr.t0); // time elapsed in seconds since last call
 	contr.t0 = t1; // reset t0
 
-	//count the frames
+	//count the frames and set score
 	contr.distance += 1;
 	score.miles = contr.distance/30;
 	topBar.miles.content = "Miles " + Math.ceil(score.miles);
 
 	//tiling sky background
 	sky.tileX += 1;
-	//buildings blocks in the game world
-	itemGroup.x -= contr.speed*contr.dt;
 
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += contr.gravity;
 	playerGroup.y += playerGroup.vy*contr.dt;
 
+
+	if(itemGroup.children.length > 0)
+		itemGroup.x -= contr.speed*contr.dt;
+
+	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
+		itemGroup.removeChild(itemGroup.children[0]);
+	}
+
+	// Reset the building desgin for different look
 	if(score.miles % 100 === 0){
 		contr.design = designs[randomInt(0,3)];
 		resetBuildings(contr.design); //reset the building designs
@@ -36,16 +43,22 @@ function play(){
 			var width = building.width /row;
 			var height = building.height/coloums;
 			building.children.forEach(function(window){
-						//update the windows
-						window.x = width*window.j;
-						window.y = height*window.i;
-						window.width =width;
-						window.height = height;
+				//update the windows
+				window.x = width*window.j;
+				window.y = height*window.i;
+				window.width =width;
+				window.height = height;
 			});
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=400 + randomInt(-50,50);
 	});
+	//Introduce the powerUps/items in the game
+	// if(score.miles % 10 === 0){
+	// 	var item = imgr.getItem();
+	// 	itemGroup.setPosition(blocks.nextPos.X + randomInt(150,300),blocks.nextPos.Y - 130);
+	// 	itemGroup.addChild(item);
+	// }
 
 	//move aliens
 	activeAliens.forEach(function(alien){
