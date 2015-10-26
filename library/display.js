@@ -137,7 +137,6 @@ DisplayObject.prototype = {
 		}
 	},
 
-
 	//The `addChild` method lets you add sprites to this container
 	addChild: function(sprite) {
 		if (sprite.parent) {

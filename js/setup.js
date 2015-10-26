@@ -33,8 +33,6 @@ var player,sky,ship,gun,mGun,car;
 var blocks,playerGroup,itemGroup = group([]);
 //Global Arrays
 var designs = [];
-//aliens Pool and active Pool
-var alienPool = [],activeAliens=[];
 //bullet Pool and active Pool
 var bulletPool = [],activeBullets=[];
 
@@ -132,7 +130,8 @@ function setup(){
 	playerGroup = createPlayerGroup();
 
 	//Create  buildings
-	createBuildings();
+	bd = new Buildings();
+	bd.createBuildings();
 
 	//Assign the key events
 	keyHandler();
@@ -140,12 +139,13 @@ function setup(){
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar,moon,blocks,ship,car,playerGroup,itemGroup]);
 
+	aliens = new Alien();
 	//Create Aliens
 	for(var i=0;i < 5;i++){
-		var alien = createAlien();
+		var alien = aliens.createAlien();
 		alien.visible = false;
 		alien.setPosition(ship.centerX,ship.centerY);
-		alienPool.push(alien);
+		aliens.alienPool.push(alien);
 	}
 	//Create Bullets
 	for(var i=0;i < 5;i++){
@@ -157,7 +157,6 @@ function setup(){
 	imgr = itemManager();
 	imgr.initItems();
 
-	console.log(gameScene.children.length);
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
@@ -350,75 +349,79 @@ function createCar(){
 	}
 	return car;// return a car object
 }
-function createAlien(){
-	var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
-	alien.states = {
-		stand: 0,
-		walk: [1,6],
-		jump: 7
-	};
-	//Set the player's 'fps'
-	alien.fps = 12;
-	alien.vx=0;
-	alien.accelerationX = 0;
-	alien.isOnGround = false;
-	alien.isTouching = false;
-	alien.state = "";
-
-	alien.walk = function(){
-		if(alien.state!== "walk"){
-			alien.state = "walk";
-			alien.playSequence(alien.states.walk);
-		}
-	};
-	alien.jump = function(){
-		if(alien.state!== "jump"){
-			alien.state = "jump";
-			alien.show(alien.states.jump);
-		}
-	};
-	alien.stand = function(){
-		if(alien.state!== "stand"){
-			alien.state = "stand";
-			alien.show(alien.states.stand);
-		}
-	};
-	alien.stop = function(){
-		if(alien.state!== "stop"){
-			alien.state = "stop";
-			alien.stop();
-		}
-	};
-	gameScene.addChild(alien);
-	return alien;
-}
-function getAlien(){
-	var alien = null;
-	if(alienPool.length > 0){
-		alien = alienPool.pop();
-
+function Alien(){
+	//aliens Pool and active Pool
+	this.alienPool = [],
+	this.activeAliens=[],
+	this.createAlien = function(){
+		var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
+		alien.states = {
+			stand: 0,
+			walk: [1,6],
+			jump: 7
+		};
+		//Set the player's 'fps'
+		alien.fps = 12;
 		alien.vx=0;
-		alien.vy = 0;
 		alien.accelerationX = 0;
 		alien.isOnGround = false;
 		alien.isTouching = false;
 		alien.state = "";
-		alien.act = "";
-	}
-	else {
-		alien = createAlien();
-	}
-	alien.setPosition(ship.centerX,ship.centerY);
-	alien.visible = true;
-	activeAliens.push(alien);
-	return alien;
-}
-function freeAlien(alien){
-	alien.visible = false;
-	alien.setPosition(ship.centerX,ship.centerY);
-	activeAliens.splice(activeAliens.indexOf(alien), 1);
-	// return the alien back into the pool
-	alienPool.push(alien);
+
+		alien.walk = function(){
+			if(alien.state!== "walk"){
+				alien.state = "walk";
+				alien.playSequence(alien.states.walk);
+			}
+		};
+		alien.jump = function(){
+			if(alien.state!== "jump"){
+				alien.state = "jump";
+				alien.show(alien.states.jump);
+			}
+		};
+		alien.stand = function(){
+			if(alien.state!== "stand"){
+				alien.state = "stand";
+				alien.show(alien.states.stand);
+			}
+		};
+		alien.stop = function(){
+			if(alien.state!== "stop"){
+				alien.state = "stop";
+				alien.stop();
+			}
+		};
+		gameScene.addChild(alien);
+		return alien;
+	},
+	this.getAlien = function(){
+		var alien = null;
+		if(this.alienPool.length > 0){
+			alien = this.alienPool.pop();
+			alien.vx=0;
+			alien.vy = 0;
+			alien.accelerationX = 0;
+			alien.isOnGround = false;
+			alien.isTouching = false;
+			alien.state = "";
+			alien.act = "";
+		}
+		else {
+			alien = this.createAlien();
+		}
+		alien.setPosition(ship.centerX,ship.centerY);
+		alien.visible = true;
+		this.activeAliens.push(alien);
+		return alien;
+	},
+  this.freeAlien = function(alien){
+	 	alien.visible = false;
+	 	alien.setPosition(ship.centerX,ship.centerY);
+	 	this.activeAliens.splice(aliens.activeAliens.indexOf(alien), 1);
+	 	// return the alien back into the pool
+	 	this.alienPool.push(alien);
+	 }
 }
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
@@ -490,70 +493,72 @@ function restart(){
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 }
-function createBuildings(){
+function Buildings(){
+	//variables for building blocks
+	this.numOfBuilding = 4,
+	this.buildingWidth = 300,
+	this.buildingHeight,
 	//Create a 'group' for all the buildings
 	blocks = group([]);
+	blocks.nextPos = { X: 0, Y:400 },
 
-	//variables for building blocks
-	this.numOfBuilding = 4;
-	this.buildingWidth = 300;
-	this.buildingHeight;
-	blocks.nextPos = { X: 0, Y:400 };
+	this.pattern = designs[randomInt(0,3)],
 
-	this.pattern = designs[randomInt(0,3)];
+	this.createBuildings = function() {
+		//Procedural Generation of buildings
+		for (var k =0; k < this.numOfBuilding; k++){
+			this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
+			var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
+				blocks.nextPos.X,blocks.nextPos.Y);
 
-	//Procedural Generation of buildings
-	for (var k =0; k < this.numOfBuilding; k++){
-		this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
-			blocks.nextPos.X,blocks.nextPos.Y);
+			blocks.addChild(building);
+			blocks.nextPos.X=building.x + randomInt(350,400);
+			blocks.nextPos.Y=400 + randomInt(-50,50);
+		}
+	},
+	this.designBuidlings = function(width,height,pattern,x,y){
+		var row=9;
+		var coloums=13;
+		var building =rectangle(width,height,"#272726","grey",2,x,y);
+		if(pattern.image){
+			building.setPattern(pattern.image,"repeat");
+		}
 
-		blocks.addChild(building);
-		blocks.nextPos.X=building.x + randomInt(350,400);
-		blocks.nextPos.Y=400 + randomInt(-50,50);
-	}
-}
-function designBuidlings(width,height,pattern,x,y){
-	var row=9;
-	var coloums=13;
-	var building =rectangle(width,height,"#272726","grey",2,x,y);
-	if(pattern.image)
-		building.setPattern(pattern.image,"repeat");
+		var windowWidth = building.width /row;
+		var windowHeight = building.height/coloums;
 
-	var windowWidth = building.width /row;
-	var windowHeight = building.height/coloums;
+		for(var i = 0; i < coloums; i++){
+			for(var j = 0; j < row; j++){
+				if ( j % 2 !== 0 && i % 2 !== 0){
+					//create the windows
+					var window = rectangle(windowWidth,windowHeight,"grey","black",1);
+					window.x = windowWidth*j;
+					window.y = windowHeight*i;
+					window.i = i;
+					window.j = j;
+					if(randomInt(0,1)){
+						window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+					}
+					window.blendMode = "hard-light";
 
-	for(var i = 0; i < coloums; i++){
-		for(var j = 0; j < row; j++){
-			if ( j % 2 !== 0 && i % 2 !== 0){
-				//create the windows
-				var window = rectangle(windowWidth,windowHeight,"grey","black",1);
-				window.x = windowWidth*j;
-				window.y = windowHeight*i;
-				window.i = i;
-				window.j = j;
+					building.addChild(window);
+				}
+			}
+		}
+		return building;
+	},
+	this.resetBuildings = function(pattern){
+		blocks.children.forEach(function(building){
+			building.pattern = false;
+			if(pattern.image)	building.setPattern(pattern.image,"repeat");
+			building.children.forEach(function(window){
+				window.gradient = false;
 				if(randomInt(0,1)){
 					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
-				window.blendMode = "hard-light";
-
-				building.addChild(window);
-			}
-		}
-	}
-	return building;
-}
-function resetBuildings(pattern){
-	blocks.children.forEach(function(building){
-		building.pattern = false;
-		if(pattern.image)	building.setPattern(pattern.image,"repeat");
-		building.children.forEach(function(window){
-			window.gradient = false;
-			if(randomInt(0,1)){
-				window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
-			}
+			});
 		});
-	});
+	}
 }
 function createTopBar(){
 	var o = group([]);

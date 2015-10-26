@@ -62,13 +62,13 @@ function play(){
 	});
 
 	//move aliens
-	activeAliens.forEach(function(alien){
+	aliens.activeAliens.forEach(function(alien){
 			alien.vy += contr.gravity;
 			alien.y += alien.vy*contr.dt;
 			alien.vx += alien.accelerationX;
 			alien.x += alien.vx*contr.dt;
 			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
-				freeAlien(alien);
+				aliens.freeAlien(alien);
 			}
 	});
 	//Move the bullet
@@ -85,7 +85,7 @@ function play(){
 	}
 	//insert aliens in the game every 120th frame
 	if(contr.distance % 120 == 0){
-		var alien = getAlien();
+		var alien = aliens.getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -122,7 +122,7 @@ function play(){
 		}
 
 		//Check alien and collision with buildings
-		activeAliens.forEach(function(alien){
+		aliens.activeAliens.forEach(function(alien){
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
@@ -148,7 +148,7 @@ function play(){
 	});
 
 	// bullets and alien check collision
-	activeAliens.forEach(function(alien){
+	aliens.activeAliens.forEach(function(alien){
 		activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
@@ -158,7 +158,7 @@ function play(){
 				explosionSound.play();
 				bullet.visible = false;
 				score.aliensKilled += 1;
-				freeAlien(alien);
+				aliens.freeAlien(alien);
 			 	freeBullet(bullet);
 			}
 		});
@@ -177,7 +177,7 @@ function play(){
 				alien.vx  = 10;
 				var fadeOutTweenAlien = fadeOut(alien,10);
 				fadeOutTweenAlien.onComplete = function(){
-													freeAlien(alien);
+													aliens.freeAlien(alien);
 												};
 			}
 		}
