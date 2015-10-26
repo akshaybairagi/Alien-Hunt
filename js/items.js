@@ -1,6 +1,4 @@
 function ItemManager(){
-  this.items = [],
-
   this.initItems = function(){
     this.car_snap = sprite(assets["car_snap.png"]);
     this.car_snap.type = "car";
@@ -27,6 +25,10 @@ function ItemManager(){
     if (item !== undefined){
       return item;
   	}
+  },
+  this.removeItem = function(item){
+    item.visible= false;
+    gameScene.addChild(item);
   }
 }
 //A higher level wrapper for items

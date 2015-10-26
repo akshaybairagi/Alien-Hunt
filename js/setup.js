@@ -32,7 +32,7 @@ var player,sky,ship,gun,mGun,car;
 //Global groups
 var blocks,playerGroup,itemGroup = group([]);
 //Global Arrays
-var items = [],designs = [];
+var designs = [];
 //aliens Pool and active Pool
 var alienPool = [],activeAliens=[];
 //bullet Pool and active Pool
@@ -157,13 +157,13 @@ function setup(){
 	imgr = itemManager();
 	imgr.initItems();
 
-	console.log(gameScene.children.length)
+	console.log(gameScene.children.length);
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
-	// gameScene.x = 814;
-	titleScene.layer = 1;
-	stage.alpha = 1;
-	titleScene.alpha=0.95;
+	gameScene.x = 814;
+	// titleScene.layer = 1;
+	// stage.alpha = 1;
+	// titleScene.alpha=0.95;
 
 	playButton.press = function(){
 		g.state = play;
@@ -467,11 +467,14 @@ function end(){
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
-	//gameScene.visible = false;
+	gameScene.visible = false;
 
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
 		restart();
+		//Set the game state to 'play' and 'resume' the game
+		contr.t0 = new Date().getTime(); // initialize value of t0
+		g.resume();
 	};
 }
 function restart(){
@@ -486,10 +489,6 @@ function restart(){
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-
-	//Set the game state to 'play' and 'resume' the game
-	contr.t0 = new Date().getTime(); // initialize value of t0
-	g.resume();
 }
 function createBuildings(){
 	//Create a 'group' for all the buildings

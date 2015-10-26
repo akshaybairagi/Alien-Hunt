@@ -21,7 +21,7 @@ function play(){
 		itemGroup.x -= contr.speed*contr.dt;
 
 	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
-		itemGroup.removeChild(itemGroup.children[0]);
+		imgr.removeItem(itemGroup.children[0]);
 	}
 
 	// Reset the building desgin for different look
@@ -30,11 +30,12 @@ function play(){
 		resetBuildings(contr.design); //reset the building designs
 	}
 	//Introduce the powerUps/items in the game
-	// if(score.miles % 10 === 0 && itemGroup.children.length === 0){
-	// 	var item = imgr.getItem();
-	// 	itemGroup.setPosition(blocks.nextPos.X + randomInt(150,300),blocks.nextPos.Y - 130);
-	// 	itemGroup.addChild(item);
-	// }
+	if(score.miles % 10 === 0 && itemGroup.children.length === 0){
+		var item = imgr.getItem();
+		item.visible= true;
+		itemGroup.addChild(item);
+		itemGroup.setPosition(g.canvas.width + randomInt(150,300),300);
+	}
 
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*contr.dt;
@@ -174,7 +175,7 @@ function play(){
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;
-				var fadeOutTweenAlien = fadeOut(alien,30);
+				var fadeOutTweenAlien = fadeOut(alien,10);
 				fadeOutTweenAlien.onComplete = function(){
 													freeAlien(alien);
 												};
@@ -205,18 +206,6 @@ function play(){
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
-				}
-				if(item.type == "mg"){
-					gun.visible = false;
-					item.visible = false;
-					stage.addChild(gun);
-
-					mGun.visible = true;
-					mGun.setPosition(7,22);
-					playerGroup.addChild(mGun);
-
-					playerGroup.item = mGun;
-					setTimeout(mGun.remove,5000);
 				}
 			}
 		}
