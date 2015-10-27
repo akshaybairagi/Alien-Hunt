@@ -163,8 +163,8 @@ function play(){
 			}
 		});
 
-		var playerAlienCollision = hitTestRectangle(playerGroup,alien);
-		if(playerAlienCollision && alien.isTouching === false){
+		var playerAlienCollision = hitTestRectangle(playerGroup,alien,true);
+		if(playerAlienCollision === true && alien.isTouching === false){
 			alien.isTouching = true;
 			if(player.grp.visible){
 				topBar.update(-1);
@@ -175,6 +175,7 @@ function play(){
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;
+				// aliens.freeAlien(alien);
 				var fadeOutTweenAlien = fadeOut(alien,10);
 				fadeOutTweenAlien.onComplete = function(){
 													aliens.freeAlien(alien);
@@ -182,7 +183,6 @@ function play(){
 			}
 		}
 	});
-
 	//handle the collision with items
 	itemGroup.children.forEach(function(item){
 		if(playerGroup.item.type == "gun"){

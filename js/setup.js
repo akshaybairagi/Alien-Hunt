@@ -112,7 +112,7 @@ function setup(){
 	//draw moon sprites
 	moon = drawMoon();
 	//Add a black border along the top of the screen
-	topBar = createTopBar();
+	topBar = new TopBar();
 	topBar.create();
 
 	//make player and set initials
@@ -132,7 +132,7 @@ function setup(){
 	bd.createBuildings();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar,moon,blocks,ship,car,playerGroup,itemGroup]);
+	gameScene = group([sky,topBar.container,moon,blocks,ship,car,playerGroup,itemGroup]);
 
 	//Create Aliens
 	aliens = new Alien();
@@ -150,7 +150,7 @@ function setup(){
 		bullets.bulletPool.push(bulletObj);
 	}
 	//Initi items
-	imgr = itemManager();
+	imgr = new ItemManager();
 	imgr.initItems();
 
 	//Position the 'gameScene' offscreen at 814 so that its
@@ -416,6 +416,7 @@ function Alien(){
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
+		alien.isTouching = false;
 	 	alien.setPosition(ship.centerX,ship.centerY);
 	 	this.activeAliens.splice(this.activeAliens.indexOf(alien), 1);
 	 	// return the alien back into the pool
@@ -462,8 +463,8 @@ function end(){
 		aliens.freeAlien(aliens.activeAliens[i]);
 	}
 	//remove bullets
-	for(var i=activeBullets.length-1;i>=0;i--){
-		freeBullet(activeBullets[i]);
+	for(var i=bullets.activeBullets.length-1;i>=0;i--){
+		bullets.freeBullet(bullets.activeBullets[i]);
 	}
 	//Display the 'titleScene' and hide the 'gameScene'
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
@@ -560,24 +561,25 @@ function Buildings(){
 		});
 	};
 }
-function createTopBar(){
-	var o = group([]);
-			o.life = 5;
-	o.miles  = text("Miles " + score.miles, "10px PetMe64", "black",32,32);
-	o.miles.setPosition(g.canvas.width-3*o.miles.width,0.5);
+function TopBar(){
+	this.lifePool = [];
+	this.activeLifePool = [];
+	this.life = 3;
+	this.miles = text("Miles " + score.miles, "10px PetMe64", "black",32,32);
+	this.miles.setPosition(g.canvas.width-3*this.miles.width,0.5);
+	this.container = group([]);
 
-	o.create = function(){
-		for (i = 0; i < o.life; i++){
-			o.addChild(sprite(assets["life.png"],11*i,5));
+	this.create = function(){
+		for (i = 0; i < this.life; i++){
+			this.container.addChild(sprite(assets["life.png"],11*i,5));
 		}
-		o.addChild(o.miles);
+		this.container.addChild(this.miles);
 	};
-
-	o.update = function(lifeCounter){
-		o.life += lifeCounter;
-		if(o.life >= 1){
-			o.remove(o.children);
-			o.create();
+	this.update = function(lifeCounter){
+		this.life += lifeCounter;
+		if(this.life >= 1){
+			this.container.remove(this.container.children);
+			this.create();
 		}
 		else{
 			playerGroup.vy = 0;
@@ -586,16 +588,15 @@ function createTopBar(){
 			setTimeout(end,1000);
 		}
 	};
-	o.reset = function () {
-		o.remove(o.children);
-		o.life = 5;
+	this.reset = function(){
+		this.container.remove(o.children);
+		this.life = 5;
 		for (i = 0; i < o.life; i++){
-			o.addChild(sprite(assets["life.png"],11*i,5));
+			this.container.addChild(sprite(assets["life.png"],11*i,5));
 		}
 		score.miles = 0;
-		o.addChild(o.miles);
-	}
-	return o;
+		this.container.addChild(this.miles);
+	};
 }
 function getSkyBackground(){
 		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
@@ -636,4 +637,37 @@ function initDesigns(){
 	designs.push(design2);
 	designs.push(design3);
 	designs.push(design4);
+}
+function ItemManager(){
+  this.initItems = function(){
+    this.car_snap = sprite(assets["car_snap.png"]);
+    this.car_snap.type = "car";
+    this.car_snap.visible = false;
+
+    this.life = sprite(assets["heart.png"]);
+    this.life.type = "heart";
+    this.life.visible = false;
+    gameScene.addChild(this.car_snap);
+    gameScene.addChild(this.life);
+  };
+  this.getItem = function(){
+  	var item;
+    switch (randomInt(1,2)){
+      case 1:
+        item = this.car_snap;
+        break;
+      case 2:
+        item = this.life;
+        break;
+      default:
+        console.log("Error in getting items");
+    }
+    if (item !== undefined){
+      return item;
+  	}
+  };
+  this.removeItem = function(item){
+    item.visible= false;
+    gameScene.addChild(item);
+  };
 }

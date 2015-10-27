@@ -28,9 +28,9 @@ var sineComplete =  function(x) { return 0.5 - Math.cos(-x * Math.PI) * 0.5;};
 
 //Weighted average
 //Good to use if the destination value is changing dynamically
-//arguments: 
-//`p`: sprite property, 
-//`d`: destination value, 
+//arguments:
+//`p`: sprite property,
+//`d`: destination value,
 //`w`: amount to weight (5 to 50 is a good range of values to start with)
 var weightedAverage = function(p, d, w) { return ((p * (w - 1)) + d) / w; };
 
@@ -52,9 +52,9 @@ var spline = function(t, a, b, c, d){
 function cubicBezier(t, a, b, c, d) {
     var t2 = t * t;
     var t3 = t2 * t;
-    return a  
+    return a
       + (-a * 3 + t * (3 * a - a * t)) * t
-      + (3 * b + t * (-6 * b + b * 3 * t)) * t 
+      + (3 * b + t * (-6 * b + b * 3 * t)) * t
       + (c * 3 - c * 3 * t) * t2 + d * t3;
 }
 
@@ -106,13 +106,13 @@ var ease = {
 			yoyo, //Yoyo?
 			delayBeforeRepeat //Delay in milliseconds before repeating
 		) {
-			
+
 		// Assign default values
-		var 
+		var
 			type = checkIfUndefined(type,["smoothstep"]),
 			yoyo = checkIfUndefined(yoyo,false),
 			delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
-			
+
 		//Create the tween object
 		var o = {};
 		//If the tween is a spline, set the
@@ -144,16 +144,16 @@ var ease = {
 			if (o.playing) {
 			//If the elapsed frames are less than the total frames,
 			//use the tweening formulas to move the sprite
-			
+
 			if (o.frameCounter < o.totalFrames){
-				
+
 				//Find the normalized value
 				var normalizedTime = o.frameCounter / o.totalFrames;
 				//Select the correct easing function from the
 				//`ease` object’s library of easing functions
 				//If it's not a spline, use one of the ordinary easing functions
 				if (type[0] !== "spline") {
-					
+
 				curvedTime = ease[type](normalizedTime);
 				}
 				//If it's a spline, use the `spline` function and apply the
@@ -164,7 +164,7 @@ var ease = {
 				}
 				//Interpolate the sprite's property based on the curve
 				sprite[property] = (o.endValue * curvedTime) + (o.startValue * (1 - curvedTime));
-				
+
 				o.frameCounter += 1;
 			}
 			//When the tween has finished playing, run the end tasks
@@ -195,15 +195,15 @@ var ease = {
 		 //Play and pause methods
 		 o.play = function(){ return o.playing = true; };
 		 o.pause = function(){ return o.playing = false;};
-			
+
 		//Return the tween object
 		return o;
 	}
 
-//fade in 	
+//fade in
 function fadeIn(sprite, frames) {
 	var frames = checkIfUndefined(frames,60);
-	
+
 	return tweenProperty(
 		sprite, "alpha", sprite.alpha, 1, frames, ["sine"]
 	);
@@ -219,10 +219,10 @@ function fadeOut(sprite, frames) {
 
 //pulse
 function pulse(sprite, frames , minAlpha) {
-	var 
+	var
 	frames = checkIfUndefined(frames,60),
 	minAlpha = checkIfUndefined(minAlpha,0);
-	
+
 	return tweenProperty(
 		sprite, "alpha", sprite.alpha, minAlpha, frames, ["smoothstep"], true
 	);
@@ -238,12 +238,12 @@ function slide(
 		yoyo,
 		delayBeforeRepeat
 	) {
-		var 
+		var
 			frames = checkIfUndefined(frames,60),
 			type = checkIfUndefined(type,["smoothstep"]),
 			yoyo = checkIfUndefined(yoyo,false),
 			delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
-			
+
 	return makeTween([
 		//The x axis tween
 		[sprite, "x", sprite.x, endX, frames, type, yoyo, delayBeforeRepeat],
@@ -258,7 +258,7 @@ function makeTween(tweensToAdd) {
 		var o = {};
 		//Create an internal `tweens` array to store the new tweens
 		o.tweens = [];
-		
+
 		//Make a new tween for each array
 		tweensToAdd.forEach(function(tweenPropertyArguments){
 			//Use the tween property arguments to make a new tween
@@ -298,7 +298,7 @@ function makeTween(tweensToAdd) {
 	//Return the tween object
 	return o;
 	}
-	
+
 function removeTween(tweenObject) {
 	//Remove the tween if `tweenObject` doesn't have any nested
 	//tween objects
@@ -318,7 +318,7 @@ function breathe(
 		sprite, endScaleX, endScaleY,
 		frames, yoyo, delayBeforeRepeat
 	) {
-		var 
+		var
 			yoyo= checkIfUndefined(yoyo,true),
 			delayBeforeRepeat= checkIfUndefined(delayBeforeRepeat,0);
 	return makeTween([
@@ -357,14 +357,14 @@ function strobe(
 sprite, scaleFactor, startMagnitude, endMagnitude,
 frames, yoyo, delayBeforeRepeat
 ) {
-	var 
+	var
 		scaleFactor = checkIfUndefined(scaleFactor,1.3),
 		startMagnitude = checkIfUndefined(startMagnitude,10),
 		endMagnitude = checkIfUndefined(endMagnitude,20),
 		frames = checkIfUndefined(frames,10),
 		yoyo = checkIfUndefined(yoyo,true),
 		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
-		
+
 	return makeTween([
 		//Create the scaleX tween
 		[
@@ -394,7 +394,7 @@ function wobble(
 	yoyo,
 	delayBeforeRepeat
 ){
-	var 
+	var
 		scaleFactorX = checkIfUndefined(scaleFactorX,1.2),
 		scaleFactorY = checkIfUndefined(scaleFactorY,1.2),
 		frames = checkIfUndefined(frames,10),
@@ -404,8 +404,8 @@ function wobble(
 		yEndMagnitude = checkIfUndefined(yEndMagnitude,-10),
 		friction = checkIfUndefined(friction,0.98),
 		yoyo = checkIfUndefined(yoyo,true),
-		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);		
-		
+		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
+
 	var o = makeTween([
 		//Create the scaleX tween
 		[
@@ -448,13 +448,13 @@ function walkPath(
 	yoyo, //Should the direction reverse?
 	delayBetweenSections//Delay, in milliseconds, between sections
 ) {
-	var 
+	var
 		totalFrames = checkIfUndefined(totalFrames,300),
 		type = checkIfUndefined(type,["smoothstep"]),
 		loop = checkIfUndefined(loop,false),
 		yoyo = checkIfUndefined(yoyo,false),
 		delayBetweenSections = checkIfUndefined(delayBetweenSections,0);
-		
+
 	//Clone the path array so that any possible references to sprite
 	//properties are converted into ordinary numbers
 	var pathArray = JSON.parse(JSON.stringify(originalPathArray));
@@ -501,7 +501,7 @@ function walkPath(
 			if (currentPoint < pathArray.length - 1) {
 				/* wait(delayBetweenSections).then(() { return {
 					tween = makePath(currentPoint);
-				}); */				
+				}); */
 				setTimeout(function(){tween = makePath(currentPoint);},delayBetweenSections);
 			}
 			//If we've reached the end of the path, optionally
@@ -524,7 +524,7 @@ function walkPath(
 						tween = makePath(currentPoint);
 						//... and so it continues!
 					}); */
-				
+
 					setTimeout(function(){//Reset the `currentPoint` to 0 so that we can
 											//restart at the first point
 											currentPoint = 0;
@@ -545,7 +545,7 @@ function walkPath(
 						//Make the first new path
 						tween = makePath(currentPoint);
 						//... and so it continues!
-					
+
 				}
 			}
 		};
@@ -583,7 +583,7 @@ function walkCurve(
 		yoyo, //Should the direction reverse?
 		delayBeforeContinue //Delay, in milliseconds, between sections
 	) {
-	var 
+	var
 		totalFrames = checkIfUndefined(totalFrames,300),
 		type = checkIfUndefined(type,["smoothstep"]),
 		loop = checkIfUndefined(loop,false),
@@ -595,7 +595,7 @@ function walkCurve(
 	var currentCurve = 0;
 	//Make the first path
 	var tween = makePath(currentCurve);
-	
+
 		function makePath(currentCurve) {
 		//Use the custom `followCurve` function (described earlier
 		//in the chapter) to make a sprite follow a curve
@@ -634,7 +634,7 @@ function walkCurve(
 						sprite.y = pathArray[0][1];
 						tween = makePath(currentCurve);
 					}); */
-					
+
 					setTimeout(function(){
 							currentCurve = 0;
 							sprite.x = pathArray[0][0];
@@ -662,12 +662,12 @@ followCurve
 function followCurve(
   sprite,
   pointsArray,
-  totalFrames, 
+  totalFrames,
   type,
   yoyo,
   delayBeforeRepeat
 ) {
-	var 
+	var
 		type = checkIfUndefined(type, ["smoothstep"]),
 		yoyo = checkIfUndefined(yoyo, false),
 		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat, 0);
@@ -700,8 +700,8 @@ function followCurve(
   //The `update` method will be called on each frame by the game loop.
   //This is what makes the tween move
   o.update = function(){
-    
-    var normalizedTime, curvedTime, 
+
+    var normalizedTime, curvedTime,
         p = o.pointsArray;
 
     if (o.playing) {
@@ -714,13 +714,13 @@ function followCurve(
         normalizedTime = o.frameCounter / o.totalFrames;
 
         //Select the correct easing function
-        
+
         //If it's not a spline, use one of the ordinary tween
         //functions
         if (type[0] !== "spline") {
           curvedTime = ease[type](normalizedTime);
-        } 
-        
+        }
+
         //If it's a spline, use the `spine` function and apply the
         //2 additional `type` array values as the spline's start and
         //end points
@@ -729,21 +729,21 @@ function followCurve(
           curvedTime = ease.spline(normalizedTime, o.startMagnitude, 0, 1, o.endMagnitude);
         }
 
-        //Apply the Bezier curve to the sprite's position 
+        //Apply the Bezier curve to the sprite's position
         sprite.x = cubicBezier(curvedTime, p[0][0], p[1][0], p[2][0], p[3][0]);
         sprite.y = cubicBezier(curvedTime, p[0][1], p[1][1], p[2][1], p[3][1]);
-        
+
         //Add one to the `elapsedFrames`
         o.frameCounter += 1;
       }
 
       //When the tween has finished playing, run the end tasks
       else {
-       o.end(); 
+       o.end();
       }
     }
   };
-    
+
   //The `end` method will be called when the tween is finished
   o.end = function(){
 
@@ -768,7 +768,7 @@ function followCurve(
 								o.start(o.pointsArray);
 							}
 			,delayBeforeRepeat);
-	
+
     }
   };
 
@@ -779,7 +779,7 @@ function followCurve(
   o.play = function(){
     o.playing = true;
   };
-  
+
   //Return the tween object
   return o;
 }
