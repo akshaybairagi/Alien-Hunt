@@ -72,11 +72,11 @@ function play(){
 			}
 	});
 	//Move the bullet
-	activeBullets.forEach(function(bullet){
+	bullets.activeBullets.forEach(function(bullet){
 		bullet.x += bullet.vx*contr.dt;
 		bullet.y += bullet.vy*contr.dt;
 		if(bullet.x > g.canvas.width){
-			freeBullet(bullet);
+			bullets.freeBullet(bullet);
 		}
 	});
 
@@ -149,7 +149,7 @@ function play(){
 
 	// bullets and alien check collision
 	aliens.activeAliens.forEach(function(alien){
-		activeBullets.forEach(function(bullet){
+		bullets.activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
@@ -159,7 +159,7 @@ function play(){
 				bullet.visible = false;
 				score.aliensKilled += 1;
 				aliens.freeAlien(alien);
-			 	freeBullet(bullet);
+			 	bullets.freeBullet(bullet);
 			}
 		});
 

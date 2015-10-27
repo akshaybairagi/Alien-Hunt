@@ -33,8 +33,6 @@ var player,sky,ship,gun,mGun,car;
 var blocks,playerGroup,itemGroup = group([]);
 //Global Arrays
 var designs = [];
-//bullet Pool and active Pool
-var bulletPool = [],activeBullets=[];
 
 //Object to hold game variables/constants
 var controller = {
@@ -133,25 +131,23 @@ function setup(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	//Assign the key events
-	keyHandler();
-
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar,moon,blocks,ship,car,playerGroup,itemGroup]);
 
-	aliens = new Alien();
 	//Create Aliens
+	aliens = new Alien();
 	for(var i=0;i < 5;i++){
-		var alien = aliens.createAlien();
-		alien.visible = false;
-		alien.setPosition(ship.centerX,ship.centerY);
-		aliens.alienPool.push(alien);
+		var alienObj = aliens.createAlien();
+		alienObj.visible = false;
+		alienObj.setPosition(ship.centerX,ship.centerY);
+		aliens.alienPool.push(alienObj);
 	}
 	//Create Bullets
+	bullets = new Bullet();
 	for(var i=0;i < 5;i++){
-		var bullet = createBullet();
-		bullet.visible = false;
-		bulletPool.push(bullet);
+		var bulletObj = bullets.createBullet();
+		bulletObj.visible = false;
+		bullets.bulletPool.push(bulletObj);
 	}
 	//Initi items
 	imgr = itemManager();
@@ -163,6 +159,9 @@ function setup(){
 	// titleScene.layer = 1;
 	// stage.alpha = 1;
 	// titleScene.alpha=0.95;
+
+	//Assign the key events
+	keyHandler();
 
 	playButton.press = function(){
 		g.state = play;
@@ -351,8 +350,8 @@ function createCar(){
 }
 function Alien(){
 	//aliens Pool and active Pool
-	this.alienPool = [],
-	this.activeAliens=[],
+	this.alienPool = [];
+	this.activeAliens=[];
 	this.createAlien = function(){
 		var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
 		alien.states = {
@@ -394,7 +393,7 @@ function Alien(){
 		};
 		gameScene.addChild(alien);
 		return alien;
-	},
+	};
 	this.getAlien = function(){
 		var alien = null;
 		if(this.alienPool.length > 0){
@@ -414,14 +413,14 @@ function Alien(){
 		alien.visible = true;
 		this.activeAliens.push(alien);
 		return alien;
-	},
+	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
 	 	alien.setPosition(ship.centerX,ship.centerY);
-	 	this.activeAliens.splice(aliens.activeAliens.indexOf(alien), 1);
+	 	this.activeAliens.splice(this.activeAliens.indexOf(alien), 1);
 	 	// return the alien back into the pool
 	 	this.alienPool.push(alien);
-	 }
+	};
 }
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
