@@ -589,7 +589,7 @@ function TopBar(){
 		}
 	};
 	this.reset = function(){
-		this.container.remove(o.children);
+		this.container.remove(this.container.children);
 		this.life = 5;
 		for (i = 0; i < o.life; i++){
 			this.container.addChild(sprite(assets["life.png"],11*i,5));
