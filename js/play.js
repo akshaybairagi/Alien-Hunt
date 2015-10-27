@@ -27,7 +27,7 @@ function play(){
 	// Reset the building desgin for different look
 	if(score.miles % 100 === 0){
 		contr.design = designs[randomInt(0,3)];
-		resetBuildings(contr.design); //reset the building designs
+		bd.resetBuildings(contr.design); //reset the building designs
 	}
 	//Introduce the powerUps/items in the game
 	if(score.miles % 10 === 0 && itemGroup.children.length === 0){

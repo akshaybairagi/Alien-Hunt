@@ -459,8 +459,8 @@ function createMGun(){
 }
 function end(){
 	//remove aliens
-	for(var i=activeAliens.length-1;i>=0;i--){
-		freeAlien(activeAliens[i]);
+	for(var i=aliens.activeAliens.length-1;i>=0;i--){
+		aliens.freeAlien(aliens.activeAliens[i]);
 	}
 	//remove bullets
 	for(var i=activeBullets.length-1;i>=0;i--){
@@ -487,7 +487,7 @@ function restart(){
   var pattern = designs[randomInt(0,3)];
 	contr.design = pattern;
 	contr.distance = 0;
-	resetBuildings(pattern); //reset the building designs
+	bd.resetBuildings(pattern); //reset the building designs
 
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
@@ -495,40 +495,41 @@ function restart(){
 }
 function Buildings(){
 	//variables for building blocks
-	this.numOfBuilding = 4,
-	this.buildingWidth = 300,
-	this.buildingHeight,
+	this.numOfBuilding = 4;
+	this.buildingWidth = 300;
+	this.buildingHeight = null;
+	this.row = 9;
+	this.columns = 13;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
-	blocks.nextPos = { X: 0, Y:400 },
 
-	this.pattern = designs[randomInt(0,3)],
+	this.pattern = designs[randomInt(0,3)];
 
-	this.createBuildings = function() {
+	this.createBuildings = function(){
+		blocks.nextPos = { X: 0, Y:400 };
 		//Procedural Generation of buildings
 		for (var k =0; k < this.numOfBuilding; k++){
 			this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-			var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
+			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
 				blocks.nextPos.X,blocks.nextPos.Y);
 
 			blocks.addChild(building);
 			blocks.nextPos.X=building.x + randomInt(350,400);
 			blocks.nextPos.Y=400 + randomInt(-50,50);
 		}
-	},
+	};
 	this.designBuidlings = function(width,height,pattern,x,y){
-		var row=9;
-		var coloums=13;
+		// var row=9;
+		// var coloums=13;
 		var building =rectangle(width,height,"#272726","grey",2,x,y);
 		if(pattern.image){
 			building.setPattern(pattern.image,"repeat");
 		}
 
-		var windowWidth = building.width /row;
-		var windowHeight = building.height/coloums;
-
-		for(var i = 0; i < coloums; i++){
-			for(var j = 0; j < row; j++){
+		var windowWidth = building.width /this.row;
+		var windowHeight = building.height/this.columns;
+		for(var i = 0; i < this.columns; i++){
+			for(var j = 0; j < this.row; j++){
 				if ( j % 2 !== 0 && i % 2 !== 0){
 					//create the windows
 					var window = rectangle(windowWidth,windowHeight,"grey","black",1);
@@ -546,7 +547,7 @@ function Buildings(){
 			}
 		}
 		return building;
-	},
+	};
 	this.resetBuildings = function(pattern){
 		blocks.children.forEach(function(building){
 			building.pattern = false;
@@ -558,7 +559,7 @@ function Buildings(){
 				}
 			});
 		});
-	}
+	};
 }
 function createTopBar(){
 	var o = group([]);
