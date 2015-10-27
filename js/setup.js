@@ -162,7 +162,7 @@ function setup(){
 
 	//Assign the key events
 	keyHandler();
-
+	
 	playButton.press = function(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
@@ -364,7 +364,7 @@ function Alien(){
 		alien.vx=0;
 		alien.accelerationX = 0;
 		alien.isOnGround = false;
-		alien.isTouching = false;
+		alien.isUnderCol = false;
 		alien.state = "";
 
 		alien.walk = function(){
@@ -416,7 +416,7 @@ function Alien(){
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
-		alien.isTouching = false;
+		alien.isUnderCol = false;
 	 	alien.setPosition(ship.centerX,ship.centerY);
 	 	this.activeAliens.splice(this.activeAliens.indexOf(alien), 1);
 	 	// return the alien back into the pool
@@ -565,15 +565,12 @@ function TopBar(){
 	this.lifePool = [];
 	this.activeLifePool = [];
 	this.life = 3;
-	this.miles = text("Miles " + score.miles, "10px PetMe64", "black",32,32);
-	this.miles.setPosition(g.canvas.width-3*this.miles.width,0.5);
 	this.container = group([]);
 
 	this.create = function(){
 		for (i = 0; i < this.life; i++){
 			this.container.addChild(sprite(assets["life.png"],11*i,5));
 		}
-		this.container.addChild(this.miles);
 	};
 	this.update = function(lifeCounter){
 		this.life += lifeCounter;
@@ -590,12 +587,10 @@ function TopBar(){
 	};
 	this.reset = function(){
 		this.container.remove(this.container.children);
-		this.life = 5;
-		for (i = 0; i < o.life; i++){
+		this.life = 3;
+		for (i = 0; i < this.life; i++){
 			this.container.addChild(sprite(assets["life.png"],11*i,5));
 		}
-		score.miles = 0;
-		this.container.addChild(this.miles);
 	};
 }
 function getSkyBackground(){

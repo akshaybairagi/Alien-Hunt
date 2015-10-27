@@ -7,7 +7,7 @@ function play(){
 	//count the frames and set score
 	contr.distance += 1;
 	score.miles = contr.distance/30;
-	topBar.miles.content = "Miles " + Math.ceil(score.miles);
+	// topBar.miles.content = "Miles " + Math.ceil(score.miles);
 
 	//tiling sky background
 	sky.tileX += 1;
@@ -164,8 +164,8 @@ function play(){
 		});
 
 		var playerAlienCollision = hitTestRectangle(playerGroup,alien,true);
-		if(playerAlienCollision === true && alien.isTouching === false){
-			alien.isTouching = true;
+		if(playerAlienCollision===true && alien.isUnderCol === false){
+			alien.isUnderCol = true;
 			if(player.grp.visible){
 				topBar.update(-1);
 				var fadeOutTweenPlayer = fadeOut(player.grp,10);
@@ -175,11 +175,7 @@ function play(){
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;
-				// aliens.freeAlien(alien);
-				var fadeOutTweenAlien = fadeOut(alien,10);
-				fadeOutTweenAlien.onComplete = function(){
-													aliens.freeAlien(alien);
-												};
+				aliens.freeAlien(alien);
 			}
 		}
 	});
