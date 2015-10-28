@@ -678,17 +678,25 @@ function ItemManager(){
     this.life = sprite(assets["heart.png"]);
     this.life.type = "heart";
     this.life.visible = false;
+
+		this.mBox = rectangle(15,10,"red","black",2);
+		this.mBox.type = "mbox";
+		this.mBox.visible = false;
+		gameScene.addChild(this.mBox);
     gameScene.addChild(this.car_snap);
     gameScene.addChild(this.life);
   };
   this.getItem = function(){
   	var item;
-    switch (randomInt(1,2)){
+    switch (randomInt(1,3)){
       case 1:
         item = this.car_snap;
         break;
       case 2:
         item = this.life;
+        break;
+			case 3:
+        item = this.mBox;
         break;
       default:
         console.log("Error in getting items");
