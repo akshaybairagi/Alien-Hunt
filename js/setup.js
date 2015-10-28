@@ -174,18 +174,21 @@ function setup(){
 	};
 }
 function keyHandler(){
-	//pause the game with Q  keyboard key
-	keyboard(81).press = function(){
-		if(g.paused){
-			g.resume();
-		}
-		else {
-			g.pause();
-		}
-	};
-	//fire the bullets with space key
-	var space = keyboard(32);
-	space.press = function(){
+	//pause the game with space bar key
+	keyboard(32).press = pauseGame;
+	//fire the bullets with X key and right arrow
+	var xKey = keyboard(88);//X key
+	xKey.press = firePress;
+	xKey.release = fireRelease;
+	var rArrowKey = keyboard(39);//->right arrow key
+	rArrowKey.press = firePress;
+	rArrowKey.release = fireRelease;
+	//Jump the player with z key
+	keyboard(90).press = jump;
+	keyboard(38).press = jump;
+
+	//fire
+	function firePress(){
 		if(playerGroup.item.type=="gun"){
 			playerGroup.item.visible = true;
 			player.shoot(gun);
@@ -193,8 +196,9 @@ function keyHandler(){
 		if(playerGroup.item.type=="mg"){
 			player.shoot(mGun);
 		}
-	};
-	space.release = function(){
+	}
+	//release trigger after fire
+	function fireRelease(){
 		if(playerGroup.item.type=="gun"){
 			playerGroup.item.visible = false;
 			player.walk();
@@ -202,16 +206,24 @@ function keyHandler(){
 		if(playerGroup.item.type=="mg"){
 			player.walk();
 		}
-	};
-	//Jump the player with upArrow
-	var upArrow = keyboard(38);
-	upArrow.press = function(){
+	}
+	//pause function for stopping the game
+	function pauseGame(){
+		if(g.paused){
+			g.resume();
+		}
+		else {
+			g.pause();
+		}
+	}
+	//jump player
+	function jump(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
 			playerGroup.vy = -contr.jumpForce;
 			player.jump();
-		}
-	};
+			}
+	}
 	//slide the player with downArrow
 	var dwnArrow = keyboard(40);
 	dwnArrow.press = function(){
