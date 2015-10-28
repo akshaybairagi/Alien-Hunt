@@ -211,6 +211,7 @@ function keyHandler(){
 	function pauseGame(){
 		if(g.paused){
 			g.resume();
+			contr.t0 = new Date().getTime(); // initialize value of t0
 		}
 		else {
 			g.pause();

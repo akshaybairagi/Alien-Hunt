@@ -153,7 +153,7 @@ function play(){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
-				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
+				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
 				//explosionSound();
 				explosionSound.play();
 				bullet.visible = false;
