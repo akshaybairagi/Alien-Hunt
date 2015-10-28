@@ -69,25 +69,25 @@ Circle.prototype = new DisplayObject();
 Circle.prototype.constructor=Circle;
 //The `render` method
 Circle.prototype.render= function(ctx) {
-			ctx.strokeStyle = this.strokeStyle;
-			ctx.lineWidth = this.lineWidth;
-			if (this.gradient){
-				ctx.fillStyle = this.gradient;
-			}
-			else{
-					ctx.fillStyle = this.fillStyle;
-			}
-			ctx.beginPath();
-			ctx.arc(
-				this.radius + (-this.diameter * this.pivotX),
-				this.radius + (-this.diameter * this.pivotY),
-				this.radius,
-				0, 2*Math.PI,
-				false
-			);
-		if (this.strokeStyle !== "none") ctx.stroke();
-		if (this.fillStyle !== "none") ctx.fill();
-		if (this.mask && this.mask === true) ctx.clip();
+		ctx.strokeStyle = this.strokeStyle;
+		ctx.lineWidth = this.lineWidth;
+		if (this.gradient){
+			ctx.fillStyle = this.gradient;
+		}
+		else{
+				ctx.fillStyle = this.fillStyle;
+		}
+		ctx.beginPath();
+		ctx.arc(
+			this.radius + (-this.diameter * this.pivotX),
+			this.radius + (-this.diameter * this.pivotY),
+			this.radius,
+			0, 2*Math.PI,
+			false
+		);
+	if (this.strokeStyle !== "none") ctx.stroke();
+	if (this.fillStyle !== "none") ctx.fill();
+	if (this.mask && this.mask === true) ctx.clip();
 };
 //A higher level wrapper for the circle sprite
 function circle(diameter, fillStyle, strokeStyle, lineWidth, x, y) {
