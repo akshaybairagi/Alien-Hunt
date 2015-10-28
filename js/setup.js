@@ -3,15 +3,16 @@ var g = game(800, 600, setup,
 					"json/hands.png",
 					"json/alien.png",
 					"json/alienHunter.json",
+					"json/car.json",
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					"json/car.json",
 					"sounds/retro-action.wav",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					//"fonts/puzzler.otf"
+					"fonts/puzzler.otf",
+					"fonts/PetMe64.ttf"
 				]
 				,load
 			);
@@ -26,22 +27,33 @@ window.addEventListener("resize", function(event){
 	g.scaleToWindow();
 });
 
-g.time = Date.now();
-g.noOfFrame = 0;
-
 //Global variables
-var player,sky,ship,gun,mGun,bike,car;
-//Global Arrays
-var items = [],designs = [];
-//aliens Pool and active Pool
-var alienPool = [],activeAliens=[];
-//bullet Pool and active Pool
-var bulletPool = [],activeBullets=[];
+var player,sky,ship,gun,mGun,car;
 //Global groups
-var blocks,playerGroup,itemGroup;
-//force of gravity/speed and jump force
-var gravity = 0.4,speed = 5,jumpForce = 8.5;
-var bulletSpeed = 18;
+var blocks,playerGroup,itemGroup = group([]);
+//Global Arrays
+var designs = [];
+
+//Object to hold game variables/constants
+var controller = {
+	gravity: 15,	//force of gravity
+	speed: 275,		//speed 275
+	jumpForce: 375,	// force to jump
+	bulletSpeed: 1000, //speed of the bullet
+	d0: 0,	// time at last call
+	dt:	0,	// elapsed time between calls
+	design: null,
+	distance: null,
+	miles: null,
+	noOfLife: 4,
+	maxLife: 5
+};
+var contr = controller;
+
+var score = {
+	aliensKilled: 0,
+	miles: 0
+};
 
 //For activities to be performed while assets are loading
 function load(){
@@ -61,16 +73,6 @@ function setup(){
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
 
-	// bgMusic = new Audio("sounds/retro-action.wav");
-	// bgMusic.loop = true;
-	// bgMusic.play();
-	//
-	// shotSound = new Audio("sounds/shot.wav");
-	// shotSound.addEventListener("ended", function() {
-	// 		console.log("shot sound ended");
-	// 		},
-	// 	true);
-
 	//Create the sprites
 	//1. The 'titleScene' sprites
 	//The play button
@@ -89,14 +91,15 @@ function setup(){
 	titleMessage = text("start game", "20px puzzler", "white", -200, 420);
 
 	//Game title name
-	gameTitle = text("Alien Hunter", "40px puzzler", "white", 100, 150);
+	gameTitle = text("Alien Hunter", "40px PetMe64", "white", 100, 150);
 
 	//Make the 'playButton' and 'titleMessage' slide in from the
 	//edges of the screen using the 'slide' function
 	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
 	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
-	frontBg = rectangle(g.canvas.width,g.canvas.height,"black","",1,0,0);
+	frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","",1,0,0);
+
 	//Create the 'titleScene' group
 	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
 
@@ -105,13 +108,16 @@ function setup(){
 	sky = getSkyBackground();
 	//Initialize designs
 	initDesigns();
+
 	//space ship sprites
 	ship = createShip();
-
+	//draw moon sprites
 	moon = drawMoon();
 	//Add a black border along the top of the screen
-	topBar = createTopBar();
+	//create life sprite pool
+	topBar = new TopBar();
 	topBar.create();
+	topBar.update(0);
 
 	//make player and set initials
 	player = makePlayer();
@@ -120,43 +126,53 @@ function setup(){
 
 	//Power Ups
 	gun = createGun();
-	bike = createBike();
 	car = createCar();
-	mGun = createMGun();
 
 	//Create Player Group as a container
 	playerGroup = createPlayerGroup();
 
 	//Create  buildings
-	createBuildings();
-
-	//Assign the key events
-	keyHandler();
+	bd = new Buildings();
+	bd.createBuildings();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene = group([sky,topBar.container,moon,blocks,ship,car,playerGroup,itemGroup]);
+
 	//Create Aliens
+	aliens = new Alien();
 	for(var i=0;i < 5;i++){
-		var alien = createAlien();
-		alien.visible = false;
-		alien.setPosition(ship.centerX,ship.centerY);
-		alienPool.push(alien);
+		var alienObj = aliens.createAlien();
+		alienObj.visible = false;
+		alienObj.setPosition(ship.centerX,ship.centerY);
+		aliens.alienPool.push(alienObj);
 	}
 	//Create Bullets
+	bullets = new Bullet();
 	for(var i=0;i < 5;i++){
-		var bullet = createBullet();
-		bullet.visible = false;
-		bulletPool.push(bullet);
+		var bulletObj = bullets.createBullet();
+		bulletObj.visible = false;
+		bullets.bulletPool.push(bulletObj);
 	}
+	//Initi items
+	imgr = new ItemManager();
+	imgr.initItems();
+
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
 	gameScene.x = 814;
+	// titleScene.layer = 1;
+	// stage.alpha = 1;
+	// titleScene.alpha=0.95;
+
+	//Assign the key events
+	keyHandler();
 
 	playButton.press = function(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 		bgMusic.play();
+		contr.t0 = new Date().getTime(); // initialize value of t0
 	};
 }
 function keyHandler(){
@@ -194,7 +210,7 @@ function keyHandler(){
 	upArrow.press = function(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
-			playerGroup.vy = -jumpForce;
+			playerGroup.vy = -contr.jumpForce;
 			player.jump();
 		}
 	};
@@ -336,103 +352,80 @@ function createCar(){
 	}
 	return car;// return a car object
 }
-function createAlien(){
-	var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
-	alien.states = {
-		stand: 0,
-		walk: [1,6],
-		jump: 7
-	};
-	//Set the player's 'fps'
-	alien.fps = 12;
-	alien.vx=0;
-	alien.accelerationX = 0;
-	alien.isOnGround = false;
-	alien.isTouching = false;
-	alien.state = "";
-
-	alien.walk = function(){
-		if(alien.state!== "walk"){
-			alien.state = "walk";
-			alien.playSequence(alien.states.walk);
-		}
-	};
-	alien.jump = function(){
-		if(alien.state!== "jump"){
-			alien.state = "jump";
-			alien.show(alien.states.jump);
-		}
-	};
-	alien.stand = function(){
-		if(alien.state!== "stand"){
-			alien.state = "stand";
-			alien.show(alien.states.stand);
-		}
-	};
-	alien.stop = function(){
-		if(alien.state!== "stop"){
-			alien.state = "stop";
-			alien.stop();
-		}
-	};
-	return alien;
-}
-function getAlien(){
-	var alien = null;
-	if(alienPool.length > 0){
-		alien = alienPool.pop();
-
+function Alien(){
+	//aliens Pool and active Pool
+	this.alienPool = [];
+	this.activeAliens=[];
+	this.createAlien = function(){
+		var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
+		alien.states = {
+			stand: 0,
+			walk: [1,6],
+			jump: 7
+		};
+		//Set the player's 'fps'
+		alien.fps = 12;
 		alien.vx=0;
-		alien.vy = 0;
 		alien.accelerationX = 0;
 		alien.isOnGround = false;
-		alien.isTouching = false;
+		alien.isUnderCol = false;
 		alien.state = "";
-		alien.act = "";
-	}
-	else {
-		alien = createAlien();
-	}
-	alien.setPosition(ship.centerX,ship.centerY);
-	alien.visible = true;
-	activeAliens.push(alien);
-	return alien;
-}
-function freeAlien(alien){
-	alien.visible = false;
-	alien.setPosition(ship.centerX,ship.centerY);
-	activeAliens.splice(activeAliens.indexOf(alien), 1);
-	// return the alien back into the pool
-	alienPool.push(alien);
-}
-function createItemCollector(X,Y,width){
-	var itemNo = randomInt(1,4);
-	var item;
-	switch (itemNo) {
-		case 1:
-			item = sprite(assets["bike_snap.png"]);
-			item.type = "bike";
-			break;
-		case 2:
-			item = sprite(assets["heart.png"]);
-			item.type = "heart";
-			break;
-		case 3:
-			item = sprite(assets["mGun.png"]);
-			item.type = "mg";
-			break;
-		case 4:
-			item = sprite(assets["car_snap.png"]);
-			item.type = "car";
-			break;
-		default:
-			console.log("Error displaying items");
-	}
-	if (item !== undefined){
-		item.setPosition(X + randomInt(width/2,width),Y - 130);
-		items.push(item);
-		return item;
-	}
+
+		alien.walk = function(){
+			if(alien.state!== "walk"){
+				alien.state = "walk";
+				alien.playSequence(alien.states.walk);
+			}
+		};
+		alien.jump = function(){
+			if(alien.state!== "jump"){
+				alien.state = "jump";
+				alien.show(alien.states.jump);
+			}
+		};
+		alien.stand = function(){
+			if(alien.state!== "stand"){
+				alien.state = "stand";
+				alien.show(alien.states.stand);
+			}
+		};
+		alien.stop = function(){
+			if(alien.state!== "stop"){
+				alien.state = "stop";
+				alien.stop();
+			}
+		};
+		gameScene.addChild(alien);
+		return alien;
+	};
+	this.getAlien = function(){
+		var alien = null;
+		if(this.alienPool.length > 0){
+			alien = this.alienPool.pop();
+			alien.vx=0;
+			alien.vy = 0;
+			alien.accelerationX = 0;
+			alien.isOnGround = false;
+			alien.isTouching = false;
+			alien.state = "";
+			alien.act = "";
+		}
+		else {
+			alien = this.createAlien();
+		}
+		alien.setPosition(ship.centerX,ship.centerY);
+		alien.visible = true;
+		this.activeAliens.push(alien);
+		return alien;
+	};
+  this.freeAlien = function(alien){
+	 	alien.visible = false;
+		alien.isUnderCol = false;
+	 	alien.setPosition(ship.centerX,ship.centerY);
+	 	this.activeAliens.splice(this.activeAliens.indexOf(alien), 1);
+	 	// return the alien back into the pool
+	 	this.alienPool.push(alien);
+	};
 }
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
@@ -448,22 +441,6 @@ function createPlayerGroup(){
 	o.item = gun;
 	o.setPosition(150,300);
 	return	o;
-}
-function createBike(){
-	var bike = sprite(assets["bike.png"]);
-	bike.type = "bike";
-	bike.visible = false;
-	bike.remove = function(){
-		bike.visible = false;
-		stage.addChild(bike);
-
-		player.grp.visible = true;
-
-		playerGroup.addChild(player.grp);
-		playerGroup.addChild(gun);
-		playerGroup.item = gun;
-	}
-	return bike;
 }
 function createGun(){
 	var gun = sprite(assets["gun.png"],25,21);
@@ -485,139 +462,135 @@ function createMGun(){
 	return mGun;
 }
 function end(){
+	//remove aliens
+	for(var i=aliens.activeAliens.length-1;i>=0;i--){
+		aliens.freeAlien(aliens.activeAliens[i]);
+	}
+	//remove bullets
+	for(var i=bullets.activeBullets.length-1;i>=0;i--){
+		bullets.freeBullet(bullets.activeBullets[i]);
+	}
 	//Display the 'titleScene' and hide the 'gameScene'
 	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
-	//remove game objects and references
-	blocks.removeHierarchy(blocks.children);
-	itemGroup.removeHierarchy(itemGroup.children);
-	topBar.removeHierarchy(topBar.children);
-
-	items = [];
-	bullets = [];
-
-	gameScene.remove(itemGroup.children);
+	gameScene.visible = false;
 
 	//Assign a new button 'press' action to restart the game
 	playButton.press = function(){
 		restart();
+		//Set the game state to 'play' and 'resume' the game
+		contr.t0 = new Date().getTime(); // initialize value of t0
+		g.resume();
 	};
 }
-
 function restart(){
-	sky = getSkyBackground();
-
-	//Add a black border along the top of the screen
-	topBar = createTopBar();
-	topBar.create();
-
-	//make player and set initials
-	player = makePlayer();
-	player.walk();
-	player.breath();
-
-	//Power Ups
-	gun = createGun();
-	bike = createBike();
-	car = createCar();
-	mGun = createMGun();
-
-	//Create Player Group as a container
-	playerGroup = createPlayerGroup();
-
-	//space ship sprites
-	ship = createShip();
-
-	//Create  buildings
-	createBuildings();
-
-	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,moon,topBar,ship,car,bike,mGun,blocks,itemGroup,playerGroup]);
+	gameScene.visible = true;
+	playerGroup.setPosition(150,300);
+	topBar.reset(5);
+  var pattern = designs[randomInt(0,3)];
+	contr.design = pattern;
+	contr.distance = 0;
+	bd.resetBuildings(pattern); //reset the building designs
 
 	//Hide the titleScene and reveal the gameScene
 	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
 	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-
-	//Set the game state to 'play' and 'resume' the game
-	g.state = play;
-	g.resume();
 }
-function createBuildings(){
+function Buildings(){
+	//variables for building blocks
+	this.numOfBuilding = 4;
+	this.buildingWidth = 300;
+	this.buildingHeight = null;
+	this.row = 9;
+	this.columns = 13;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
-	itemGroup = group([]);
 
-	//variables for building blocks
-	this.pattern = designs[0];
-	this.numOfBuilding = 5;
-	this.buildingWidth = 300;
-	this.buildingHeight;
-	blocks.nextPos = { X: 32, Y:400 };
+	this.pattern = designs[randomInt(0,3)];
 
-	//Procedural Generation of buildings
-	for (var k =0; k < this.numOfBuilding; k++){
-		this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-		if((k+1)%3 == 0){
-			var item = createItemCollector(blocks.nextPos.X,blocks.nextPos.Y,this.buildingWidth);
-			itemGroup.addChild(item);
+	this.createBuildings = function(){
+		blocks.nextPos = { X: 0, Y:400 };
+		//Procedural Generation of buildings
+		for (var k =0; k < this.numOfBuilding; k++){
+			this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
+			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
+				blocks.nextPos.X,blocks.nextPos.Y);
+
+			blocks.addChild(building);
+			blocks.nextPos.X=building.x + randomInt(350,400);
+			blocks.nextPos.Y=400 + randomInt(-50,50);
 		}
-			this.pattern = designs[randomInt(0,3)];
+	};
+	this.designBuidlings = function(width,height,pattern,x,y){
+		// var row=9;
+		// var coloums=13;
+		var building =rectangle(width,height,"#272726","grey",2,x,y);
+		if(pattern.image){
+			building.setPattern(pattern.image,"repeat");
+		}
 
-		var building = designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
-			blocks.nextPos.X,blocks.nextPos.Y);
+		var windowWidth = building.width /this.row;
+		var windowHeight = building.height/this.columns;
+		for(var i = 0; i < this.columns; i++){
+			for(var j = 0; j < this.row; j++){
+				if ( j % 2 !== 0 && i % 2 !== 0){
+					//create the windows
+					var window = rectangle(windowWidth,windowHeight,"grey","black",1);
+					window.x = windowWidth*j;
+					window.y = windowHeight*i;
+					window.i = i;
+					window.j = j;
+					if(randomInt(0,1)){
+						window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+					}
+					window.blendMode = "hard-light";
 
-		blocks.addChild(building);
-
-		blocks.nextPos.X=building.x + randomInt(350,400);
-		blocks.nextPos.Y=400 + randomInt(-50,50);
-	}
-}
-function designBuidlings(width,height,pattern,x,y){
-	var row=9;
-	var coloums=13;
-	var building =rectangle(width,height,"#272726","grey",2,x,y);
-	if(pattern.image)
-		building.setPattern(pattern.image,"repeat");
-
-	var windowWidth = building.width /row;
-	var windowHeight = building.height/coloums;
-
-	for(var i = 0; i < coloums; i++){
-		for(var j = 0; j < row; j++){
-			if ( j % 2 !== 0 && i % 2 !== 0){
-				//create the windows
-				var window = rectangle(windowWidth,windowHeight,"grey","black",1);
-				window.x = windowWidth*j;
-				window.y = windowHeight*i;
-				window.i = i;
-				window.j = j;
+					building.addChild(window);
+				}
+			}
+		}
+		return building;
+	};
+	this.resetBuildings = function(pattern){
+		blocks.children.forEach(function(building){
+			building.pattern = false;
+			if(pattern.image)	building.setPattern(pattern.image,"repeat");
+			building.children.forEach(function(window){
+				window.gradient = false;
 				if(randomInt(0,1)){
 					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
-				window.blendMode = "hard-light";
-
-				building.addChild(window);
-			}
-		}
-	}
-	return building;
-}
-function createTopBar(){
-	var o = group([]);
-	o.life = 50;
-
-	o.create = function(){
-		for (i = 0; i < o.life; i++){
-			o.addChild(sprite(assets["life.png"],11*i,5));
-		}
+			});
+		});
 	};
+}
+function TopBar(){
+	this.pool = [];
+	this.activePool = [];
+ 	this.noLife = contr.noOfLife;
+	this.maxLife =contr.maxLife
+	this.container = group([]);
 
-	o.update = function(lifeCounter){
-		o.life += lifeCounter;
-		if(o.life >= 1){
-			o.remove(o.children);
-			o.create();
+	this.create = function(){
+	 for(var i=0;i < this.maxLife;i++){
+		var life = sprite(assets["life.png"],11*i,5);
+		life.visible = false;
+		this.container.addChild(life);
+	 }
+	};
+	this.update = function(lifeCounter){
+		this.noLife += lifeCounter;
+		if(this.noLife > this.maxLife)
+			this.noLife = this.maxLife;
+		if(this.noLife > 0){
+			for(var i=0;i < this.maxLife;i++){
+				if(i < this.noLife)
+					this.container.children[i].visible = true;
+				else {
+					this.container.children[i].visible = false;
+				}
+			}
 		}
 		else{
 			playerGroup.vy = 0;
@@ -626,7 +599,16 @@ function createTopBar(){
 			setTimeout(end,1000);
 		}
 	};
-	return o;
+	this.reset = function(){
+		this.noLife = contr.noOfLife;
+		for(var i=0;i < this.maxLife;i++){
+			if(i < this.noLife)
+				this.container.children[i].visible = true;
+			else {
+				this.container.children[i].visible = false;
+			}
+		}
+	};
 }
 function getSkyBackground(){
 		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
@@ -667,4 +649,37 @@ function initDesigns(){
 	designs.push(design2);
 	designs.push(design3);
 	designs.push(design4);
+}
+function ItemManager(){
+  this.initItems = function(){
+    this.car_snap = sprite(assets["car_snap.png"]);
+    this.car_snap.type = "car";
+    this.car_snap.visible = false;
+
+    this.life = sprite(assets["heart.png"]);
+    this.life.type = "heart";
+    this.life.visible = false;
+    gameScene.addChild(this.car_snap);
+    gameScene.addChild(this.life);
+  };
+  this.getItem = function(){
+  	var item;
+    switch (randomInt(1,2)){
+      case 1:
+        item = this.car_snap;
+        break;
+      case 2:
+        item = this.life;
+        break;
+      default:
+        console.log("Error in getting items");
+    }
+    if (item !== undefined){
+      return item;
+  	}
+  };
+  this.removeItem = function(item){
+    item.visible= false;
+    gameScene.addChild(item);
+  };
 }
