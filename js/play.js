@@ -7,7 +7,7 @@ function play(){
 	//count the frames and set score
 	contr.distance += 1;
 	score.miles = contr.distance/30;
-	topBar.miles.content = "Miles " + Math.ceil(score.miles);
+	// topBar.miles.content = "Miles " + Math.ceil(score.miles);
 
 	//tiling sky background
 	sky.tileX += 1;
@@ -21,20 +21,21 @@ function play(){
 		itemGroup.x -= contr.speed*contr.dt;
 
 	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
-		itemGroup.removeChild(itemGroup.children[0]);
+		imgr.removeItem(itemGroup.children[0]);
 	}
 
 	// Reset the building desgin for different look
 	if(score.miles % 100 === 0){
 		contr.design = designs[randomInt(0,3)];
-		resetBuildings(contr.design); //reset the building designs
+		bd.resetBuildings(contr.design); //reset the building designs
 	}
 	//Introduce the powerUps/items in the game
-	// if(score.miles % 10 === 0 && itemGroup.children.length === 0){
-	// 	var item = imgr.getItem();
-	// 	itemGroup.setPosition(blocks.nextPos.X + randomInt(150,300),blocks.nextPos.Y - 130);
-	// 	itemGroup.addChild(item);
-	// }
+	if(score.miles % 10 === 0 && itemGroup.children.length === 0){
+		var item = imgr.getItem();
+		item.visible= true;
+		itemGroup.addChild(item);
+		itemGroup.setPosition(g.canvas.width + randomInt(150,300),300);
+	}
 
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*contr.dt;
@@ -61,21 +62,21 @@ function play(){
 	});
 
 	//move aliens
-	activeAliens.forEach(function(alien){
+	aliens.activeAliens.forEach(function(alien){
 			alien.vy += contr.gravity;
 			alien.y += alien.vy*contr.dt;
 			alien.vx += alien.accelerationX;
 			alien.x += alien.vx*contr.dt;
 			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
-				freeAlien(alien);
+				aliens.freeAlien(alien);
 			}
 	});
 	//Move the bullet
-	activeBullets.forEach(function(bullet){
+	bullets.activeBullets.forEach(function(bullet){
 		bullet.x += bullet.vx*contr.dt;
 		bullet.y += bullet.vy*contr.dt;
 		if(bullet.x > g.canvas.width){
-			freeBullet(bullet);
+			bullets.freeBullet(bullet);
 		}
 	});
 
@@ -84,7 +85,7 @@ function play(){
 	}
 	//insert aliens in the game every 120th frame
 	if(contr.distance % 120 == 0){
-		var alien = getAlien();
+		var alien = aliens.getAlien();
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -96,7 +97,7 @@ function play(){
 	//check if player fell on the ground and stop the game loop
 	if(playerGroup.y > g.canvas.height){
 		topBar.update(-1);
-		if(topBar.life > 0){
+		if(topBar.noLife > 0){
 			playerGroup.setPosition(150,300);
 			var _speed = contr.speed;
 			contr.speed = 0;
@@ -121,7 +122,7 @@ function play(){
 		}
 
 		//Check alien and collision with buildings
-		activeAliens.forEach(function(alien){
+		aliens.activeAliens.forEach(function(alien){
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
@@ -147,8 +148,8 @@ function play(){
 	});
 
 	// bullets and alien check collision
-	activeAliens.forEach(function(alien){
-		activeBullets.forEach(function(bullet){
+	aliens.activeAliens.forEach(function(alien){
+		bullets.activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
@@ -157,14 +158,14 @@ function play(){
 				explosionSound.play();
 				bullet.visible = false;
 				score.aliensKilled += 1;
-				freeAlien(alien);
-			 	freeBullet(bullet);
+				aliens.freeAlien(alien);
+			 	bullets.freeBullet(bullet);
 			}
 		});
 
-		var playerAlienCollision = hitTestRectangle(playerGroup,alien);
-		if(playerAlienCollision && alien.isTouching === false){
-			alien.isTouching = true;
+		var playerAlienCollision = hitTestRectangle(playerGroup,alien,true);
+		if(playerAlienCollision===true && alien.isUnderCol === false){
+			alien.isUnderCol = true;
 			if(player.grp.visible){
 				topBar.update(-1);
 				var fadeOutTweenPlayer = fadeOut(player.grp,10);
@@ -174,14 +175,10 @@ function play(){
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;
-				var fadeOutTweenAlien = fadeOut(alien,30);
-				fadeOutTweenAlien.onComplete = function(){
-													freeAlien(alien);
-												};
+				aliens.freeAlien(alien);
 			}
 		}
 	});
-
 	//handle the collision with items
 	itemGroup.children.forEach(function(item){
 		if(playerGroup.item.type == "gun"){
@@ -205,18 +202,6 @@ function play(){
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
-				}
-				if(item.type == "mg"){
-					gun.visible = false;
-					item.visible = false;
-					stage.addChild(gun);
-
-					mGun.visible = true;
-					mGun.setPosition(7,22);
-					playerGroup.addChild(mGun);
-
-					playerGroup.item = mGun;
-					setTimeout(mGun.remove,5000);
 				}
 			}
 		}
