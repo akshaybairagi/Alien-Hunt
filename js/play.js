@@ -97,7 +97,7 @@ function play(){
 	//check if player fell on the ground and stop the game loop
 	if(playerGroup.y > g.canvas.height){
 		topBar.update(-1);
-		if(topBar.life > 0){
+		if(topBar.noLife > 0){
 			playerGroup.setPosition(150,300);
 			var _speed = contr.speed;
 			contr.speed = 0;

@@ -44,7 +44,9 @@ var controller = {
 	dt:	0,	// elapsed time between calls
 	design: null,
 	distance: null,
-	miles: null
+	miles: null,
+	noOfLife: 4,
+	maxLife: 5
 };
 var contr = controller;
 
@@ -112,8 +114,10 @@ function setup(){
 	//draw moon sprites
 	moon = drawMoon();
 	//Add a black border along the top of the screen
+	//create life sprite pool
 	topBar = new TopBar();
 	topBar.create();
+	topBar.update(0);
 
 	//make player and set initials
 	player = makePlayer();
@@ -162,7 +166,7 @@ function setup(){
 
 	//Assign the key events
 	keyHandler();
-	
+
 	playButton.press = function(){
 		g.state = play;
 		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
@@ -562,21 +566,31 @@ function Buildings(){
 	};
 }
 function TopBar(){
-	this.lifePool = [];
-	this.activeLifePool = [];
-	this.life = 3;
+	this.pool = [];
+	this.activePool = [];
+ 	this.noLife = contr.noOfLife;
+	this.maxLife =contr.maxLife
 	this.container = group([]);
 
 	this.create = function(){
-		for (i = 0; i < this.life; i++){
-			this.container.addChild(sprite(assets["life.png"],11*i,5));
-		}
+	 for(var i=0;i < this.maxLife;i++){
+		var life = sprite(assets["life.png"],11*i,5);
+		life.visible = false;
+		this.container.addChild(life);
+	 }
 	};
 	this.update = function(lifeCounter){
-		this.life += lifeCounter;
-		if(this.life >= 1){
-			this.container.remove(this.container.children);
-			this.create();
+		this.noLife += lifeCounter;
+		if(this.noLife > this.maxLife)
+			this.noLife = this.maxLife;
+		if(this.noLife > 0){
+			for(var i=0;i < this.maxLife;i++){
+				if(i < this.noLife)
+					this.container.children[i].visible = true;
+				else {
+					this.container.children[i].visible = false;
+				}
+			}
 		}
 		else{
 			playerGroup.vy = 0;
@@ -586,10 +600,13 @@ function TopBar(){
 		}
 	};
 	this.reset = function(){
-		this.container.remove(this.container.children);
-		this.life = 3;
-		for (i = 0; i < this.life; i++){
-			this.container.addChild(sprite(assets["life.png"],11*i,5));
+		this.noLife = contr.noOfLife;
+		for(var i=0;i < this.maxLife;i++){
+			if(i < this.noLife)
+				this.container.children[i].visible = true;
+			else {
+				this.container.children[i].visible = false;
+			}
 		}
 	};
 }
