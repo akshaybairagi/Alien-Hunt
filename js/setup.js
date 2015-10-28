@@ -45,15 +45,10 @@ var controller = {
 	design: null,
 	distance: null,
 	miles: null,
-	noOfLife: 4,
+	noOfLife: 3,
 	maxLife: 5
 };
 var contr = controller;
-
-var score = {
-	aliensKilled: 0,
-	miles: 0
-};
 
 //For activities to be performed while assets are loading
 function load(){
@@ -119,6 +114,9 @@ function setup(){
 	topBar.create();
 	topBar.update(0);
 
+	//Display score
+	score = new Score();
+
 	//make player and set initials
 	player = makePlayer();
 	player.walk();
@@ -136,7 +134,7 @@ function setup(){
 	bd.createBuildings();
 
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar.container,moon,blocks,ship,car,playerGroup,itemGroup]);
+	gameScene = group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
 
 	//Create Aliens
 	aliens = new Alien();
@@ -565,9 +563,17 @@ function Buildings(){
 		});
 	};
 }
+function Score(){
+	this.aliensKilled = 0;
+	this.miles = 0;
+	this.score = text(this.miles, "10px PetMe64", "black",32,32);
+	this.score.setPosition(g.canvas.width- 2*this.score.width,0.5);
+
+	this.update = function(scoreVal){
+		this.score.content = Math.ceil(scoreVal);
+	};
+}
 function TopBar(){
-	this.pool = [];
-	this.activePool = [];
  	this.noLife = contr.noOfLife;
 	this.maxLife =contr.maxLife
 	this.container = group([]);
