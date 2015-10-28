@@ -3,13 +3,13 @@ function animatePlayer(sprite,frameAngles){
 	sprite.animate.playing = false;
 	sprite.animate.currentFrame = 0;
 	sprite.animate.frameAngles = frameAngles
-	
+
 	var frameCounter = 0,
 	numberOfFrames = 0,
 	startFrame = 0,
 	endFrame = 0,
 	timerInterval = undefined;
-	
+
 	//The `show` function (to display static states)
 	function show(frameNumber) {
 		//Reset any possible previous animations
@@ -17,7 +17,7 @@ function animatePlayer(sprite,frameAngles){
 		//Find the new state on the sprite
 		sprite.animate.gotoFrame(frameNumber);
 	}
-	
+
 	//The `play` function plays all the sprite's frames
 	function play() {
 		playAnimation();
@@ -27,7 +27,7 @@ function animatePlayer(sprite,frameAngles){
 		reset();
 		sprite.animate.gotoFrame(sprite.animate.currentFrame);
 	}
-	
+
 	function reset(){
 		//Reset `sprite.playing` to `false`, set the `frameCounter` to 0,
 		//and clear the `timerInterval`
@@ -39,12 +39,12 @@ function animatePlayer(sprite,frameAngles){
 			numberOfFrames = 0;
 			clearInterval(timerInterval);
 		}
-	}	
-	
+	}
+
 	function playAnimation(){
 		//Reset any possible previous animations
 		reset();
-		
+
 		//Figure out how many frames there are in the range
 		numberOfFrames = sprite.animate.frameAngles.length;
 		startFrame = 0;
@@ -52,12 +52,12 @@ function animatePlayer(sprite,frameAngles){
 
 		//Calculate the frame rate. Set the default fps to 12
 		if (!sprite.animate.fps) sprite.animate.fps = 12;
-		
-		var frameRate = 1000 / sprite.animate.fps;		
-		
+
+		var frameRate = 1000 / sprite.animate.fps;
+
 		//Set the sprite to the starting frame
 		sprite.animate.gotoFrame(startFrame);
-		
+
 		//If the state isn't already playing, start it
 		if(!sprite.animate.playing) {
 		  timerInterval = setInterval(advanceAngularFrame.bind(this), frameRate);
@@ -85,10 +85,10 @@ function animatePlayer(sprite,frameAngles){
 		  }
 		}
 	}
-	
+
 	function gotoFrame(frameNumber){
 		sprite.rotation = (Math.PI/180)*sprite.animate.frameAngles[frameNumber];
-		sprite.animate.currentFrame = frameNumber;		
+		sprite.animate.currentFrame = frameNumber;
 	}
 
   //Add the `show`, `play`, `stop` and `playSequence` methods to the sprite.

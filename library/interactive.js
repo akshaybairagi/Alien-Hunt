@@ -81,8 +81,8 @@ function makePointer(element, scale){
 		dragSprite: null,
 		dragOffsetX: 0,
 		dragOffsetY: 0,
-		
-		updateDragAndDrop: function(sprite){		
+
+		updateDragAndDrop: function(sprite){
 	  //Check whether the pointer is pressed down
 	  if (this.isDown) {
 
@@ -127,8 +127,8 @@ function makePointer(element, scale){
 			  break;
 			}
 		  }
-		} 
-		
+		}
+
 		//If the pointer is down and it has a `dragSprite`, make the sprite follow the pointer's
 		//position, with the calculated offset
 		else {
@@ -153,7 +153,7 @@ function makePointer(element, scale){
 			  return false;
 			}
 	  },this);
-    
+
 	},
 		//The pointer's mouse `moveHandler`
 	moveHandler: function(event) {
@@ -201,7 +201,7 @@ function makePointer(element, scale){
 		//Call the `press` method if it's been assigned by the user
 		if (this.press) this.press();
 		event.preventDefault();
-	},		
+	},
 	//The pointer's `upHandler`
 	upHandler: function(event) {
 		//Figure out how much time the pointer has been down
@@ -233,7 +233,7 @@ function makePointer(element, scale){
 		//Call the `release` method if it's been assigned by the user
 		if (this.release) this.release();
 		event.preventDefault();
-	},	
+	},
 	hitTestSprite: function(sprite) {
 		//The `hit` variable will become `true` if the pointer is
 		//touching the sprite and remain `false` if it isn't
@@ -268,27 +268,27 @@ function makePointer(element, scale){
 		}
 		return hit;
 	 },
-	};	
+	};
 		//Bind the events to the handlers’
 		//Mouse events
 		element.addEventListener("mousemove", pointer.moveHandler.bind(pointer), false);
 		element.addEventListener("mousedown", pointer.downHandler.bind(pointer), false);
-		
+
 		//Add the `mouseup` event to the `window` to
 		//catch a mouse button release outside of the canvas area
 		window.addEventListener("mouseup", pointer.upHandler.bind(pointer), false);
-		
+
 		//Touch events
 		element.addEventListener("touchmove", pointer.touchmoveHandler.bind(pointer), false);
 		element.addEventListener("touchstart", pointer.touchstartHandler.bind(pointer), false);
-		
+
 		//Add the `touchend` event to the `window` object to
 		//catch a mouse button release outside the canvas area
 		window.addEventListener("touchend", pointer.touchendHandler.bind(pointer), false);
-		
+
 		//Disable the default pan and zoom actions on the `canvas`
 		element.style.touchAction = "none";
-		
+
 	//Return the pointer
 	return pointer;
 }

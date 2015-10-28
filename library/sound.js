@@ -74,7 +74,7 @@ Sound.prototype = {
 		xhr.send();
 	},
 	play: function(){
-	
+
 		//Set the start time (it will be `0` when the first sound starts)
 		this.startTime = this.actx.currentTime;
 		//Create a sound node
