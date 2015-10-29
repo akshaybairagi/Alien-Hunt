@@ -68,9 +68,6 @@ function setup(){
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
 
-	//Create the 'titleScene' group
-	titleScene = getTitleScene();
-
  	//2. The 'gameScene' sprites
 	//Make the sky background
 	sky = getSkyBackground();
@@ -108,6 +105,9 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
+	//Create the 'titleScene' group
+	titleScene = getTitleScene();
+	titleScene.alpha = 0.93;
 
 	//Create Aliens
 	aliens = new Alien();
@@ -130,10 +130,7 @@ function setup(){
 
 	//Position the 'gameScene' offscreen at 814 so that its
 	//not visible when the game starts
-	gameScene.x = 814;
-	// titleScene.layer = 1;
-	// stage.alpha = 1;
-	// titleScene.alpha=0.95;
+	// gameScene.x = 814;
 
 	//Assign the key events
 	keyHandler();
@@ -677,72 +674,71 @@ function ItemManager(){
 }
 function getTitleScene(){
 	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
 	//1. The 'titleScene' sprites
 	//title scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224");
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
-	o.header = rectangle(g.canvas.width,50,"#3b3224","none")
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
 	title = text("ALIEN HUNTER", "50px puzzler", "white");
 	title.width=575;
 	o.header.addChild(title);
+
 	//playBtn
-	o.playRect = rectangle(g.canvas.width,50,"#3b3224","none")
-	playBtn = text("PLAY", "35px PetMe64", "white");
+	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
+	playBtn = text("PLAY", "35px PetMe64", "white",0);
 	playBtn.width=140;
 	o.playRect.addChild(playBtn);
 	o.playRect.interactive = true;
 	o.playRect.press = function(){
 		g.state = play;
-		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
+		// slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
+		// slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 		bgMusic.play();
 		contr.t0 = new Date().getTime(); // initialize value of t0
 	};
-	o.playRect.over = function(){o.playRect.fillStyle = "#1d1812";};
-	o.playRect.out = function(){o.playRect.fillStyle = "#3b3224";};
+	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
+	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
 	//stats of the player
-	o.statsRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	statsBtn = text("STATS", "35px PetMe64", "white");
 	statsBtn.width=175;
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.interactive = true;
-	o.statsRect.over = function(){o.statsRect.fillStyle = "#1d1812";};
-	o.statsRect.out = function(){o.statsRect.fillStyle = "#3b3224";};
+	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
+	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
 	//options
-	o.optionsRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	optionsBtn = text("OPTIONS", "35px PetMe64", "white");
 	optionsBtn.width=245;
 	o.optionsRect.addChild(optionsBtn);
 	o.optionsRect.interactive = true;
-	o.optionsRect.over = function(){o.optionsRect.fillStyle = "#1d1812";};
-	o.optionsRect.out = function(){o.optionsRect.fillStyle = "#3b3224";};
+	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
+	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
 	//credits button
-	o.storeRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
 	storeBtn = text("STORE", "35px PetMe64", "white");
 	storeBtn.width=175;
 	o.storeRect.addChild(storeBtn);
 	o.storeRect.interactive = true;
-	o.storeRect.over = function(){o.storeRect.fillStyle = "#1d1812";};
-	o.storeRect.out = function(){o.storeRect.fillStyle = "#3b3224";};
+	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
+	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
 	//quit button
-	o.quitRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	o.quitRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
 	quitBtn = text("QUIT", "35px PetMe64", "white");
 	quitBtn.width=140;
 	o.quitRect.addChild(quitBtn);
 	o.quitRect.interactive = true;
-	o.quitRect.over = function(){o.quitRect.fillStyle = "#1d1812";};
-	o.quitRect.out =function(){o.quitRect.fillStyle = "#3b3224";};
+	o.quitRect.over = function(){o.quitRect.fillStyle = o.hoverColor;};
+	o.quitRect.out =function(){o.quitRect.fillStyle = o.color;};
 
 	//title scene footer
-	o.footer = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("z / ↑ to Jump,  x / → to fire", "15px PetMe64", "white");
 	footerText.width=435;
 	o.footer.addChild(footerText);
-
-	//Make the 'playButton' and 'titleMessage' slide in from the
-	//edges of the screen using the 'slide' function
-	// slide(playButton, 420, 450, 30, ["decelerationCubed"]);
-	// slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -763,11 +759,10 @@ function getTitleScene(){
 	o.addChild(o.frontBg);
 	o.addChild(o.header);
 	o.addChild(o.playRect);
-	o.addChild(o.statsRect);
+	o.addChild(o.statsRect );
 	o.addChild(o.optionsRect);
 	o.addChild(o.storeRect);
 	o.addChild(o.quitRect);
 	o.addChild(o.footer);
-
 	return o;
 }
