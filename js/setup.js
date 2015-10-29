@@ -763,6 +763,7 @@ function getTitleScene(){
 	o.addChild(o.frontBg);
 	o.addChild(o.header);
 	o.addChild(o.playRect);
+	o.addChild(o.statsRect);
 	o.addChild(o.optionsRect);
 	o.addChild(o.storeRect);
 	o.addChild(o.quitRect);
