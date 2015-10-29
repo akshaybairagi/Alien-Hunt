@@ -68,92 +68,8 @@ function setup(){
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
 
-	//1. The 'titleScene' sprites
-	//title page background
-	frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224");
-	//title scene header
-	header = rectangle(g.canvas.width,50,"#3b3224","none")
-	title = text("ALIEN HUNTER", "50px puzzler", "white");
-	title.width=575;
-	header.addChild(title);
-	//playBtn
-	playRect = rectangle(g.canvas.width,50,"#3b3224","none")
-	playBtn = text("PLAY", "35px PetMe64", "white");
-	playBtn.width=140;
-	playRect.addChild(playBtn);
-	playRect.interactive = true;
-	playRect.press = function(){
-		g.state = play;
-		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-		bgMusic.play();
-		contr.t0 = new Date().getTime(); // initialize value of t0
-	};
-	playRect.over = function(){playRect.fillStyle = "#1d1812";};
-	playRect.out = function(){playRect.fillStyle = "#3b3224";};
-	//stats of the player
-	statsRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
-	statsBtn = text("STATS", "35px PetMe64", "white");
-	statsBtn.width=175;
-	statsRect.addChild(statsBtn);
-	statsRect.interactive = true;
-	statsRect.over = function(){statsRect.fillStyle = "#1d1812";};
-	statsRect.out = function(){statsRect.fillStyle = "#3b3224";};
-	//options
-	optionsRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
-	optionsBtn = text("OPTIONS", "35px PetMe64", "white");
-	optionsBtn.width=245;
-	optionsRect.addChild(optionsBtn);
-	optionsRect.interactive = true;
-	optionsRect.over = function(){optionsRect.fillStyle = "#1d1812";};
-	optionsRect.out = function(){optionsRect.fillStyle = "#3b3224";};
-	//credits button
-	storeRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
-	storeBtn = text("STORE", "35px PetMe64", "white");
-	storeBtn.width=175;
-	storeRect.addChild(storeBtn);
-	storeRect.interactive = true;
-	storeRect.over = function(){storeRect.fillStyle = "#1d1812";};
-	storeRect.out = function(){storeRect.fillStyle = "#3b3224";};
-	//quit button
-	quitRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
-	quitBtn = text("QUIT", "35px PetMe64", "white");
-	quitBtn.width=140;
-	quitRect.addChild(quitBtn);
-	quitRect.interactive = true;
-	quitRect.over = function(){quitRect.fillStyle = "#1d1812";};
-	quitRect.out =function(){quitRect.fillStyle = "#3b3224";};
-
-	//title scene footer
-	footer = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
-	footerText = text("z / ↑ to Jump,  x / → to fire", "15px PetMe64", "white");
-	footerText.width=435;
-	footer.addChild(footerText);
-
-
-	//Make the 'playButton' and 'titleMessage' slide in from the
-	//edges of the screen using the 'slide' function
-	// slide(playButton, 420, 450, 30, ["decelerationCubed"]);
-	// slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
-
-	frontBg.putCenter(header,0,-250);
-	header.putCenter(title);
-	playRect.putCenter(playBtn);
-	statsRect.putCenter(statsBtn);
-	optionsRect.putCenter(optionsBtn);
-	storeRect.putCenter(storeBtn);
-	quitRect.putCenter(quitBtn);
-	footer.putCenter(footerText);
-	frontBg.putCenter(footer,0,250);
-
-
-	header.putBottom(playRect,0,100);
-	playRect.putBottom(statsRect);
-	statsRect.putBottom(optionsRect);
-	optionsRect.putBottom(storeRect);
-	storeRect.putBottom(quitRect);
 	//Create the 'titleScene' group
-	titleScene = group([frontBg,header,playRect,statsRect,optionsRect,storeRect,quitRect,footer]);
+	titleScene = getTitleScene();
 
  	//2. The 'gameScene' sprites
 	//Make the sky background
@@ -537,7 +453,7 @@ function end(){
 	gameScene.visible = false;
 
 	//Assign a new button 'press' action to restart the game
-	playRect.press = function(){
+	titleScene.playRect.press = function(){
 		restart();
 		//Set the game state to 'play' and 'resume' the game
 		contr.t0 = new Date().getTime(); // initialize value of t0
@@ -758,4 +674,99 @@ function ItemManager(){
     item.visible= false;
     gameScene.addChild(item);
   };
+}
+function getTitleScene(){
+	var o = group([]);
+	//1. The 'titleScene' sprites
+	//title scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224");
+	//title scene header
+	o.header = rectangle(g.canvas.width,50,"#3b3224","none")
+	title = text("ALIEN HUNTER", "50px puzzler", "white");
+	title.width=575;
+	o.header.addChild(title);
+	//playBtn
+	o.playRect = rectangle(g.canvas.width,50,"#3b3224","none")
+	playBtn = text("PLAY", "35px PetMe64", "white");
+	playBtn.width=140;
+	o.playRect.addChild(playBtn);
+	o.playRect.interactive = true;
+	o.playRect.press = function(){
+		g.state = play;
+		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
+		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
+		bgMusic.play();
+		contr.t0 = new Date().getTime(); // initialize value of t0
+	};
+	o.playRect.over = function(){o.playRect.fillStyle = "#1d1812";};
+	o.playRect.out = function(){o.playRect.fillStyle = "#3b3224";};
+	//stats of the player
+	o.statsRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	statsBtn = text("STATS", "35px PetMe64", "white");
+	statsBtn.width=175;
+	o.statsRect.addChild(statsBtn);
+	o.statsRect.interactive = true;
+	o.statsRect.over = function(){o.statsRect.fillStyle = "#1d1812";};
+	o.statsRect.out = function(){o.statsRect.fillStyle = "#3b3224";};
+	//options
+	o.optionsRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	optionsBtn = text("OPTIONS", "35px PetMe64", "white");
+	optionsBtn.width=245;
+	o.optionsRect.addChild(optionsBtn);
+	o.optionsRect.interactive = true;
+	o.optionsRect.over = function(){o.optionsRect.fillStyle = "#1d1812";};
+	o.optionsRect.out = function(){o.optionsRect.fillStyle = "#3b3224";};
+	//credits button
+	o.storeRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	storeBtn = text("STORE", "35px PetMe64", "white");
+	storeBtn.width=175;
+	o.storeRect.addChild(storeBtn);
+	o.storeRect.interactive = true;
+	o.storeRect.over = function(){o.storeRect.fillStyle = "#1d1812";};
+	o.storeRect.out = function(){o.storeRect.fillStyle = "#3b3224";};
+	//quit button
+	o.quitRect = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	quitBtn = text("QUIT", "35px PetMe64", "white");
+	quitBtn.width=140;
+	o.quitRect.addChild(quitBtn);
+	o.quitRect.interactive = true;
+	o.quitRect.over = function(){o.quitRect.fillStyle = "#1d1812";};
+	o.quitRect.out =function(){o.quitRect.fillStyle = "#3b3224";};
+
+	//title scene footer
+	o.footer = rectangle(g.canvas.width,50,"#3b3224","#3b3224");
+	footerText = text("z / ↑ to Jump,  x / → to fire", "15px PetMe64", "white");
+	footerText.width=435;
+	o.footer.addChild(footerText);
+
+	//Make the 'playButton' and 'titleMessage' slide in from the
+	//edges of the screen using the 'slide' function
+	// slide(playButton, 420, 450, 30, ["decelerationCubed"]);
+	// slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.playRect.putCenter(playBtn);
+	o.statsRect.putCenter(statsBtn);
+	o.optionsRect.putCenter(optionsBtn);
+	o.storeRect.putCenter(storeBtn);
+	o.quitRect.putCenter(quitBtn);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.header.putBottom(o.playRect,0,100);
+	o.playRect.putBottom(o.statsRect);
+	o.statsRect.putBottom(o.optionsRect);
+	o.optionsRect.putBottom(o.storeRect);
+	o.storeRect.putBottom(o.quitRect);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.playRect);
+	o.addChild(o.optionsRect);
+	o.addChild(o.storeRect);
+	o.addChild(o.quitRect);
+	o.addChild(o.footer);
+
+	return o;
 }
