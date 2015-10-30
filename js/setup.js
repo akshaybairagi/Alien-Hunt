@@ -68,7 +68,7 @@ function setup(){
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
 
- 	//2. The 'gameScene' sprites
+ 	// The 'gameScene' sprites
 	//Make the sky background
 	sky = getSkyBackground();
 	//Initialize designs
@@ -105,6 +105,7 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
+
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
 	titleScene.alpha = 0.93;
@@ -128,12 +129,11 @@ function setup(){
 	imgr = new ItemManager();
 	imgr.initItems();
 
-	//Position the 'gameScene' offscreen at 814 so that its
-	//not visible when the game starts
-	// gameScene.x = 814;
-
 	//Assign the key events
 	keyHandler();
+
+	playerGroup.visible = false;
+	ship.visible = false;
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -443,32 +443,31 @@ function end(){
 	for(var i=bullets.activeBullets.length-1;i>=0;i--){
 		bullets.freeBullet(bullets.activeBullets[i]);
 	}
-	//Display the 'titleScene' and hide the 'gameScene'
-	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
-	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
-	gameScene.visible = false;
+	//Display the 'titleScene' and fade the 'gameScene' in bg
+	titleScene.visible = true;
+	var fadeInTween = fadeIn(titleScene);
 
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.press = function(){
-		restart();
-		//Set the game state to 'play' and 'resume' the game
-		contr.t0 = new Date().getTime(); // initialize value of t0
-		g.resume();
+		var fadeOutTween = fadeOut(titleScene);
+		fadeOutTween.onComplete = function(){
+			titleScene.visible = false;
+			restart();
+			//Set the game state to 'play' and 'resume' the game
+			contr.t0 = new Date().getTime(); // initialize value of t0
+			g.resume();
+		};
 	};
 }
 function restart(){
-	gameScene.visible = true;
+	// gameScene.visible = true;
 	playerGroup.setPosition(150,300);
 	topBar.reset(5);
   var pattern = designs[randomInt(0,3)];
 	contr.design = pattern;
 	contr.distance = 0;
 	bd.resetBuildings(pattern); //reset the building designs
-
-	//Hide the titleScene and reveal the gameScene
-	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 }
 function Buildings(){
 	//variables for building blocks
@@ -677,7 +676,6 @@ function getTitleScene(){
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
 	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
 	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	//1. The 'titleScene' sprites
 	//title scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
@@ -693,11 +691,15 @@ function getTitleScene(){
 	o.playRect.addChild(playBtn);
 	o.playRect.interactive = true;
 	o.playRect.press = function(){
-		g.state = play;
-		// slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-		// slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-		bgMusic.play();
-		contr.t0 = new Date().getTime(); // initialize value of t0
+		var fadeOutTween = fadeOut(titleScene);
+		fadeOutTween.onComplete = function(){
+			playerGroup.visible = true;
+			ship.visible = true;
+			titleScene.visible = false;
+			g.state = play;
+			bgMusic.play();
+			contr.t0 = new Date().getTime(); // initialize value of t0
+		};
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
