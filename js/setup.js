@@ -11,8 +11,15 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					"fonts/puzzler.otf",
-					"fonts/PetMe64.ttf"
+					"fonts/PetMe64.ttf",
+					"fonts/Drift.ttf",
+					"fonts/junegull.ttf",
+					"fonts/DAEMONES.ttf",
+					"fonts/Marker Felt.ttf",
+					"fonts/Montserrat-Bold.ttf",
+					"fonts/planetbe.ttf",
+					"fonts/Titania.ttf",
+					"fonts/TransformersMovie.ttf"
 				]
 				,load
 			);
@@ -676,11 +683,14 @@ function getTitleScene(){
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
 	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
 	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "DAEMONES";
+	o.footerFont = "DAEMONES";
+	o.contextFont = "DAEMONES";
 	//title scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
 	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("ALIEN HUNTER", "50px puzzler", "white");
+	title = text("ALIEN HUNTER", "50px " +  o.headerFont, "white");
 	title.width=575;
 	o.header.addChild(title);
 
