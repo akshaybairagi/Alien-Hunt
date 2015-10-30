@@ -11,15 +11,7 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					"fonts/PetMe64.ttf",
-					"fonts/Drift.ttf",
-					"fonts/junegull.ttf",
-					"fonts/DAEMONES.ttf",
-					"fonts/Marker Felt.ttf",
-					"fonts/Montserrat-Bold.ttf",
-					"fonts/planetbe.ttf",
-					"fonts/Titania.ttf",
-					"fonts/TransformersMovie.ttf"
+					"fonts/PetMe64.ttf"
 				]
 				,load
 			);
