@@ -683,21 +683,19 @@ function getTitleScene(){
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
 	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
 	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "DAEMONES";
-	o.footerFont = "DAEMONES";
-	o.contextFont = "DAEMONES";
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
 	//title scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
 	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
 	title = text("ALIEN HUNTER", "50px " +  o.headerFont, "white");
-	title.width=575;
 	o.header.addChild(title);
 
 	//playBtn
 	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
-	playBtn = text("PLAY", "35px PetMe64", "white",0);
-	playBtn.width=140;
+	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
 	o.playRect.addChild(playBtn);
 	o.playRect.interactive = true;
 	o.playRect.press = function(){
@@ -715,32 +713,28 @@ function getTitleScene(){
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
 	//stats of the player
 	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	statsBtn = text("STATS", "35px PetMe64", "white");
-	statsBtn.width=175;
+	statsBtn = text("STATS", "35px " + o.contextFont, "white");
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.interactive = true;
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
 	//options
 	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	optionsBtn = text("OPTIONS", "35px PetMe64", "white");
-	optionsBtn.width=245;
+	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
 	o.optionsRect.addChild(optionsBtn);
 	o.optionsRect.interactive = true;
 	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
 	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
 	//credits button
 	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	storeBtn = text("STORE", "35px PetMe64", "white");
-	storeBtn.width=175;
+	storeBtn = text("STORE", "35px " + o.contextFont, "white");
 	o.storeRect.addChild(storeBtn);
 	o.storeRect.interactive = true;
 	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
 	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
 	//quit button
 	o.quitRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	quitBtn = text("QUIT", "35px PetMe64", "white");
-	quitBtn.width=140;
+	quitBtn = text("QUIT", "35px " + o.contextFont, "white");
 	o.quitRect.addChild(quitBtn);
 	o.quitRect.interactive = true;
 	o.quitRect.over = function(){o.quitRect.fillStyle = o.hoverColor;};
@@ -748,8 +742,7 @@ function getTitleScene(){
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("z / ↑ to Jump,  x / → to fire", "15px PetMe64", "white");
-	footerText.width=435;
+	footerText = text("z / ↑ to Jump,  x / → to fire", "15px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
