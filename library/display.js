@@ -922,6 +922,8 @@ function makeInteractive(o){
 	o.over = o.over || undefined;
 	o.out = o.out || undefined;
 	o.tap = o.tap || undefined;
+
+	o.pauseIA = false;
 	//The `state` property tells you the button's
 	//current state. Set its initial state to "up"
 	o.state = "up";

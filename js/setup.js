@@ -90,6 +90,10 @@ function setup(){
 	titleScene = getTitleScene();
 	titleScene.alpha = 0.93;
 
+	pauseScene = PauseScene();
+	pauseScene.alpha = 0.4;
+	pauseScene.visible = false;
+
 	//Create Aliens
 	aliens = new Alien();
 	for(var i=0;i < 5;i++){
@@ -1018,16 +1022,52 @@ function OptionScene(){
 
 	return o;
 }
+function PauseScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	o.frontBg.interactive = true;
+	o.frontBg.pauseIA = true;
+	o.frontBg.press = function(){
+		o.visible = false;
+		o.frontBg.pauseInteractivity = true;
+		contr.t0 = new Date().getTime(); // initialize value of t0
+		focusText.focus();
+		g.resume();
+	};
+	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
+	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
+
+	// back button
+	o.pauseText = text("GAME PAUSED", "40px " + o.contextFont, "white",0);
+	o.backBtn = text("click on game to continue..", "15px " + o.contextFont, "white",0);
+
+	o.frontBg.putCenter(o.pauseText,0,-50);
+	o.pauseText.putBottom(o.backBtn,0,20);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.pauseText);
+	o.addChild(o.backBtn);
+	return o;
+}
+//Managing focus on game window
 function focusManager(){
 	var focusText = document.createElement("input");
 	focusText.id = "focusText";
 	focusText.setAttribute("style","width: 0px; height: 0px;");
 	document.body.appendChild(focusText);
-
 	focusText.onblur = function(){
 		console.log("onblur event detected!");
 		g.pause();
+		pauseScene.visible = true;
+		pauseScene.frontBg.pauseIA = false;
 	};
-
 	return focusText;
 }
