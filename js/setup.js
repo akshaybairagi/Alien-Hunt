@@ -133,6 +133,14 @@ function setup(){
 
 	playerGroup.visible = false;
 	ship.visible = false;
+
+	// canvas.requestPointerLock = canvas.requestPointerLock ||
+  //                           canvas.mozRequestPointerLock ||
+  //                           canvas.webkitRequestPointerLock;
+	// canvas.onclick = function() {
+	//   canvas.requestPointerLock();
+	// };
+
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -726,8 +734,8 @@ function getTitleScene(){
 	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
 	//quit button
 	o.quitRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	quitBtn = text("QUIT", "35px " + o.contextFont, "white");
-	o.quitRect.addChild(quitBtn);
+	creditsBtn = text("CREDITS", "35px " + o.contextFont, "white");
+	o.quitRect.addChild(creditsBtn);
 	o.quitRect.interactive = true;
 	o.quitRect.over = function(){o.quitRect.fillStyle = o.hoverColor;};
 	o.quitRect.out =function(){o.quitRect.fillStyle = o.color;};
@@ -743,7 +751,7 @@ function getTitleScene(){
 	o.statsRect.putCenter(statsBtn);
 	o.optionsRect.putCenter(optionsBtn);
 	o.storeRect.putCenter(storeBtn);
-	o.quitRect.putCenter(quitBtn);
+	o.quitRect.putCenter(creditsBtn);
 	o.footer.putCenter(footerText);
 	o.frontBg.putCenter(o.footer,0,250);
 
@@ -762,4 +770,7 @@ function getTitleScene(){
 	o.addChild(o.quitRect);
 	o.addChild(o.footer);
 	return o;
+}
+function ScoreScene(){
+	
 }
