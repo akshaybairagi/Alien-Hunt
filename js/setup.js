@@ -67,47 +67,8 @@ function setup(){
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
 
- 	// The 'gameScene' sprites
-	//Make the sky background
-	sky = getSkyBackground();
-	//Initialize designs
-	initDesigns();
-
-	//space ship sprites
-	ship = createShip();
-	//draw moon sprites
-	moon = drawMoon();
-	//Add a black border along the top of the screen
-	//create life sprite pool
-	topBar = new TopBar();
-	topBar.create();
-	topBar.update(0);
-
-	//Display score
-	score = new Score();
-
-	//make player and set initials
-	player = makePlayer();
-	player.walk();
-	player.breath();
-
-	//Power Ups
-	gun = createGun();
-	car = createCar();
-
-	//Create Player Group as a container
-	playerGroup = createPlayerGroup();
-
-	//Create  buildings
-	bd = new Buildings();
-	bd.createBuildings();
-
 	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
-
-	//Create the 'titleScene' group
-	titleScene = getTitleScene();
-	titleScene.alpha = 0.93;
+	gameScene = GameScene();
 
 	scoreScene = ScoreScene();
 	scoreScene.alpha = 0.93;
@@ -124,6 +85,10 @@ function setup(){
 	optionScene = OptionScene();
 	optionScene.alpha = 0.93;
 	optionScene.visible = false;
+
+	//Create the 'titleScene' group
+	titleScene = getTitleScene();
+	titleScene.alpha = 0.93;
 
 	//Create Aliens
 	aliens = new Alien();
@@ -149,7 +114,6 @@ function setup(){
 
 	playerGroup.visible = false;
 	ship.visible = false;
-
 	// canvas.requestPointerLock = canvas.requestPointerLock ||
   //                           canvas.mozRequestPointerLock ||
   //                           canvas.webkitRequestPointerLock;
@@ -693,6 +657,38 @@ function ItemManager(){
     item.visible= false;
     gameScene.addChild(item);
   };
+}
+	// The 'gameScene' sprites
+function GameScene(){
+	//Make the sky background
+	sky = getSkyBackground();
+	//Initialize designs
+	initDesigns();
+	//space ship sprites
+	ship = createShip();
+	//draw moon sprites
+	moon = drawMoon();
+	//Add a black border along the top of the screen
+	//create life sprite pool
+	topBar = new TopBar();
+	topBar.create();
+	topBar.update(0);
+	//Display score
+	score = new Score();
+	//make player and set initials
+	player = makePlayer();
+	player.walk();
+	player.breath();
+	//Power Ups
+	gun = createGun();
+	car = createCar();
+	//Create Player Group as a container
+	playerGroup = createPlayerGroup();
+	//Create  buildings
+	bd = new Buildings();
+	bd.createBuildings();
+
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
 }
 function getTitleScene(){
 	var o = group([]);
