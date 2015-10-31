@@ -113,6 +113,18 @@ function setup(){
 	scoreScene.alpha = 0.93;
 	scoreScene.visible = false;
 
+	storeScene = StoreScene();
+	storeScene.alpha = 0.93;
+	storeScene.visible = false;
+
+	creditScene = CreditScene();
+	creditScene.alpha = 0.93;
+	creditScene.visible = false;
+
+	optionScene = OptionScene();
+	optionScene.alpha = 0.93;
+	optionScene.visible = false;
+
 	//Create Aliens
 	aliens = new Alien();
 	for(var i=0;i < 5;i++){
@@ -721,7 +733,7 @@ function getTitleScene(){
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.interactive = true;
 	o.statsRect.press = function(){
-		titleScene.visible = false;
+		o.visible = false;
 		scoreScene.visible = true;
 	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
@@ -731,6 +743,10 @@ function getTitleScene(){
 	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
 	o.optionsRect.addChild(optionsBtn);
 	o.optionsRect.interactive = true;
+	o.optionsRect.press = function(){
+		o.visible = false;
+		optionScene.visible = true;
+	};
 	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
 	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
 	//credits button
@@ -738,6 +754,10 @@ function getTitleScene(){
 	storeBtn = text("STORE", "35px " + o.contextFont, "white");
 	o.storeRect.addChild(storeBtn);
 	o.storeRect.interactive = true;
+	o.storeRect.press = function(){
+		o.visible = false;
+		storeScene.visible = true;
+	};
 	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
 	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
 	//quit button
@@ -745,6 +765,10 @@ function getTitleScene(){
 	creditsBtn = text("CREDITS", "35px " + o.contextFont, "white");
 	o.quitRect.addChild(creditsBtn);
 	o.quitRect.interactive = true;
+	o.quitRect.press = function(){
+		o.visible = false;
+		creditScene.visible = true;
+	};
 	o.quitRect.over = function(){o.quitRect.fillStyle = o.hoverColor;};
 	o.quitRect.out =function(){o.quitRect.fillStyle = o.color;};
 
@@ -807,7 +831,7 @@ function ScoreScene(){
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
 	o.backBtn.interactive = true;
 	o.backBtn.press = function(){
-		scoreScene.visible = false;
+		o.visible = false;
 		titleScene.visible = true;
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
@@ -837,6 +861,162 @@ function ScoreScene(){
 	o.addChild(o.minutes);
 	o.addChild(o.score);
 	o.addChild(o.highScore);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function StoreScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("STORE", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("In Game Purchases (Under Construction)", "20px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.interactive = true;
+	o.backBtn.press = function(){
+		o.visible = false;
+		titleScene.visible = true;
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function CreditScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("CREDITS", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("Developer/Designer: Akshay Bairagi", "20px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.interactive = true;
+	o.backBtn.press = function(){
+		o.visible = false;
+		titleScene.visible = true;
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function OptionScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("OPTIONS", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("Game Settings(under construction)", "15px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.interactive = true;
+	o.backBtn.press = function(){
+		o.visible = false;
+		titleScene.visible = true;
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
 	o.addChild(o.backBtn);
 	o.addChild(o.footer);
 
