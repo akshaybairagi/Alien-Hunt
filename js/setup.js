@@ -109,6 +109,10 @@ function setup(){
 	titleScene = getTitleScene();
 	titleScene.alpha = 0.93;
 
+	scoreScene = ScoreScene();
+	scoreScene.alpha = 0.93;
+	scoreScene.visible = false;
+
 	//Create Aliens
 	aliens = new Alien();
 	for(var i=0;i < 5;i++){
@@ -716,6 +720,10 @@ function getTitleScene(){
 	statsBtn = text("STATS", "35px " + o.contextFont, "white");
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.interactive = true;
+	o.statsRect.press = function(){
+		titleScene.visible = false;
+		scoreScene.visible = true;
+	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
 	//options
@@ -772,5 +780,65 @@ function getTitleScene(){
 	return o;
 }
 function ScoreScene(){
-	
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//ScoreScene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Score scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("SCORE", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//playBtn
+	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
+	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
+	o.minutes = text("minutes: 500", "20px " + o.contextFont, "white",0);
+	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
+	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
+
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.interactive = true;
+	o.backBtn.press = function(){
+		scoreScene.visible = false;
+		titleScene.visible = true;
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//title scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("Happy Scoring", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.header.putBottom(o.noOfKills,0,125);
+	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
+	o.deaths.putBottom(o.minutes,o.hOffset,o.vOffset);
+	o.minutes.putBottom(o.score,o.hOffset,o.vOffset);
+	o.score.putBottom(o.highScore,o.hOffset,o.vOffset);
+	o.highScore.putBottom(o.backBtn,0,75);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.noOfKills);
+	o.addChild(o.deaths)
+	o.addChild(o.minutes);
+	o.addChild(o.score);
+	o.addChild(o.highScore);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
 }

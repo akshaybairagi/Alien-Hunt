@@ -187,12 +187,12 @@ Game.prototype = {
 		if (buttons.length > 0){
 			this.canvas.style.cursor = "auto";
 			buttons.forEach(function(button){
-				button.update(this.pointer, this.canvas);
-				if (button.state === "over" || button.state === "down") {
-					if(button.parent !== undefined) {
-						this.canvas.style.cursor = "pointer";
+					button.update(this.pointer, this.canvas);
+					if (button.state === "over" || button.state === "down") {
+						if(button.parent !== undefined) {
+							this.canvas.style.cursor = "pointer";
+						}
 					}
-				}
 			},this);
 		}
 		//Update all the particles
