@@ -772,10 +772,12 @@ function getTitleScene(){
 	o.quitRect.over = function(){o.quitRect.fillStyle = o.hoverColor;};
 	o.quitRect.out =function(){o.quitRect.fillStyle = o.color;};
 
-	//title scene footer
+	//title scene footer \u00a9copyright
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("z / ↑ to Jump,  x / → to fire", "15px " + o.footerFont, "white");
+	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
+	o.footer.addChild(copyrightText);
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -785,7 +787,8 @@ function getTitleScene(){
 	o.storeRect.putCenter(storeBtn);
 	o.quitRect.putCenter(creditsBtn);
 	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
+	o.footer.putCenter(copyrightText,0,30);
+	o.frontBg.putCenter(o.footer,0,225);
 
 	o.header.putBottom(o.playRect,0,100);
 	o.playRect.putBottom(o.statsRect);
