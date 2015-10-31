@@ -114,21 +114,8 @@ function setup(){
 
 	playerGroup.visible = false;
 	ship.visible = false;
-	// canvas.requestPointerLock = canvas.requestPointerLock ||
-  //                           canvas.mozRequestPointerLock ||
-  //                           canvas.webkitRequestPointerLock;
-	// canvas.onclick = function() {
-	//   canvas.requestPointerLock();
-	// };
 
- // document.getElementById('canvas').addEventListener('click', function() {
- //      document.getElementById('forFocus').focus();
- // 		console.log("focus on canvas");
- // });
-	document.getElementById('forFocus').onblur = function(){
-		console.log("onblur event detected!");
-		g.pause();
-	};
+	focusText = focusManager();
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -445,7 +432,7 @@ function end(){
 
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.press = function(){
-		document.getElementById('forFocus').focus();
+		focusText.focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
 			titleScene.visible = false;
@@ -720,7 +707,7 @@ function getTitleScene(){
 	o.playRect.addChild(playBtn);
 	o.playRect.interactive = true;
 	o.playRect.press = function(){
-		document.getElementById('forFocus').focus();
+		focusText.focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
 			playerGroup.visible = true;
@@ -1032,5 +1019,15 @@ function OptionScene(){
 	return o;
 }
 function focusManager(){
-	var text = document.createElement("forFocus");
+	var focusText = document.createElement("input");
+	focusText.id = "focusText";
+	focusText.setAttribute("style","width: 0px; height: 0px;");
+	document.body.appendChild(focusText);
+
+	focusText.onblur = function(){
+		console.log("onblur event detected!");
+		g.pause();
+	};
+
+	return focusText;
 }

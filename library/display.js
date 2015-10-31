@@ -18,7 +18,6 @@ function makeCanvas(width, height,border,backgroundColor) {
 	canvas.id = "canvas";
 	canvas.width = width;
 	canvas.height = height;
-	canvas.setAttribute("tabindex","1");
 	// canvas.style.width  = canvas.width.toString() + "px";
 	// canvas.style.height = canvas.height.toString() + "px";
 	canvas.style.border = border;
