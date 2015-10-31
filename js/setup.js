@@ -7,7 +7,7 @@ var g = game(800, 600, setup,
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					"sounds/retro-action.wav",
+					// "sounds/retro-action.wav",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
@@ -61,8 +61,8 @@ function setup(){
 
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.wav"];
-	bgMusic.loop = true;
+	bgMusic = assets["sounds/bounce.mp3"];
+	bgMusic.loop = false;
 	bgMusic.volume= 0.5;
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
@@ -121,6 +121,14 @@ function setup(){
 	//   canvas.requestPointerLock();
 	// };
 
+ // document.getElementById('canvas').addEventListener('click', function() {
+ //      document.getElementById('forFocus').focus();
+ // 		console.log("focus on canvas");
+ // });
+	document.getElementById('forFocus').onblur = function(){
+		console.log("onblur event detected!");
+		g.pause();
+	};
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -437,6 +445,7 @@ function end(){
 
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.press = function(){
+		document.getElementById('forFocus').focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
 			titleScene.visible = false;
@@ -711,6 +720,7 @@ function getTitleScene(){
 	o.playRect.addChild(playBtn);
 	o.playRect.interactive = true;
 	o.playRect.press = function(){
+		document.getElementById('forFocus').focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
 			playerGroup.visible = true;
@@ -1020,4 +1030,7 @@ function OptionScene(){
 	o.addChild(o.footer);
 
 	return o;
+}
+function focusManager(){
+	var text = document.createElement("forFocus");
 }
