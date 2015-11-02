@@ -1,6 +1,5 @@
 //Game engine class
 function Game(width, height, setup, assetsToLoad, load){
-
 		//Make the canvas and initialize the stage
 		this.canvas = makeCanvas(width, height, "#cccccc","#ff9999");
 		stage.width = this.canvas.width;
@@ -71,7 +70,6 @@ Game.prototype = {
 		//equal to the frame duration
 		while (this.lag >= this.frameDuration){
 			capturePreviousPositions(stage);
-
 			//Run the current game `state` function if it's been defined and
 			//the game isn't `paused`
 			if(this.state && !this.paused){
@@ -106,7 +104,7 @@ Game.prototype = {
 									//Clear the game `state` function for now to stop the loop
 									_this.state = undefined;
 									//Call the `setup` function that was supplied by the user in
-									//the Game class�s constructor
+									//the Game class's constructor
 									_this.setup();
 								});
 				}
@@ -137,7 +135,6 @@ Game.prototype = {
 	},
 	scaleToWindow: function(backgroundColor){
 		var backgroundColor = checkIfUndefined(backgroundColor,"#2C3539");
-
 		var scaleX, scaleY, scale, center;
 		//1. Scale the canvas to the correct size
 		//Figure out the scale amount on each axis
@@ -188,9 +185,9 @@ Game.prototype = {
 			this.canvas.style.cursor = "auto";
 			buttons.forEach(function(button){
 				//to pause the click when buttom is not visible
-				if(button.pauseIA === false){
+				if(button.visible === true){
 					button.update(this.pointer, this.canvas);
-					if (button.state === "over" || button.state === "down") {
+					if (button.state === "over" || button.state === "down"){
 						if(button.parent !== undefined) {
 							this.canvas.style.cursor = "pointer";
 						}
@@ -200,7 +197,7 @@ Game.prototype = {
 		}
 		//Update all the particles
 		if (particles.length > 0){
-			for(var i = particles.length - 1; i >= 0; i--) {
+			for(var i = particles.length - 1; i >= 0; i--){
 				var particle = particles[i];
 				particle.update();
 			}
@@ -216,7 +213,7 @@ Game.prototype = {
 		//Update all the shaking sprites
 		//(More about this later in the chapter!)
 		if (shakingSprites.length > 0){
-			for(var i = shakingSprites.length - 1; i >= 0; i--) {
+			for(var i = shakingSprites.length - 1; i >= 0; i--){
 				var shakingSprite = shakingSprites[i];
 				if (shakingSprite.updateShake)
 						shakingSprite.updateShake();
@@ -228,13 +225,11 @@ Game.prototype = {
 		}
 	}
 };
-
 function game(width, height, setup, assetsToLoad, load){
 	var width = checkIfUndefined(width,256),
 		height = checkIfUndefined(height,256);
 	return new Game(width, height, setup, assetsToLoad, load);
 }
-
 function capturePreviousPositions(stage){
 	//Loop through all the children of the stage
 	stage.children.forEach(function(sprite){

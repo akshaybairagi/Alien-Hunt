@@ -72,27 +72,24 @@ function setup(){
 
 	scoreScene = ScoreScene();
 	scoreScene.alpha = 0.93;
-	scoreScene.visible = false;
+	scoreScene.toggle(0);
+
 
 	storeScene = StoreScene();
 	storeScene.alpha = 0.93;
-	storeScene.visible = false;
-
-	creditScene = CreditScene();
-	creditScene.alpha = 0.93;
-	creditScene.visible = false;
+	storeScene.toggle(0);
 
 	optionScene = OptionScene();
 	optionScene.alpha = 0.93;
-	optionScene.visible = false;
+	optionScene.toggle(0);
+
+	pauseScene = PauseScene();
+	pauseScene.alpha = 0.4;
+	pauseScene.toggle(0);
 
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
 	titleScene.alpha = 0.93;
-
-	pauseScene = PauseScene();
-	pauseScene.alpha = 0.4;
-	pauseScene.visible = false;
 
 	//Create Aliens
 	aliens = new Alien();
@@ -431,15 +428,14 @@ function end(){
 	}
 
 	//Display the 'titleScene' and fade the 'gameScene' in bg
-	titleScene.visible = true;
+	titleScene.toggle(1);
 	var fadeInTween = fadeIn(titleScene);
-
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.press = function(){
 		focusText.focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
-			titleScene.visible = false;
+			titleScene.toggle(0);
 			restart();
 			//Set the game state to 'play' and 'resume' the game
 			contr.t0 = new Date().getTime(); // initialize value of t0
@@ -716,7 +712,7 @@ function getTitleScene(){
 		fadeOutTween.onComplete = function(){
 			playerGroup.visible = true;
 			ship.visible = true;
-			titleScene.visible = false;
+			o.toggle(0);
 			g.state = play;
 			bgMusic.play();
 			contr.t0 = new Date().getTime(); // initialize value of t0
@@ -730,8 +726,8 @@ function getTitleScene(){
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.interactive = true;
 	o.statsRect.press = function(){
-		o.visible = false;
-		scoreScene.visible = true;
+		o.toggle(0);
+		scoreScene.toggle(1);
 	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
@@ -741,8 +737,8 @@ function getTitleScene(){
 	o.optionsRect.addChild(optionsBtn);
 	o.optionsRect.interactive = true;
 	o.optionsRect.press = function(){
-		o.visible = false;
-		optionScene.visible = true;
+		o.toggle(0);
+		optionScene.toggle(1);
 	};
 	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
 	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
@@ -752,46 +748,49 @@ function getTitleScene(){
 	o.storeRect.addChild(storeBtn);
 	o.storeRect.interactive = true;
 	o.storeRect.press = function(){
-		o.visible = false;
-		storeScene.visible = true;
+		o.toggle(0);
+		storeScene.toggle(1);
 	};
 	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
 	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
-	//quit button
-	o.quitRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	creditsBtn = text("CREDITS", "35px " + o.contextFont, "white");
-	o.quitRect.addChild(creditsBtn);
-	o.quitRect.interactive = true;
-	o.quitRect.press = function(){
-		o.visible = false;
-		creditScene.visible = true;
-	};
-	o.quitRect.over = function(){o.quitRect.fillStyle = o.hoverColor;};
-	o.quitRect.out =function(){o.quitRect.fillStyle = o.color;};
 
-	//title scene footer \u00a9copyright
+	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("z / ↑ to Jump,  x / → to fire", "15px " + o.footerFont, "white");
+	footerText = text("z / ↑ to Jump,  x / → to fire, GamePad supported", "10px " + o.footerFont, "white");
 	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 	o.footer.addChild(copyrightText);
 
+	o.toggle = function(value){
+		if(value === 1){
+			o.visible = true;
+			o.playRect.visible = true;
+			o.statsRect.visible = true;
+			o.optionsRect.visible = true;
+			o.storeRect.visible = true;
+		}
+		else{
+			o.visible = false;
+			o.playRect.visible = false;
+			o.statsRect.visible = false;
+			o.optionsRect.visible = false;
+			o.storeRect.visible = false;
+		}
+	};
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
 	o.playRect.putCenter(playBtn);
 	o.statsRect.putCenter(statsBtn);
 	o.optionsRect.putCenter(optionsBtn);
 	o.storeRect.putCenter(storeBtn);
-	o.quitRect.putCenter(creditsBtn);
 	o.footer.putCenter(footerText);
 	o.footer.putCenter(copyrightText,0,30);
 	o.frontBg.putCenter(o.footer,0,225);
 
-	o.header.putBottom(o.playRect,0,100);
+	o.header.putBottom(o.playRect,0,125);
 	o.playRect.putBottom(o.statsRect);
 	o.statsRect.putBottom(o.optionsRect);
 	o.optionsRect.putBottom(o.storeRect);
-	o.storeRect.putBottom(o.quitRect);
 
 	o.addChild(o.frontBg);
 	o.addChild(o.header);
@@ -799,7 +798,6 @@ function getTitleScene(){
 	o.addChild(o.statsRect );
 	o.addChild(o.optionsRect);
 	o.addChild(o.storeRect);
-	o.addChild(o.quitRect);
 	o.addChild(o.footer);
 	return o;
 }
@@ -831,8 +829,8 @@ function ScoreScene(){
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
 	o.backBtn.interactive = true;
 	o.backBtn.press = function(){
-		o.visible = false;
-		titleScene.visible = true;
+		o.toggle(0);
+		titleScene.toggle(1);
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
 	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
@@ -841,6 +839,17 @@ function ScoreScene(){
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("Happy Scoring", "15px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
+
+	o.toggle = function(value){
+		if(value === 1){
+			o.visible = true;
+			o.backBtn.visible = true;
+		}
+		else{
+			o.visible = false;
+			o.backBtn.visible = false;
+		}
+	};
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -891,16 +900,27 @@ function StoreScene(){
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
 	o.backBtn.interactive = true;
 	o.backBtn.press = function(){
-		o.visible = false;
-		titleScene.visible = true;
+		o.toggle(0);
+		titleScene.toggle(1);
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
 	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
+
+	o.toggle = function(value){
+		if(value === 1){
+			o.visible = true;
+			o.backBtn.visible = true;
+		}
+		else {
+			o.visible = false;
+			o.backBtn.visible = false;
+		}
+	};
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -937,14 +957,14 @@ function CreditScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("Developer/Designer: Akshay Bairagi", "20px " +  o.headerFont, "white");
+	o.content = text("Developer/Designer: Akshay Bairagi", "15px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
 	o.backBtn.interactive = true;
 	o.backBtn.press = function(){
-		o.visible = false;
-		titleScene.visible = true;
+		o.toggle(0);
+		titleScene.toggle(1);
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
 	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
@@ -953,6 +973,17 @@ function CreditScene(){
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
+
+	o.toggle = function(value){
+		if(value === 1){
+			o.visible = true;
+			o.backBtn.visible = true;
+		}
+		else{
+			o.visible = false;
+			o.backBtn.visible = false;
+		}
+	};
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -995,16 +1026,27 @@ function OptionScene(){
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
 	o.backBtn.interactive = true;
 	o.backBtn.press = function(){
-		o.visible = false;
-		titleScene.visible = true;
+		o.toggle(0);
+		titleScene.toggle(1);
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
 	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
+
+	o.toggle = function(value){
+		if(value === 1){
+			o.visible = true;
+			o.backBtn.visible = true;
+		}
+		else {
+			o.visible = false;
+			o.backBtn.visible = false;
+		}
+	};
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -1034,10 +1076,8 @@ function PauseScene(){
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	o.frontBg.interactive = true;
-	o.frontBg.pauseIA = true;
 	o.frontBg.press = function(){
-		o.visible = false;
-		o.frontBg.pauseInteractivity = true;
+		o.toggle(0);
 		contr.t0 = new Date().getTime(); // initialize value of t0
 		focusText.focus();
 		g.resume();
@@ -1047,7 +1087,18 @@ function PauseScene(){
 
 	// back button
 	o.pauseText = text("GAME PAUSED", "40px " + o.contextFont, "white",0);
-	o.backBtn = text("click on game to continue..", "15px " + o.contextFont, "white",0);
+	o.backBtn = text("click to continue..", "15px " + o.contextFont, "white",0);
+
+	o.toggle = function(value){
+		if(value === 1){
+			o.visible = true;
+			o.frontBg.visible = true;
+		}
+		else {
+			o.visible = false;
+			o.frontBg.visible = false;
+		}
+	};
 
 	o.frontBg.putCenter(o.pauseText,0,-50);
 	o.pauseText.putBottom(o.backBtn,0,20);
@@ -1064,10 +1115,8 @@ function focusManager(){
 	focusText.setAttribute("style","width: 0px; height: 0px;");
 	document.body.appendChild(focusText);
 	focusText.onblur = function(){
-		console.log("onblur event detected!");
 		g.pause();
-		pauseScene.visible = true;
-		pauseScene.frontBg.pauseIA = false;
+		pauseScene.toggle(1);
 	};
 	return focusText;
 }
