@@ -37,14 +37,6 @@ Game.prototype = {
 	//The game loop
 	gameLoop: function(timestamp){
 		requestAnimationFrame(this.gameLoop.bind(this));
-		if(this.interpolation)
-			this.withInterpolation(timestamp);
-		else {
-			this.noInterpolation();
-		}
-	},
-	//render without interpolation
-	noInterpolation: function(){
 		//update game tween, shaking sprites, particle effect
 		this.updateGameEffects();
 		//Run the current game `state` function if it's been defined and
@@ -54,41 +46,6 @@ Game.prototype = {
     }
     //Render the canvas
     render(this.canvas);
-	},
-	//render with interpolation
-	withInterpolation: function(timestamp){
-		//Calculate the time that has elapsed since the last frame
-		if (!timestamp) timestamp = 0;
-		var elapsed = timestamp - this.previous;
-
-		//Optionally correct any unexpected huge gaps in the elapsed time
-		if (elapsed > 1000) elapsed = this.frameDuration;
-		//Add the elapsed time to the lag counter
-		this.lag += elapsed;
-
-		//Update the frame if the lag counter is greater than or
-		//equal to the frame duration
-		while (this.lag >= this.frameDuration){
-			capturePreviousPositions(stage);
-			//Run the current game `state` function if it's been defined and
-			//the game isn't `paused`
-			if(this.state && !this.paused){
-				this.state();
-			}
-			//Reduce the lag counter by the frame duration
-			this.lag -= this.frameDuration;
-		}
-		//update game tween, shaking sprites, particle effect
-		this.updateGameEffects();
-		//Calculate the lag offset. This tells us how far
-		//we are into the next frame
-		var lagOffset = this.lag / this.frameDuration;
-		//Render the sprites using the `lagOffset` to
-		//interpolate the sprites' positions
-		renderWithInterpolation(this.canvas, lagOffset);
-		//Capture the current time to be used as the previous
-		//time in the next frame
-		this.previous = timestamp;
 	},
 	//The `start` method that gets the whole engine going. This needs to
 	//be called by the user from the game application code, right after
@@ -184,15 +141,12 @@ Game.prototype = {
 		if (buttons.length > 0){
 			this.canvas.style.cursor = "auto";
 			buttons.forEach(function(button){
-				//to pause the click when buttom is not visible
-				if(button.visible === true){
 					button.update(this.pointer, this.canvas);
 					if (button.state === "over" || button.state === "down"){
 						if(button.parent !== undefined) {
 							this.canvas.style.cursor = "pointer";
 						}
 					}
-				}
 			},this);
 		}
 		//Update all the particles

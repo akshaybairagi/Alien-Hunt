@@ -60,3 +60,21 @@ function Bullet(){
 		this.bulletPool.push(bullet);
 	};
 }
+function toggleMenu(caller,callee){
+	if(caller){
+		caller.visible = false;
+		caller.children.forEach(function(scene){
+			if(scene.press !== undefined){
+				scene.interactive = false;
+			}
+		});
+	}
+	if(callee){
+		callee.visible = true;
+		callee.children.forEach(function(scene){
+			if(scene.press !== undefined){
+				scene.interactive = true;
+			}
+		});
+	}
+}

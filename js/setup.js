@@ -72,24 +72,16 @@ function setup(){
 
 	scoreScene = ScoreScene();
 	scoreScene.alpha = 0.93;
-	scoreScene.toggle(0);
-
-
-	storeScene = StoreScene();
-	storeScene.alpha = 0.93;
-	storeScene.toggle(0);
-
-	optionScene = OptionScene();
-	optionScene.alpha = 0.93;
-	optionScene.toggle(0);
+	scoreScene.visible = false;
 
 	pauseScene = PauseScene();
 	pauseScene.alpha = 0.4;
-	pauseScene.toggle(0);
+	pauseScene.visible = false;
 
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
 	titleScene.alpha = 0.93;
+	toggleMenu(undefined,titleScene);
 
 	//Create Aliens
 	aliens = new Alien();
@@ -428,14 +420,14 @@ function end(){
 	}
 
 	//Display the 'titleScene' and fade the 'gameScene' in bg
-	titleScene.toggle(1);
+	toggleMenu(undefined,titleScene);
 	var fadeInTween = fadeIn(titleScene);
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.press = function(){
 		focusText.focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
-			titleScene.toggle(0);
+			toggleMenu(titleScene,undefined);
 			restart();
 			//Set the game state to 'play' and 'resume' the game
 			contr.t0 = new Date().getTime(); // initialize value of t0
@@ -705,14 +697,13 @@ function getTitleScene(){
 	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
 	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
 	o.playRect.addChild(playBtn);
-	o.playRect.interactive = true;
 	o.playRect.press = function(){
 		focusText.focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
 			playerGroup.visible = true;
 			ship.visible = true;
-			o.toggle(0);
+			toggleMenu(o,undefined);
 			g.state = play;
 			bgMusic.play();
 			contr.t0 = new Date().getTime(); // initialize value of t0
@@ -724,35 +715,11 @@ function getTitleScene(){
 	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	statsBtn = text("STATS", "35px " + o.contextFont, "white");
 	o.statsRect.addChild(statsBtn);
-	o.statsRect.interactive = true;
 	o.statsRect.press = function(){
-		o.toggle(0);
-		scoreScene.toggle(1);
+		toggleMenu(o,scoreScene);
 	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
-	//options
-	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
-	o.optionsRect.addChild(optionsBtn);
-	o.optionsRect.interactive = true;
-	o.optionsRect.press = function(){
-		o.toggle(0);
-		optionScene.toggle(1);
-	};
-	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
-	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
-	//credits button
-	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	storeBtn = text("STORE", "35px " + o.contextFont, "white");
-	o.storeRect.addChild(storeBtn);
-	o.storeRect.interactive = true;
-	o.storeRect.press = function(){
-		o.toggle(0);
-		storeScene.toggle(1);
-	};
-	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
-	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
@@ -761,43 +728,21 @@ function getTitleScene(){
 	o.footer.addChild(footerText);
 	o.footer.addChild(copyrightText);
 
-	o.toggle = function(value){
-		if(value === 1){
-			o.visible = true;
-			o.playRect.visible = true;
-			o.statsRect.visible = true;
-			o.optionsRect.visible = true;
-			o.storeRect.visible = true;
-		}
-		else{
-			o.visible = false;
-			o.playRect.visible = false;
-			o.statsRect.visible = false;
-			o.optionsRect.visible = false;
-			o.storeRect.visible = false;
-		}
-	};
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
 	o.playRect.putCenter(playBtn);
 	o.statsRect.putCenter(statsBtn);
-	o.optionsRect.putCenter(optionsBtn);
-	o.storeRect.putCenter(storeBtn);
 	o.footer.putCenter(footerText);
 	o.footer.putCenter(copyrightText,0,30);
 	o.frontBg.putCenter(o.footer,0,225);
 
 	o.header.putBottom(o.playRect,0,125);
 	o.playRect.putBottom(o.statsRect);
-	o.statsRect.putBottom(o.optionsRect);
-	o.optionsRect.putBottom(o.storeRect);
 
 	o.addChild(o.frontBg);
 	o.addChild(o.header);
 	o.addChild(o.playRect);
 	o.addChild(o.statsRect );
-	o.addChild(o.optionsRect);
-	o.addChild(o.storeRect);
 	o.addChild(o.footer);
 	return o;
 }
@@ -827,10 +772,8 @@ function ScoreScene(){
 	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
 
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.interactive = true;
 	o.backBtn.press = function(){
-		o.toggle(0);
-		titleScene.toggle(1);
+		toggleMenu(o,titleScene);
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
 	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
@@ -839,17 +782,6 @@ function ScoreScene(){
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("Happy Scoring", "15px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
-
-	o.toggle = function(value){
-		if(value === 1){
-			o.visible = true;
-			o.backBtn.visible = true;
-		}
-		else{
-			o.visible = false;
-			o.backBtn.visible = false;
-		}
-	};
 
 	o.frontBg.putCenter(o.header,0,-250);
 	o.header.putCenter(title);
@@ -875,195 +807,6 @@ function ScoreScene(){
 
 	return o;
 }
-function StoreScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("STORE", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("In Game Purchases (Under Construction)", "20px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.interactive = true;
-	o.backBtn.press = function(){
-		o.toggle(0);
-		titleScene.toggle(1);
-	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.toggle = function(value){
-		if(value === 1){
-			o.visible = true;
-			o.backBtn.visible = true;
-		}
-		else {
-			o.visible = false;
-			o.backBtn.visible = false;
-		}
-	};
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
-	return o;
-}
-function CreditScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("CREDITS", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("Developer/Designer: Akshay Bairagi", "15px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.interactive = true;
-	o.backBtn.press = function(){
-		o.toggle(0);
-		titleScene.toggle(1);
-	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.toggle = function(value){
-		if(value === 1){
-			o.visible = true;
-			o.backBtn.visible = true;
-		}
-		else{
-			o.visible = false;
-			o.backBtn.visible = false;
-		}
-	};
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
-	return o;
-}
-function OptionScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("OPTIONS", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("Game Settings(under construction)", "15px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.interactive = true;
-	o.backBtn.press = function(){
-		o.toggle(0);
-		titleScene.toggle(1);
-	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.toggle = function(value){
-		if(value === 1){
-			o.visible = true;
-			o.backBtn.visible = true;
-		}
-		else {
-			o.visible = false;
-			o.backBtn.visible = false;
-		}
-	};
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
-	return o;
-}
 function PauseScene(){
 	var o = group([]);
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
@@ -1075,9 +818,8 @@ function PauseScene(){
 
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	o.frontBg.interactive = true;
 	o.frontBg.press = function(){
-		o.toggle(0);
+		toggleMenu(o,gameScene);
 		contr.t0 = new Date().getTime(); // initialize value of t0
 		focusText.focus();
 		g.resume();
@@ -1088,17 +830,6 @@ function PauseScene(){
 	// back button
 	o.pauseText = text("GAME PAUSED", "40px " + o.contextFont, "white",0);
 	o.backBtn = text("click to continue..", "15px " + o.contextFont, "white",0);
-
-	o.toggle = function(value){
-		if(value === 1){
-			o.visible = true;
-			o.frontBg.visible = true;
-		}
-		else {
-			o.visible = false;
-			o.frontBg.visible = false;
-		}
-	};
 
 	o.frontBg.putCenter(o.pauseText,0,-50);
 	o.pauseText.putBottom(o.backBtn,0,20);
@@ -1116,7 +847,7 @@ function focusManager(){
 	document.body.appendChild(focusText);
 	focusText.onblur = function(){
 		g.pause();
-		pauseScene.toggle(1);
+		toggleMenu(undefined,pauseScene);
 	};
 	return focusText;
 }
