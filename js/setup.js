@@ -45,7 +45,8 @@ var controller = {
 	distance: null,
 	miles: null,
 	noOfLife: 3,
-	maxLife: 5
+	maxLife: 5,
+	menuAlpha: 0.93
 };
 var contr = controller;
 
@@ -69,31 +70,17 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
-
 	scoreScene = ScoreScene();
-	scoreScene.alpha = 0.93;
-	scoreScene.visible = false;
-
 	optionScene = OptionScene();
-	optionScene.alpha = 0.93;
-	optionScene.visible = false;
-
 	storeScene = StoreScene();
-	storeScene.alpha = 0.93;
-	storeScene.visible = false;
-
 	creditScene = CreditScene();
-	creditScene.alpha = 0.93;
-	creditScene.visible = false;
-
 	pauseScene = PauseScene();
-	pauseScene.alpha = 0.4;
-	pauseScene.visible = false;
-
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
-	titleScene.alpha = 0.93;
 	toggleMenu(undefined,titleScene);
+
+	playerGroup.visible = false;
+	ship.visible = false;
 
 	//Create Aliens
 	aliens = new Alien();
@@ -116,9 +103,6 @@ function setup(){
 
 	//Assign the key events
 	keyHandler();
-
-	playerGroup.visible = false;
-	ship.visible = false;
 
 	focusText = focusManager();
 }
@@ -433,18 +417,14 @@ function end(){
 
 	//Display the 'titleScene' and fade the 'gameScene' in bg
 	toggleMenu(undefined,titleScene);
-	var fadeInTween = fadeIn(titleScene);
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.press = function(){
 		focusText.focus();
-		var fadeOutTween = fadeOut(titleScene);
-		fadeOutTween.onComplete = function(){
-			toggleMenu(titleScene,undefined);
-			restart();
-			//Set the game state to 'play' and 'resume' the game
-			contr.t0 = new Date().getTime(); // initialize value of t0
-			g.resume();
-		};
+		toggleMenu(titleScene,undefined);
+		restart();
+		//Set the game state to 'play' and 'resume' the game
+		contr.t0 = new Date().getTime(); // initialize value of t0
+		g.resume();
 	};
 }
 function restart(){
@@ -698,6 +678,8 @@ function getTitleScene(){
 	o.headerFont = "PetMe64";
 	o.footerFont = "PetMe64";
 	o.contextFont = "PetMe64";
+	o.alpha = contr.menuAlpha;
+	o.visible = false;
 	//title scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
@@ -711,15 +693,12 @@ function getTitleScene(){
 	o.playRect.addChild(playBtn);
 	o.playRect.release = function(){
 		focusText.focus();
-		var fadeOutTween = fadeOut(titleScene);
-		fadeOutTween.onComplete = function(){
-			playerGroup.visible = true;
-			ship.visible = true;
-			toggleMenu(o,undefined);
-			g.state = play;
-			bgMusic.play();
-			contr.t0 = new Date().getTime(); // initialize value of t0
-		};
+		playerGroup.visible = true;
+		ship.visible = true;
+		toggleMenu(o,undefined);
+		g.state = play;
+		bgMusic.play();
+		contr.t0 = new Date().getTime(); // initialize value of t0
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
@@ -807,6 +786,8 @@ function ScoreScene(){
 	o.contextFont = "PetMe64";
 	o.vOffset = 10;
 	o.hOffset = 0;
+	o.alpha = contr.menuAlpha;
+	o.visible = false;
 
 	//ScoreScene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
@@ -869,6 +850,8 @@ function OptionScene(){
 	o.contextFont = "PetMe64";
 	o.vOffset = 10;
 	o.hOffset = 0;
+	o.alpha = contr.menuAlpha;
+	o.visible = false;
 
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
@@ -919,6 +902,8 @@ function StoreScene(){
 	o.contextFont = "PetMe64";
 	o.vOffset = 10;
 	o.hOffset = 0;
+	o.alpha = contr.menuAlpha;
+	o.visible = false;
 
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
@@ -969,6 +954,8 @@ function CreditScene(){
 	o.contextFont = "PetMe64";
 	o.vOffset = 10;
 	o.hOffset = 0;
+	o.alpha = contr.menuAlpha;
+	o.visible = false;
 
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
@@ -1017,6 +1004,8 @@ function PauseScene(){
 	o.headerFont = "PetMe64";
 	o.footerFont = "PetMe64";
 	o.contextFont = "PetMe64";
+	o.alpha = 0.5;
+	o.visible = false;
 
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
@@ -1048,8 +1037,10 @@ function focusManager(){
 	focusText.setAttribute("style","width: 0px; height: 0px;");
 	document.body.appendChild(focusText);
 	focusText.onblur = function(){
-		g.pause();
-		toggleMenu(undefined,pauseScene);
+		if(!g.paused){
+			g.pause();
+			toggleMenu(undefined,pauseScene);		}
+
 	};
 	return focusText;
 }
