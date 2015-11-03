@@ -1037,8 +1037,10 @@ function focusManager(){
 	focusText.setAttribute("style","width: 0px; height: 0px;");
 	document.body.appendChild(focusText);
 	focusText.onblur = function(){
-		g.pause();
-		toggleMenu(undefined,pauseScene);
+		if(!g.paused){
+			g.pause();
+			toggleMenu(undefined,pauseScene);		}
+
 	};
 	return focusText;
 }
