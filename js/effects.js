@@ -61,18 +61,19 @@ function Bullet(){
 	};
 }
 function toggleMenu(caller,callee){
-	if(caller){
+	if(caller !== undefined){
 		caller.visible = false;
 		caller.children.forEach(function(scene){
-			if(scene.press !== undefined){
+			if(scene.release){
 				scene.interactive = false;
+				scene.state ="up";
 			}
 		});
 	}
-	if(callee){
+	if(callee !== undefined){
 		callee.visible = true;
 		callee.children.forEach(function(scene){
-			if(scene.press !== undefined){
+			if(scene.release){
 				scene.interactive = true;
 			}
 		});

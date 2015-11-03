@@ -74,6 +74,18 @@ function setup(){
 	scoreScene.alpha = 0.93;
 	scoreScene.visible = false;
 
+	optionScene = OptionScene();
+	optionScene.alpha = 0.93;
+	optionScene.visible = false;
+
+	storeScene = StoreScene();
+	storeScene.alpha = 0.93;
+	storeScene.visible = false;
+
+	creditScene = CreditScene();
+	creditScene.alpha = 0.93;
+	creditScene.visible = false;
+
 	pauseScene = PauseScene();
 	pauseScene.alpha = 0.4;
 	pauseScene.visible = false;
@@ -697,7 +709,7 @@ function getTitleScene(){
 	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
 	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
 	o.playRect.addChild(playBtn);
-	o.playRect.press = function(){
+	o.playRect.release = function(){
 		focusText.focus();
 		var fadeOutTween = fadeOut(titleScene);
 		fadeOutTween.onComplete = function(){
@@ -715,11 +727,41 @@ function getTitleScene(){
 	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	statsBtn = text("STATS", "35px " + o.contextFont, "white");
 	o.statsRect.addChild(statsBtn);
-	o.statsRect.press = function(){
+	o.statsRect.release = function(){
 		toggleMenu(o,scoreScene);
 	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
+
+	//options
+	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
+	o.optionsRect.addChild(optionsBtn);
+	o.optionsRect.release = function(){
+			toggleMenu(o,optionScene);
+	};
+	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
+	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
+
+	//store button
+	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
+	storeBtn = text("STORE", "35px " + o.contextFont, "white");
+	o.storeRect.addChild(storeBtn);
+	o.storeRect.release = function(){
+		toggleMenu(o,storeScene);
+	};
+	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
+	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
+
+	//credit button
+	o.creditRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
+	creditBtn = text("CREDITS", "35px " + o.contextFont, "white");
+	o.creditRect.addChild(creditBtn);
+	o.creditRect.release = function(){
+		toggleMenu(o,creditScene);
+	};
+	o.creditRect.over = function(){o.creditRect.fillStyle = o.hoverColor;};
+	o.creditRect.out = function(){o.creditRect.fillStyle = o.color;};
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
@@ -732,17 +774,26 @@ function getTitleScene(){
 	o.header.putCenter(title);
 	o.playRect.putCenter(playBtn);
 	o.statsRect.putCenter(statsBtn);
+	o.optionsRect.putCenter(optionsBtn);
+	o.storeRect.putCenter(storeBtn);
+	o.creditRect.putCenter(creditBtn);
 	o.footer.putCenter(footerText);
 	o.footer.putCenter(copyrightText,0,30);
 	o.frontBg.putCenter(o.footer,0,225);
 
-	o.header.putBottom(o.playRect,0,125);
+	o.header.putBottom(o.playRect,0,100);
 	o.playRect.putBottom(o.statsRect);
+	o.statsRect.putBottom(o.optionsRect);
+	o.optionsRect.putBottom(o.storeRect);
+	o.storeRect.putBottom(o.creditRect);
 
 	o.addChild(o.frontBg);
 	o.addChild(o.header);
 	o.addChild(o.playRect);
-	o.addChild(o.statsRect );
+	o.addChild(o.statsRect);
+	o.addChild(o.optionsRect);
+	o.addChild(o.storeRect);
+	o.addChild(o.creditRect);
 	o.addChild(o.footer);
 	return o;
 }
@@ -772,7 +823,7 @@ function ScoreScene(){
 	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
 
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.press = function(){
+	o.backBtn.release = function(){
 		toggleMenu(o,titleScene);
 	};
 	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
@@ -807,6 +858,157 @@ function ScoreScene(){
 
 	return o;
 }
+
+function OptionScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("OPTIONS", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("Game Settings(under construction)", "15px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function StoreScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("STORE", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("In Game Purchases (Under Construction)", "20px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function CreditScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("CREDITS", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("Developer/Designer: Akshay Bairagi", "15px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
 function PauseScene(){
 	var o = group([]);
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
@@ -818,7 +1020,7 @@ function PauseScene(){
 
 	//Store Scene background
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	o.frontBg.press = function(){
+	o.frontBg.release = function(){
 		toggleMenu(o,gameScene);
 		contr.t0 = new Date().getTime(); // initialize value of t0
 		focusText.focus();
