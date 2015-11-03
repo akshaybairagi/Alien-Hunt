@@ -1,6 +1,5 @@
 //Game engine class
 function Game(width, height, setup, assetsToLoad, load){
-
 		//Make the canvas and initialize the stage
 		this.canvas = makeCanvas(width, height, "#cccccc","#ff9999");
 		stage.width = this.canvas.width;
@@ -38,14 +37,6 @@ Game.prototype = {
 	//The game loop
 	gameLoop: function(timestamp){
 		requestAnimationFrame(this.gameLoop.bind(this));
-		if(this.interpolation)
-			this.withInterpolation(timestamp);
-		else {
-			this.noInterpolation();
-		}
-	},
-	//render without interpolation
-	noInterpolation: function(){
 		//update game tween, shaking sprites, particle effect
 		this.updateGameEffects();
 		//Run the current game `state` function if it's been defined and
@@ -55,42 +46,6 @@ Game.prototype = {
     }
     //Render the canvas
     render(this.canvas);
-	},
-	//render with interpolation
-	withInterpolation: function(timestamp){
-		//Calculate the time that has elapsed since the last frame
-		if (!timestamp) timestamp = 0;
-		var elapsed = timestamp - this.previous;
-
-		//Optionally correct any unexpected huge gaps in the elapsed time
-		if (elapsed > 1000) elapsed = this.frameDuration;
-		//Add the elapsed time to the lag counter
-		this.lag += elapsed;
-
-		//Update the frame if the lag counter is greater than or
-		//equal to the frame duration
-		while (this.lag >= this.frameDuration){
-			capturePreviousPositions(stage);
-
-			//Run the current game `state` function if it's been defined and
-			//the game isn't `paused`
-			if(this.state && !this.paused){
-				this.state();
-			}
-			//Reduce the lag counter by the frame duration
-			this.lag -= this.frameDuration;
-		}
-		//update game tween, shaking sprites, particle effect
-		this.updateGameEffects();
-		//Calculate the lag offset. This tells us how far
-		//we are into the next frame
-		var lagOffset = this.lag / this.frameDuration;
-		//Render the sprites using the `lagOffset` to
-		//interpolate the sprites' positions
-		renderWithInterpolation(this.canvas, lagOffset);
-		//Capture the current time to be used as the previous
-		//time in the next frame
-		this.previous = timestamp;
 	},
 	//The `start` method that gets the whole engine going. This needs to
 	//be called by the user from the game application code, right after
@@ -106,7 +61,7 @@ Game.prototype = {
 									//Clear the game `state` function for now to stop the loop
 									_this.state = undefined;
 									//Call the `setup` function that was supplied by the user in
-									//the Game class�s constructor
+									//the Game class's constructor
 									_this.setup();
 								});
 				}
@@ -137,7 +92,6 @@ Game.prototype = {
 	},
 	scaleToWindow: function(backgroundColor){
 		var backgroundColor = checkIfUndefined(backgroundColor,"#2C3539");
-
 		var scaleX, scaleY, scale, center;
 		//1. Scale the canvas to the correct size
 		//Figure out the scale amount on each axis
@@ -187,17 +141,17 @@ Game.prototype = {
 		if (buttons.length > 0){
 			this.canvas.style.cursor = "auto";
 			buttons.forEach(function(button){
-				button.update(this.pointer, this.canvas);
-				if (button.state === "over" || button.state === "down") {
-					if(button.parent !== undefined) {
-						this.canvas.style.cursor = "pointer";
+					button.update(this.pointer, this.canvas);
+					if (button.state === "over" || button.state === "down"){
+						if(button.parent !== undefined) {
+							this.canvas.style.cursor = "pointer";
+						}
 					}
-				}
 			},this);
 		}
 		//Update all the particles
 		if (particles.length > 0){
-			for(var i = particles.length - 1; i >= 0; i--) {
+			for(var i = particles.length - 1; i >= 0; i--){
 				var particle = particles[i];
 				particle.update();
 			}
@@ -213,7 +167,7 @@ Game.prototype = {
 		//Update all the shaking sprites
 		//(More about this later in the chapter!)
 		if (shakingSprites.length > 0){
-			for(var i = shakingSprites.length - 1; i >= 0; i--) {
+			for(var i = shakingSprites.length - 1; i >= 0; i--){
 				var shakingSprite = shakingSprites[i];
 				if (shakingSprite.updateShake)
 						shakingSprite.updateShake();
@@ -225,13 +179,11 @@ Game.prototype = {
 		}
 	}
 };
-
 function game(width, height, setup, assetsToLoad, load){
 	var width = checkIfUndefined(width,256),
 		height = checkIfUndefined(height,256);
 	return new Game(width, height, setup, assetsToLoad, load);
 }
-
 function capturePreviousPositions(stage){
 	//Loop through all the children of the stage
 	stage.children.forEach(function(sprite){

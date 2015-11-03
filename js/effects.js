@@ -60,3 +60,22 @@ function Bullet(){
 		this.bulletPool.push(bullet);
 	};
 }
+function toggleMenu(caller,callee){
+	if(caller !== undefined){
+		caller.visible = false;
+		caller.children.forEach(function(scene){
+			if(scene.release){
+				scene.interactive = false;
+				scene.state ="up";
+			}
+		});
+	}
+	if(callee !== undefined){
+		callee.visible = true;
+		callee.children.forEach(function(scene){
+			if(scene.release){
+				scene.interactive = true;
+			}
+		});
+	}
+}
