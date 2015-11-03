@@ -145,9 +145,11 @@ function keyHandler(){
 		if(g.paused){
 			g.resume();
 			contr.t0 = new Date().getTime(); // initialize value of t0
+			toggleMenu(pauseScene,undefined);
 		}
 		else {
 			g.pause();
+			toggleMenu(undefined,pauseScene);
 		}
 	}
 	//jump player
@@ -1039,7 +1041,8 @@ function focusManager(){
 	focusText.onblur = function(){
 		if(!g.paused){
 			g.pause();
-			toggleMenu(undefined,pauseScene);		}
+			toggleMenu(undefined,pauseScene);
+		}
 
 	};
 	return focusText;
