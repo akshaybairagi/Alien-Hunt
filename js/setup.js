@@ -7,11 +7,10 @@ var g = game(800, 600, setup,
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					"sounds/retro-action.wav",
+					// "sounds/retro-action.wav",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
-					"fonts/puzzler.otf",
 					"fonts/PetMe64.ttf"
 				]
 				,load
@@ -45,15 +44,10 @@ var controller = {
 	design: null,
 	distance: null,
 	miles: null,
-	noOfLife: 4,
+	noOfLife: 3,
 	maxLife: 5
 };
 var contr = controller;
-
-var score = {
-	aliensKilled: 0,
-	miles: 0
-};
 
 //For activities to be performed while assets are loading
 function load(){
@@ -67,76 +61,39 @@ function setup(){
 
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.wav"];
-	bgMusic.loop = true;
+	bgMusic = assets["sounds/bounce.mp3"];
+	bgMusic.loop = false;
 	bgMusic.volume= 0.5;
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
 
-	//Create the sprites
-	//1. The 'titleScene' sprites
-	//The play button
-	playButton = button([
-		assets["up.png"],
-		assets["over.png"],
-		assets["down.png"]
-	]);
+	//Add the game sprites to the 'gameScene' group
+	gameScene = GameScene();
 
-	//Set the 'playButton''s x property to 514 so that
-	//it's offscreen when the sprite is created
-	playButton.x = 514;
-	playButton.y = 450;
+	scoreScene = ScoreScene();
+	scoreScene.alpha = 0.93;
+	scoreScene.visible = false;
 
-	//Set the 'titleMessage' x position to -200 so that it's offscreen
-	titleMessage = text("start game", "20px puzzler", "white", -200, 420);
+	optionScene = OptionScene();
+	optionScene.alpha = 0.93;
+	optionScene.visible = false;
 
-	//Game title name
-	gameTitle = text("Alien Hunter", "40px PetMe64", "white", 100, 150);
+	storeScene = StoreScene();
+	storeScene.alpha = 0.93;
+	storeScene.visible = false;
 
-	//Make the 'playButton' and 'titleMessage' slide in from the
-	//edges of the screen using the 'slide' function
-	slide(playButton, 420, 450, 30, ["decelerationCubed"]);
-	slide(titleMessage, 420, 420, 30, ["decelerationCubed"]);
+	creditScene = CreditScene();
+	creditScene.alpha = 0.93;
+	creditScene.visible = false;
 
-	frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","",1,0,0);
+	pauseScene = PauseScene();
+	pauseScene.alpha = 0.4;
+	pauseScene.visible = false;
 
 	//Create the 'titleScene' group
-	titleScene = group([frontBg,playButton,titleMessage,gameTitle]);
-
- 	//2. The 'gameScene' sprites
-	//Make the sky background
-	sky = getSkyBackground();
-	//Initialize designs
-	initDesigns();
-
-	//space ship sprites
-	ship = createShip();
-	//draw moon sprites
-	moon = drawMoon();
-	//Add a black border along the top of the screen
-	//create life sprite pool
-	topBar = new TopBar();
-	topBar.create();
-	topBar.update(0);
-
-	//make player and set initials
-	player = makePlayer();
-	player.walk();
-	player.breath();
-
-	//Power Ups
-	gun = createGun();
-	car = createCar();
-
-	//Create Player Group as a container
-	playerGroup = createPlayerGroup();
-
-	//Create  buildings
-	bd = new Buildings();
-	bd.createBuildings();
-
-	//Add the game sprites to the 'gameScene' group
-	gameScene = group([sky,topBar.container,moon,blocks,ship,car,playerGroup,itemGroup]);
+	titleScene = getTitleScene();
+	titleScene.alpha = 0.93;
+	toggleMenu(undefined,titleScene);
 
 	//Create Aliens
 	aliens = new Alien();
@@ -157,37 +114,30 @@ function setup(){
 	imgr = new ItemManager();
 	imgr.initItems();
 
-	//Position the 'gameScene' offscreen at 814 so that its
-	//not visible when the game starts
-	gameScene.x = 814;
-	// titleScene.layer = 1;
-	// stage.alpha = 1;
-	// titleScene.alpha=0.95;
-
 	//Assign the key events
 	keyHandler();
 
-	playButton.press = function(){
-		g.state = play;
-		slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-		slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
-		bgMusic.play();
-		contr.t0 = new Date().getTime(); // initialize value of t0
-	};
+	playerGroup.visible = false;
+	ship.visible = false;
+
+	focusText = focusManager();
 }
 function keyHandler(){
-	//pause the game with Q  keyboard key
-	keyboard(81).press = function(){
-		if(g.paused){
-			g.resume();
-		}
-		else {
-			g.pause();
-		}
-	};
-	//fire the bullets with space key
-	var space = keyboard(32);
-	space.press = function(){
+	//pause the game with space bar key
+	keyboard(32).press = pauseGame;
+	//fire the bullets with X key and right arrow
+	var xKey = keyboard(88);//X key
+	xKey.press = firePress;
+	xKey.release = fireRelease;
+	var rArrowKey = keyboard(39);//->right arrow key
+	rArrowKey.press = firePress;
+	rArrowKey.release = fireRelease;
+	//Jump the player with z key
+	keyboard(90).press = jump;
+	keyboard(38).press = jump;
+
+	//fire
+	function firePress(){
 		if(playerGroup.item.type=="gun"){
 			playerGroup.item.visible = true;
 			player.shoot(gun);
@@ -195,8 +145,9 @@ function keyHandler(){
 		if(playerGroup.item.type=="mg"){
 			player.shoot(mGun);
 		}
-	};
-	space.release = function(){
+	}
+	//release trigger after fire
+	function fireRelease(){
 		if(playerGroup.item.type=="gun"){
 			playerGroup.item.visible = false;
 			player.walk();
@@ -204,16 +155,25 @@ function keyHandler(){
 		if(playerGroup.item.type=="mg"){
 			player.walk();
 		}
-	};
-	//Jump the player with upArrow
-	var upArrow = keyboard(38);
-	upArrow.press = function(){
+	}
+	//pause function for stopping the game
+	function pauseGame(){
+		if(g.paused){
+			g.resume();
+			contr.t0 = new Date().getTime(); // initialize value of t0
+		}
+		else {
+			g.pause();
+		}
+	}
+	//jump player
+	function jump(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
 			playerGroup.vy = -contr.jumpForce;
 			player.jump();
-		}
-	};
+			}
+	}
 	//slide the player with downArrow
 	var dwnArrow = keyboard(40);
 	dwnArrow.press = function(){
@@ -470,32 +430,31 @@ function end(){
 	for(var i=bullets.activeBullets.length-1;i>=0;i--){
 		bullets.freeBullet(bullets.activeBullets[i]);
 	}
-	//Display the 'titleScene' and hide the 'gameScene'
-	slide(titleScene, 0, 0, 30, ["decelerationCubed"]);
-	slide(gameScene, 814, 0, 30, ["decelerationCubed"]);
 
-	gameScene.visible = false;
-
+	//Display the 'titleScene' and fade the 'gameScene' in bg
+	toggleMenu(undefined,titleScene);
+	var fadeInTween = fadeIn(titleScene);
 	//Assign a new button 'press' action to restart the game
-	playButton.press = function(){
-		restart();
-		//Set the game state to 'play' and 'resume' the game
-		contr.t0 = new Date().getTime(); // initialize value of t0
-		g.resume();
+	titleScene.playRect.press = function(){
+		focusText.focus();
+		var fadeOutTween = fadeOut(titleScene);
+		fadeOutTween.onComplete = function(){
+			toggleMenu(titleScene,undefined);
+			restart();
+			//Set the game state to 'play' and 'resume' the game
+			contr.t0 = new Date().getTime(); // initialize value of t0
+			g.resume();
+		};
 	};
 }
 function restart(){
-	gameScene.visible = true;
+	// gameScene.visible = true;
 	playerGroup.setPosition(150,300);
 	topBar.reset(5);
   var pattern = designs[randomInt(0,3)];
 	contr.design = pattern;
 	contr.distance = 0;
 	bd.resetBuildings(pattern); //reset the building designs
-
-	//Hide the titleScene and reveal the gameScene
-	slide(titleScene, 814, 0, 30, ["decelerationCubed"]);
-	slide(gameScene, 0, 0, 30, ["decelerationCubed"]);
 }
 function Buildings(){
 	//variables for building blocks
@@ -565,9 +524,17 @@ function Buildings(){
 		});
 	};
 }
+function Score(){
+	this.aliensKilled = 0;
+	this.miles = 0;
+	this.score = text(this.miles, "10px PetMe64", "black",32,32);
+	this.score.setPosition(g.canvas.width- 2*this.score.width,0.5);
+
+	this.update = function(scoreVal){
+		this.score.content = Math.ceil(scoreVal);
+	};
+}
 function TopBar(){
-	this.pool = [];
-	this.activePool = [];
  	this.noLife = contr.noOfLife;
 	this.maxLife =contr.maxLife
 	this.container = group([]);
@@ -659,17 +626,25 @@ function ItemManager(){
     this.life = sprite(assets["heart.png"]);
     this.life.type = "heart";
     this.life.visible = false;
+
+		this.mBox = rectangle(15,10,"red","black",2);
+		this.mBox.type = "mbox";
+		this.mBox.visible = false;
+		gameScene.addChild(this.mBox);
     gameScene.addChild(this.car_snap);
     gameScene.addChild(this.life);
   };
   this.getItem = function(){
   	var item;
-    switch (randomInt(1,2)){
+    switch (randomInt(1,3)){
       case 1:
         item = this.car_snap;
         break;
       case 2:
         item = this.life;
+        break;
+			case 3:
+        item = this.mBox;
         break;
       default:
         console.log("Error in getting items");
@@ -682,4 +657,399 @@ function ItemManager(){
     item.visible= false;
     gameScene.addChild(item);
   };
+}
+	// The 'gameScene' sprites
+function GameScene(){
+	//Make the sky background
+	sky = getSkyBackground();
+	//Initialize designs
+	initDesigns();
+	//space ship sprites
+	ship = createShip();
+	//draw moon sprites
+	moon = drawMoon();
+	//Add a black border along the top of the screen
+	//create life sprite pool
+	topBar = new TopBar();
+	topBar.create();
+	topBar.update(0);
+	//Display score
+	score = new Score();
+	//make player and set initials
+	player = makePlayer();
+	player.walk();
+	player.breath();
+	//Power Ups
+	gun = createGun();
+	car = createCar();
+	//Create Player Group as a container
+	playerGroup = createPlayerGroup();
+	//Create  buildings
+	bd = new Buildings();
+	bd.createBuildings();
+
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
+}
+function getTitleScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	//title scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//title scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("ALIEN HUNTER", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//playBtn
+	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
+	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
+	o.playRect.addChild(playBtn);
+	o.playRect.release = function(){
+		focusText.focus();
+		var fadeOutTween = fadeOut(titleScene);
+		fadeOutTween.onComplete = function(){
+			playerGroup.visible = true;
+			ship.visible = true;
+			toggleMenu(o,undefined);
+			g.state = play;
+			bgMusic.play();
+			contr.t0 = new Date().getTime(); // initialize value of t0
+		};
+	};
+	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
+	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
+	//stats of the player
+	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	statsBtn = text("STATS", "35px " + o.contextFont, "white");
+	o.statsRect.addChild(statsBtn);
+	o.statsRect.release = function(){
+		toggleMenu(o,scoreScene);
+	};
+	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
+	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
+
+	//options
+	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
+	o.optionsRect.addChild(optionsBtn);
+	o.optionsRect.release = function(){
+			toggleMenu(o,optionScene);
+	};
+	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
+	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
+
+	//store button
+	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
+	storeBtn = text("STORE", "35px " + o.contextFont, "white");
+	o.storeRect.addChild(storeBtn);
+	o.storeRect.release = function(){
+		toggleMenu(o,storeScene);
+	};
+	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
+	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
+
+	//credit button
+	o.creditRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
+	creditBtn = text("CREDITS", "35px " + o.contextFont, "white");
+	o.creditRect.addChild(creditBtn);
+	o.creditRect.release = function(){
+		toggleMenu(o,creditScene);
+	};
+	o.creditRect.over = function(){o.creditRect.fillStyle = o.hoverColor;};
+	o.creditRect.out = function(){o.creditRect.fillStyle = o.color;};
+
+	//title scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("z / ↑ to Jump,  x / → to fire, GamePad supported", "10px " + o.footerFont, "white");
+	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+	o.footer.addChild(copyrightText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.playRect.putCenter(playBtn);
+	o.statsRect.putCenter(statsBtn);
+	o.optionsRect.putCenter(optionsBtn);
+	o.storeRect.putCenter(storeBtn);
+	o.creditRect.putCenter(creditBtn);
+	o.footer.putCenter(footerText);
+	o.footer.putCenter(copyrightText,0,30);
+	o.frontBg.putCenter(o.footer,0,225);
+
+	o.header.putBottom(o.playRect,0,100);
+	o.playRect.putBottom(o.statsRect);
+	o.statsRect.putBottom(o.optionsRect);
+	o.optionsRect.putBottom(o.storeRect);
+	o.storeRect.putBottom(o.creditRect);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.playRect);
+	o.addChild(o.statsRect);
+	o.addChild(o.optionsRect);
+	o.addChild(o.storeRect);
+	o.addChild(o.creditRect);
+	o.addChild(o.footer);
+	return o;
+}
+function ScoreScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//ScoreScene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Score scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("SCORE", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//playBtn
+	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
+	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
+	o.minutes = text("minutes: 500", "20px " + o.contextFont, "white",0);
+	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
+	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
+
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//title scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("Happy Scoring", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.header.putBottom(o.noOfKills,0,125);
+	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
+	o.deaths.putBottom(o.minutes,o.hOffset,o.vOffset);
+	o.minutes.putBottom(o.score,o.hOffset,o.vOffset);
+	o.score.putBottom(o.highScore,o.hOffset,o.vOffset);
+	o.highScore.putBottom(o.backBtn,0,75);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.noOfKills);
+	o.addChild(o.deaths)
+	o.addChild(o.minutes);
+	o.addChild(o.score);
+	o.addChild(o.highScore);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+
+function OptionScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("OPTIONS", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("Game Settings(under construction)", "15px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function StoreScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("STORE", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("In Game Purchases (Under Construction)", "20px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function CreditScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.vOffset = 10;
+	o.hOffset = 0;
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	//Store scene header
+	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
+	title = text("CREDITS", "50px " +  o.headerFont, "white");
+	o.header.addChild(title);
+
+	//content
+	o.content = text("Developer/Designer: Akshay Bairagi", "15px " +  o.headerFont, "white");
+
+	// back button
+	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
+	o.backBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
+	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
+
+	//Store scene footer
+	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
+	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	o.footer.addChild(footerText);
+
+	o.frontBg.putCenter(o.header,0,-250);
+	o.header.putCenter(title);
+	o.footer.putCenter(footerText);
+	o.frontBg.putCenter(o.footer,0,250);
+
+	o.frontBg.putCenter(o.backBtn,0,100);
+	o.frontBg.putCenter(o.content)
+
+	o.addChild(o.frontBg);
+	o.addChild(o.header);
+	o.addChild(o.content);
+	o.addChild(o.backBtn);
+	o.addChild(o.footer);
+
+	return o;
+}
+function PauseScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+
+	//Store Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+	o.frontBg.release = function(){
+		toggleMenu(o,gameScene);
+		contr.t0 = new Date().getTime(); // initialize value of t0
+		focusText.focus();
+		g.resume();
+	};
+	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
+	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
+
+	// back button
+	o.pauseText = text("GAME PAUSED", "40px " + o.contextFont, "white",0);
+	o.backBtn = text("click to continue..", "15px " + o.contextFont, "white",0);
+
+	o.frontBg.putCenter(o.pauseText,0,-50);
+	o.pauseText.putBottom(o.backBtn,0,20);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.pauseText);
+	o.addChild(o.backBtn);
+	return o;
+}
+//Managing focus on game window
+function focusManager(){
+	var focusText = document.createElement("input");
+	focusText.id = "focusText";
+	focusText.setAttribute("style","width: 0px; height: 0px;");
+	document.body.appendChild(focusText);
+	focusText.onblur = function(){
+		g.pause();
+		toggleMenu(undefined,pauseScene);
+	};
+	return focusText;
 }

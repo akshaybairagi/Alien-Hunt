@@ -86,23 +86,20 @@ var assets = {
         //Set the image's `src` property to start loading the image
         image.src = source;
     },
-	loadFont: function(source, loadHandler) {
+	loadFont: function(source, loadHandler){
 		//Use the font's filename as the `fontFamily` name. This code captures
 		//the font file's name without the extension or file path
+    //Font.js Font loader library implementation
 		var fontFamily = source.split("/").pop().split(".")[0];
-		//Append an `@afont-face` style rule to the head of the HTML document
-		var newStyle = document.createElement("style");
-		var fontFace = "@font-face {font-family: '" + fontFamily + "'; src: url('" + source + "');}";
-		newStyle.appendChild(document.createTextNode(fontFace));
-		document.head.appendChild(newStyle);
-		//Tell the loadHandler we're loading a font
-		// Trick from http://stackoverflow.com/questions/2635814/
-		var image = new Image;
-		image.src = source;
-		image.onerror = function() {
+		var font = new Font();
+		font.onload = function(){
 			loadHandler();
 		};
-		//loadHandler();
+		font.onerror = function(error_message) {
+			console.log("FontLoadError: ",error_message);
+		};
+		font.fontFamily =fontFamily;
+		font.src = source;
 	},
 
     loadJson: function (source, loadHandler,_this) {

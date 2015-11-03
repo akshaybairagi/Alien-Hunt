@@ -69,25 +69,25 @@ Circle.prototype = new DisplayObject();
 Circle.prototype.constructor=Circle;
 //The `render` method
 Circle.prototype.render= function(ctx) {
-			ctx.strokeStyle = this.strokeStyle;
-			ctx.lineWidth = this.lineWidth;
-			if (this.gradient){
-				ctx.fillStyle = this.gradient;
-			}
-			else{
-					ctx.fillStyle = this.fillStyle;
-			}
-			ctx.beginPath();
-			ctx.arc(
-				this.radius + (-this.diameter * this.pivotX),
-				this.radius + (-this.diameter * this.pivotY),
-				this.radius,
-				0, 2*Math.PI,
-				false
-			);
-		if (this.strokeStyle !== "none") ctx.stroke();
-		if (this.fillStyle !== "none") ctx.fill();
-		if (this.mask && this.mask === true) ctx.clip();
+		ctx.strokeStyle = this.strokeStyle;
+		ctx.lineWidth = this.lineWidth;
+		if (this.gradient){
+			ctx.fillStyle = this.gradient;
+		}
+		else{
+				ctx.fillStyle = this.fillStyle;
+		}
+		ctx.beginPath();
+		ctx.arc(
+			this.radius + (-this.diameter * this.pivotX),
+			this.radius + (-this.diameter * this.pivotY),
+			this.radius,
+			0, 2*Math.PI,
+			false
+		);
+	if (this.strokeStyle !== "none") ctx.stroke();
+	if (this.fillStyle !== "none") ctx.fill();
+	if (this.mask && this.mask === true) ctx.clip();
 };
 //A higher level wrapper for the circle sprite
 function circle(diameter, fillStyle, strokeStyle, lineWidth, x, y) {
@@ -201,8 +201,10 @@ function Text(content,font,fillStyle,x,y) {
 	//Set `strokeText` to "none"
 	this.strokeText = "none";
 
-	this.width = g.canvas.ctx.measureText(this.content).width;
-	this.height =  g.canvas.ctx.measureText("M").width;
+	canvas.ctx.font = this.font;
+	canvas.ctx.textBaseline = "top";
+	this.width = canvas.ctx.measureText(this.content).width;
+	this.height = canvas.ctx.measureText("M").width;
 }
 Text.prototype = new DisplayObject();
 Text.prototype.constructor = Text;
@@ -210,12 +212,12 @@ Text.prototype.constructor = Text;
 //The `render` method describes how to draw the sprite
 Text.prototype.render = function(ctx) {
 		ctx.font = this.font;
-	//	ctx.strokeStyle = this.strokeStyle;
+		// ctx.strokeStyle = this.strokeStyle;
 		ctx.lineWidth = this.lineWidth;
 		ctx.fillStyle = this.fillStyle;
 		//Measure the width and height of the text
-		if (this.width === 0) this.width = ctx.measureText(this.content).width;
-		if (this.height === 0) this.height = ctx.measureText("M").width;
+		// if(this.width === 0) this.width = ctx.measureText(this.content).width;
+		// if(this.height === 0) this.height = ctx.measureText("M").width;
 		ctx.translate(
 			-this.width * this.pivotX,
 			-this.height * this.pivotY

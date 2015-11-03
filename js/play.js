@@ -6,8 +6,8 @@ function play(){
 
 	//count the frames and set score
 	contr.distance += 1;
-	score.miles = contr.distance/30;
-	// topBar.miles.content = "Miles " + Math.ceil(score.miles);
+	score.miles = contr.distance/15;
+	score.update(score.miles);
 
 	//tiling sky background
 	sky.tileX += 1;
@@ -153,7 +153,7 @@ function play(){
 		//Check for a collision with the alien
 			var collision = hitTestRectangle(bullet.cBox, alien,true);
 			if(collision){
-				smokeEmitter(bullet.x,bullet.y,assets["smoke.png"]);
+				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
 				//explosionSound();
 				explosionSound.play();
 				bullet.visible = false;
@@ -202,6 +202,9 @@ function play(){
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
+				}
+				if(item.type == "mbox" && item.visible){
+					item.visible = false;
 				}
 			}
 		}
