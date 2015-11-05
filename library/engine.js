@@ -39,8 +39,8 @@ Game.prototype = {
 		requestAnimationFrame(this.gameLoop.bind(this));
 		//update game tween, shaking sprites, particle effect
 		this.updateGameEffects();
-		//Run the current game `state` function if it's been defined and
-    //the game isn't `paused`
+		//Run the current game 'state' function if it's been defined and
+    //the game isn't 'paused'
     if(this.state && !this.paused) {
       this.state();
     }
@@ -194,11 +194,11 @@ function capturePreviousPositions(stage){
 		sprite.previousX = sprite.x;
 		sprite.previousY = sprite.y;
 		//Loop through all the sprite's children
-		if (sprite.children && sprite.children.length > 0){
+		if(sprite.children && sprite.children.length > 0){
 				sprite.children.forEach(function(child){
-				//Recursively call `setPosition` on each sprite
-				setPreviousPosition(child);
-			});
+					//Recursively call `setPosition` on each sprite
+					setPreviousPosition(child);
+				});
 		}
 	}
 }

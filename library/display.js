@@ -846,14 +846,14 @@ function renderWithInterpolation(canvas, lagOffset){
 		  ctx.save();
 		  //Interpolation
 		  if (sprite.previousX !== undefined) {
-			sprite.renderX = (sprite.x - sprite.previousX) * lagOffset + sprite.previousX;
-		  } else {
-			sprite.renderX = sprite.x;
+				sprite.renderX = (sprite.x - sprite.previousX) * lagOffset + sprite.previousX;
+		  }else{
+				sprite.renderX = sprite.x;
 		  }
 		  if (sprite.previousY !== undefined) {
-			sprite.renderY = (sprite.y - sprite.previousY) * lagOffset + sprite.previousY;
-		  } else {
-			sprite.renderY = sprite.y;
+				sprite.renderY = (sprite.y - sprite.previousY) * lagOffset + sprite.previousY;
+		  }else{
+				sprite.renderY = sprite.y;
 		  }
 
 		  //Draw the sprite at its interpolated position
@@ -876,16 +876,16 @@ function renderWithInterpolation(canvas, lagOffset){
 		  }
 
 		  //Display the optional blend mode
-		  if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
+		  if(sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
 
 		  //Use the sprite's own `render` method to draw the sprite
-		  if (sprite.render) sprite.render(ctx);
+		  if(sprite.render) sprite.render(ctx);
 
 		  //If the sprite contains child sprites in its
 		  //`children` array, display them by recursively calling this very same
 		  //`displaySprite` function again
 ``
-		  if (sprite.children && sprite.children.length > 0){
+		  if(sprite.children && sprite.children.length > 0){
 				//Reset the context back to the parent sprite's top left corner,
 				//relative to the pivot point
 				ctx.translate(-sprite.width * sprite.pivotX , -sprite.height * sprite.pivotY);
