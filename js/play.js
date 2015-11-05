@@ -14,11 +14,11 @@ function play(){
 
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += contr.gravity;
-	playerGroup.y += playerGroup.vy*contr.dt;
+	playerGroup.y += playerGroup.vy;
 
 
 	if(itemGroup.children.length > 0)
-		itemGroup.x -= contr.speed*contr.dt;
+		itemGroup.x -= contr.speed;
 
 	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
 		imgr.removeItem(itemGroup.children[0]);
@@ -38,7 +38,7 @@ function play(){
 	}
 
 	blocks.children.forEach(function(building){
-		building.x -= contr.speed*contr.dt;
+		building.x -= contr.speed;
 		if(building.x <= 0-building.width-contr.speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
@@ -64,17 +64,17 @@ function play(){
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
 			alien.vy += contr.gravity;
-			alien.y += alien.vy*contr.dt;
+			alien.y += alien.vy;
 			alien.vx += alien.accelerationX;
-			alien.x += alien.vx*contr.dt;
+			alien.x += alien.vx;
 			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
 				aliens.freeAlien(alien);
 			}
 	});
 	//Move the bullet
 	bullets.activeBullets.forEach(function(bullet){
-		bullet.x += bullet.vx*contr.dt;
-		bullet.y += bullet.vy*contr.dt;
+		bullet.x += bullet.vx;
+		bullet.y += bullet.vy;
 		if(bullet.x > g.canvas.width){
 			bullets.freeBullet(bullet);
 		}
@@ -130,7 +130,7 @@ function play(){
 					alien.vx = -contr.speed;
 
 					if(alien.act=="run"){
-						alien.vx += -200;
+						alien.vx += -3;
 						alien.walk();
 					}
 					else{

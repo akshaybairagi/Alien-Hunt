@@ -35,10 +35,10 @@ var designs = [];
 
 //Object to hold game variables/constants
 var controller = {
-	gravity: 15,	//force of gravity
-	speed: 275,		//speed 275
-	jumpForce: 375,	// force to jump
-	bulletSpeed: 1000, //speed of the bullet
+	gravity: .5,	//force of gravity
+	speed: 5,		//speed 275
+	jumpForce: 9,	// force to jump
+	bulletSpeed: 17, //speed of the bullet
 	d0: 0,	// time at last call
 	dt:	0,	// elapsed time between calls
 	design: null,
@@ -144,7 +144,7 @@ function keyHandler(){
 	function pauseGame(){
 		if(g.paused){
 			g.resume();
-			contr.t0 = new Date().getTime(); // initialize value of t0
+			contr.t0 = new Date().getTime(); //initialize value of t0
 			toggleMenu(pauseScene,undefined);
 		}
 		else {
