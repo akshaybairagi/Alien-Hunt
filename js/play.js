@@ -1,9 +1,4 @@
 function play(){
-	//variable for simulating time based physics
-	var t1 = new Date().getTime(); // current time in milliseconds since midnight on 1 Jan 1970
-	contr.dt = 0.001*(t1-contr.t0); // time elapsed in seconds since last call
-	contr.t0 = t1; // reset t0
-
 	//count the frames and set score
 	contr.distance += 1;
 	score.miles = contr.distance/15;
@@ -15,7 +10,6 @@ function play(){
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += contr.gravity;
 	playerGroup.y += playerGroup.vy;
-
 
 	if(itemGroup.children.length > 0)
 		itemGroup.x -= contr.speed;
