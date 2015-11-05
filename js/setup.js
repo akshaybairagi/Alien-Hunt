@@ -35,9 +35,9 @@ var designs = [];
 
 //Object to hold game variables/constants
 var controller = {
-	gravity: .5,	//force of gravity
+	gravity: .4,	//force of gravity
 	speed: 5,		//speed 275
-	jumpForce: 9,	// force to jump
+	jumpForce: 8,	// force to jump
 	bulletSpeed: 17, //speed of the bullet
 	d0: 0,	// time at last call
 	dt:	0,	// elapsed time between calls
