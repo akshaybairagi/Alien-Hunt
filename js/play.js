@@ -52,7 +52,7 @@ function play(){
 			});
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
-		blocks.nextPos.Y=400 + randomInt(-50,50);
+		blocks.nextPos.Y=400 + randomInt(-30,30);
 	});
 
 	//move aliens
@@ -77,17 +77,9 @@ function play(){
 	if(playerGroup.item.type == "car"){
 		car.start();
 	}
-	//insert aliens in the game every 120th frame
-	if(contr.distance % 120 == 0){
-		var alien = aliens.getAlien();
-		alien.jump();
-		if(randomInt(0,1)){
-			alien.act = "run";
-		}
-		else{
-			alien.act = "defend";
-		}
-	}
+	//insert aliens in the game as per AI logic
+	ai.setAlien(Date.now());
+
 	//check if player fell on the ground and stop the game loop
 	if(playerGroup.y > g.canvas.height){
 		topBar.update(-1);
@@ -114,7 +106,6 @@ function play(){
 				if(player.state == "jump")	player.walk();
 			}
 		}
-
 		//Check alien and collision with buildings
 		aliens.activeAliens.forEach(function(alien){
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
@@ -130,13 +121,14 @@ function play(){
 					else{
 						alien.stand();
 					}
-					if(building.gx >= alien.x){
+					if(building.gx >= alien.x && alien.act=="run"){
 						alien.vy = -contr.jumpForce;
 						alien.vx += -2;
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					building.y += -0.1;
+					building.y += -0.2;
+					shake(building, 0.02, true);
 				}
 		});
 	});
