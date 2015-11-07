@@ -78,7 +78,7 @@ function play(){
 		car.start();
 	}
 	//insert aliens in the game as per AI logic
-	ai.getAlien(Date.now());
+	ai.setAlien(Date.now());
 
 	//check if player fell on the ground and stop the game loop
 	if(playerGroup.y > g.canvas.height){

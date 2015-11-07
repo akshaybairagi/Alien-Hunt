@@ -107,8 +107,7 @@ function setup(){
 	focusText = focusManager();
 	//Game AI
 	ai = new gameAI();
-	ai.startTime = Date.now();
-	ai.lastEvt = ai.startTime;
+
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -430,13 +429,16 @@ function end(){
 	//Display the 'titleScene' and fade the 'gameScene' in bg
 	toggleMenu(undefined,titleScene);
 	//Assign a new button 'press' action to restart the game
-	titleScene.playRect.press = function(){
+	titleScene.playRect.release = function(){
 		focusText.focus();
 		toggleMenu(titleScene,undefined);
 		restart();
 		//Set the game state to 'play' and 'resume' the game
-		contr.t0 = new Date().getTime(); // initialize value of t0
 		g.resume();
+		ai.startTime = Date.now();
+		ai.oneAlienEvt = ai.startTime;
+		ai.twoAlienEvt = ai.startTime;
+		ai.threeAlienEvt = ai.startTime;
 	};
 }
 function restart(){
@@ -710,7 +712,10 @@ function getTitleScene(){
 		toggleMenu(o,undefined);
 		g.state = play;
 		bgMusic.play();
-		contr.t0 = new Date().getTime(); // initialize value of t0
+		ai.startTime = Date.now();
+		ai.oneAlienEvt = ai.startTime;
+		ai.twoAlienEvt = ai.startTime;
+		ai.threeAlienEvt = ai.startTime;
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
@@ -1059,14 +1064,30 @@ function focusManager(){
 //game AI to Introduce items/aliens in the game
 function gameAI(){
 	this.startTime = null;
-	this.lastEvt = null;
-	this.currTime = null;
-	this.interval = 2000;
+	this.oneAlienEvt = null;
+	this.twoAlienEvt = null;
+	this.threeAlienEvt = null;
 
-	this.getAlien = function(currTime){
-		if(currTime-this.lastEvt >= this.interval){
-			this.lastEvt =currTime;
-			aliens.getAlien();
+	this.setAlien = function(currTime){
+		if(currTime-this.oneAlienEvt >= 2000){
+			if(currTime-this.threeAlienEvt >= 8000){
+				this.threeAlienEvt =currTime;
+				this.twoAlienEvt =currTime;
+				this.oneAlienEvt =currTime;
+				aliens.getAlien();
+				setTimeout(function(){aliens.getAlien();},175);
+				setTimeout(function(){aliens.getAlien();},300);
+			}
+			else if(currTime-this.twoAlienEvt >= 5000){
+				this.twoAlienEvt =currTime;
+				this.oneAlienEvt =currTime;
+				aliens.getAlien();
+				setTimeout(function(){aliens.getAlien();},175);
+			}
+			else{
+				this.oneAlienEvt =currTime;
+				aliens.getAlien();
+			}
 		}
 	};
 }
