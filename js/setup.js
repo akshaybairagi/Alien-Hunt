@@ -105,9 +105,8 @@ function setup(){
 	keyHandler();
 
 	focusText = focusManager();
-	//Game AI
+	//Game AI object
 	ai = new gameAI();
-
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -469,20 +468,16 @@ function Buildings(){
 			this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
 			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
 				blocks.nextPos.X,blocks.nextPos.Y);
-
 			blocks.addChild(building);
 			blocks.nextPos.X=building.x + randomInt(350,400);
-			blocks.nextPos.Y=400 + randomInt(-50,50);
+			blocks.nextPos.Y=400 + randomInt(-30,30);
 		}
 	};
 	this.designBuidlings = function(width,height,pattern,x,y){
-		// var row=9;
-		// var coloums=13;
 		var building =rectangle(width,height,"#272726","grey",2,x,y);
 		if(pattern.image){
 			building.setPattern(pattern.image,"repeat");
 		}
-
 		var windowWidth = building.width /this.row;
 		var windowHeight = building.height/this.columns;
 		for(var i = 0; i < this.columns; i++){
@@ -498,7 +493,6 @@ function Buildings(){
 						window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 					}
 					window.blendMode = "hard-light";
-
 					building.addChild(window);
 				}
 			}
@@ -1070,7 +1064,7 @@ function gameAI(){
 
 	this.setAlien = function(currTime){
 		if(currTime-this.oneAlienEvt >= 2000){
-			if(currTime-this.threeAlienEvt >= 8000){
+			if(currTime-this.threeAlienEvt >= 12000){
 				this.threeAlienEvt =currTime;
 				this.twoAlienEvt =currTime;
 				this.oneAlienEvt =currTime;
@@ -1078,7 +1072,7 @@ function gameAI(){
 				setTimeout(function(){aliens.getAlien();},175);
 				setTimeout(function(){aliens.getAlien();},300);
 			}
-			else if(currTime-this.twoAlienEvt >= 5000){
+			else if(currTime-this.twoAlienEvt >= 7000){
 				this.twoAlienEvt =currTime;
 				this.oneAlienEvt =currTime;
 				aliens.getAlien();

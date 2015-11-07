@@ -52,7 +52,7 @@ function play(){
 			});
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
-		blocks.nextPos.Y=400 + randomInt(-50,50);
+		blocks.nextPos.Y=400 + randomInt(-30,30);
 	});
 
 	//move aliens
@@ -127,7 +127,8 @@ function play(){
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					building.y += -0.1;
+					building.y += -0.2;
+					shake(building, 0.02, true);
 				}
 		});
 	});
