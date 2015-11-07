@@ -7,7 +7,7 @@ var g = game(800, 600, setup,
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					// "sounds/retro-action.wav",
+					"sounds/retro-action.wav",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
@@ -62,8 +62,8 @@ function setup(){
 
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/bounce.mp3"];
-	bgMusic.loop = false;
+	bgMusic = assets["sounds/retro-action.wav"];
+	bgMusic.loop = true;
 	bgMusic.volume= 0.5;
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
@@ -105,6 +105,10 @@ function setup(){
 	keyHandler();
 
 	focusText = focusManager();
+	//Game AI
+	ai = new gameAI();
+	ai.startTime = Date.now();
+	ai.lastEvt = ai.startTime;
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -361,8 +365,14 @@ function Alien(){
 		}
 		alien.setPosition(ship.centerX,ship.centerY);
 		alien.visible = true;
+		alien.jump();
+		if(randomInt(0,1)){
+			alien.act = "run";
+		}
+		else{
+			alien.act = "defend";
+		}
 		this.activeAliens.push(alien);
-		return alien;
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
@@ -1013,7 +1023,6 @@ function PauseScene(){
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	o.frontBg.release = function(){
 		toggleMenu(o,gameScene);
-		contr.t0 = new Date().getTime(); // initialize value of t0
 		focusText.focus();
 		g.resume();
 	};
@@ -1046,4 +1055,18 @@ function focusManager(){
 
 	};
 	return focusText;
+}
+//game AI to Introduce items/aliens in the game
+function gameAI(){
+	this.startTime = null;
+	this.lastEvt = null;
+	this.currTime = null;
+	this.interval = 2000;
+
+	this.getAlien = function(currTime){
+		if(currTime-this.lastEvt >= this.interval){
+			this.lastEvt =currTime;
+			aliens.getAlien();
+		}
+	};
 }
