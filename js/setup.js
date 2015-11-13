@@ -36,6 +36,7 @@ var designs = [];
 //Object to hold game variables/constants
 var controller = {
 	gravity: .4,	//force of gravity
+	gAttract: .2,
 	speed: 5,		//speed 275
 	jumpForce: 8,	// force to jump
 	bulletSpeed: 17, //speed of the bullet
@@ -70,6 +71,10 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
+	for(var i=0; i < bd.attract.length;i++){
+		gameScene.addChild( bd.attract[i]);
+	}
+
 	scoreScene = ScoreScene();
 	optionScene = OptionScene();
 	storeScene = StoreScene();
@@ -318,6 +323,7 @@ function Alien(){
 		alien.isOnGround = false;
 		alien.isUnderCol = false;
 		alien.state = "";
+		alien.release = false;
 
 		alien.walk = function(){
 			if(alien.state!== "walk"){
@@ -363,6 +369,7 @@ function Alien(){
 		}
 		alien.setPosition(ship.centerX,ship.centerY);
 		alien.visible = true;
+		alien.release = true;
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -371,6 +378,7 @@ function Alien(){
 			alien.act = "defend";
 		}
 		this.activeAliens.push(alien);
+		return alien;
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
@@ -458,6 +466,8 @@ function Buildings(){
 	this.columns = 13;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
+	//attractors array
+	this.attract = [];
 
 	this.pattern = designs[randomInt(0,3)];
 
@@ -471,6 +481,14 @@ function Buildings(){
 			blocks.addChild(building);
 			blocks.nextPos.X=building.x + randomInt(350,400);
 			blocks.nextPos.Y=400 + randomInt(-30,30);
+
+			var cBox = rectangle(30,g.canvas.height,"#272726","grey",2);
+			cBox.x = building.x + building.width;
+			cBox.Y = 0;
+			cBox.width = blocks.nextPos.X - (building.x + building.width);
+			cBox.alpha=0.1;
+			building.cBox = cBox;
+			this.attract.push(cBox);
 		}
 	};
 	this.designBuidlings = function(width,height,pattern,x,y){

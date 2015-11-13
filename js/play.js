@@ -37,8 +37,7 @@ function play(){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
-
-			//code to adjust the windows heigh and width
+			//code to adjust the windows height and width
 			var row=9;
 			var coloums=13;
 			var width = building.width /row;
@@ -53,17 +52,19 @@ function play(){
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=400 + randomInt(-30,30);
+		//setting the collision box for buildings
+		building.cBox.x = building.x + building.width;
 	});
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-			alien.vy += contr.gravity;
-			alien.y += alien.vy;
-			alien.vx += alien.accelerationX;
-			alien.x += alien.vx;
-			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
-				aliens.freeAlien(alien);
-			}
+		alien.vy += contr.gravity;
+		alien.y += alien.vy;
+		alien.vx += alien.accelerationX;
+		alien.x += alien.vx;
+		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
+			aliens.freeAlien(alien);
+		}
 	});
 	//Move the bullet
 	bullets.activeBullets.forEach(function(bullet){
@@ -94,6 +95,7 @@ function play(){
 												};
 		}
 	}
+
 	//Check collision for various objects
 	blocks.children.forEach(function(building){
 		//Check players and block collision (buildings)
@@ -106,11 +108,17 @@ function play(){
 				if(player.state == "jump")	player.walk();
 			}
 		}
+
 		//Check alien and collision with buildings
 		aliens.activeAliens.forEach(function(alien){
+			var colliAlienCBlock = hitTestRectangle(alien,building.cBox);
+			if(colliAlienCBlock && 	alien.release){
+				alien.vx += 0.5;
+			}
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
+					alien.release = false;
 					alien.vy = 0;
 					alien.vx = -contr.speed;
 
