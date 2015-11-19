@@ -710,7 +710,7 @@ function getTitleScene(){
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
 	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("ALIEN HUNTER", "50px " +  o.headerFont, "white");
+	title = text("ALIEN HUNT", "50px " +  o.headerFont, "white");
 	o.header.addChild(title);
 
 	//playBtn

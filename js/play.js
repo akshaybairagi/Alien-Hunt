@@ -113,7 +113,7 @@ function play(){
 		aliens.activeAliens.forEach(function(alien){
 			var colliAlienCBlock = hitTestRectangle(alien,building.cBox);
 			if(colliAlienCBlock && 	alien.release){
-				alien.vx += 0.5;
+				alien.vx += -0.4;
 			}
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
