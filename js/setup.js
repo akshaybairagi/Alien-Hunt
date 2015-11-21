@@ -323,7 +323,6 @@ function Alien(){
 		alien.isOnGround = false;
 		alien.isUnderCol = false;
 		alien.state = "";
-		alien.release = false;
 
 		alien.walk = function(){
 			if(alien.state!== "walk"){
@@ -369,7 +368,6 @@ function Alien(){
 		}
 		alien.setPosition(ship.centerX,ship.centerY);
 		alien.visible = true;
-		alien.release = true;
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";

@@ -111,14 +111,9 @@ function play(){
 
 		//Check alien and collision with buildings
 		aliens.activeAliens.forEach(function(alien){
-			var colliAlienCBlock = hitTestRectangle(alien,building.cBox);
-			if(colliAlienCBlock && 	alien.release){
-				alien.vx += -0.4;
-			}
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
-					alien.release = false;
 					alien.vy = 0;
 					alien.vx = -contr.speed;
 
@@ -135,7 +130,7 @@ function play(){
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					building.y += -0.2;
+					building.y += -0.1;
 					shake(building, 0.02, true);
 				}
 		});
