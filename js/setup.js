@@ -60,7 +60,6 @@ function load(){
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
-
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
@@ -323,6 +322,7 @@ function Alien(){
 		alien.isOnGround = false;
 		alien.isUnderCol = false;
 		alien.state = "";
+		alien.release = false;
 
 		alien.walk = function(){
 			if(alien.state!== "walk"){
@@ -368,6 +368,7 @@ function Alien(){
 		}
 		alien.setPosition(ship.centerX,ship.centerY);
 		alien.visible = true;
+		alien.release = true;
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -381,6 +382,7 @@ function Alien(){
   this.freeAlien = function(alien){
 	 	alien.visible = false;
 		alien.isUnderCol = false;
+		alien.release = false;
 	 	alien.setPosition(ship.centerX,ship.centerY);
 	 	this.activeAliens.splice(this.activeAliens.indexOf(alien), 1);
 	 	// return the alien back into the pool
@@ -481,9 +483,9 @@ function Buildings(){
 			blocks.nextPos.Y=400 + randomInt(-30,30);
 
 			var cBox = rectangle(30,g.canvas.height,"#272726","grey",2);
-			cBox.x = building.x + building.width;
+			cBox.x = building.x;
 			cBox.Y = 0;
-			cBox.width = blocks.nextPos.X - (building.x + building.width);
+			cBox.width = this.buildingWidth;
 			cBox.alpha=0.1;
 			building.cBox = cBox;
 			this.attract.push(cBox);

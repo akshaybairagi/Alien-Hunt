@@ -53,7 +53,7 @@ function play(){
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=400 + randomInt(-30,30);
 		//setting the collision box for buildings
-		building.cBox.x = building.x + building.width;
+		building.cBox.x = building.x;
 	});
 
 	//move aliens
@@ -116,6 +116,7 @@ function play(){
 					alien.isOnGround = true;
 					alien.vy = 0;
 					alien.vx = -contr.speed;
+					alien.release = false;
 
 					if(alien.act=="run"){
 						alien.vx += -3;
@@ -133,6 +134,8 @@ function play(){
 					building.y += -0.1;
 					shake(building, 0.02, true);
 				}
+
+
 		});
 	});
 
