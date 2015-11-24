@@ -58,12 +58,14 @@ function play(){
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-		// if(alien.release == false){
+		if(alien.release)
+			alien.vy += contr.gravity/2;
+		else {
 			alien.vy += contr.gravity;
-			alien.y += alien.vy;
-			alien.vx += alien.accelerationX;
-			alien.x += alien.vx;
-		// }
+		}
+		alien.y += alien.vy;
+		alien.vx += alien.accelerationX;
+		alien.x += alien.vx;
 
 		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
 			aliens.freeAlien(alien);
@@ -115,7 +117,7 @@ function play(){
 		//Check alien and collision with buildings
 		aliens.activeAliens.forEach(function(alien){
 			if(alien.release == true){
-				var rayCol = aliendBoxCol(building.cBox,alien,false,true);
+				var rayCol = aliencBoxCol(building.cBox,alien,false,true);
 				if(rayCol=="left"){
 						alien.x += -randomInt(5,10);
 				}
@@ -147,8 +149,6 @@ function play(){
 					building.y += -0.1;
 					shake(building, 0.02, true);
 				}
-
-
 		});
 	});
 

@@ -309,10 +309,6 @@ function Alien(){
 	this.activeAliens=[];
 	this.createAlien = function(){
 		var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
-		var dBox = rectangle(5,400,"black","black");
-		alien.addChild(dBox);
-		alien.dBox = dBox;
-		dBox.visible = false;
 		alien.states = {
 			stand: 0,
 			walk: [1,6],
@@ -486,7 +482,7 @@ function Buildings(){
 			blocks.nextPos.Y=400 + randomInt(-30,30);
 
 			var cBox = rectangle((75),g.canvas.height,"#272726","grey",1,building.x + building.width,0);
-			cBox.alpha = 0.1;	
+			cBox.visible = false;
 			this.attracts.push(cBox);
 			building.cBox = cBox;
 		}
