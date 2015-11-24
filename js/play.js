@@ -52,16 +52,19 @@ function play(){
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=400 + randomInt(-30,30);
-		//setting the collision box for buildings
-		building.cBox.x = building.x;
+
+		building.cBox.x = building.x + building.width;
 	});
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-		alien.vy += contr.gravity;
-		alien.y += alien.vy;
-		alien.vx += alien.accelerationX;
-		alien.x += alien.vx;
+		// if(alien.release == false){
+			alien.vy += contr.gravity;
+			alien.y += alien.vy;
+			alien.vx += alien.accelerationX;
+			alien.x += alien.vx;
+		// }
+
 		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
 			aliens.freeAlien(alien);
 		}
@@ -111,6 +114,16 @@ function play(){
 
 		//Check alien and collision with buildings
 		aliens.activeAliens.forEach(function(alien){
+			if(alien.release == true){
+				var rayCol = aliendBoxCol(building.cBox,alien,false,true);
+				if(rayCol=="left"){
+						alien.x += -randomInt(5,10);
+				}
+				if(rayCol=="right"){
+						alien.x += 1;
+				}
+			}
+
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;

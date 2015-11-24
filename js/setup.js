@@ -70,10 +70,9 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
-	for(var i=0; i < bd.attract.length;i++){
-		gameScene.addChild( bd.attract[i]);
-	}
-
+	bd.attracts.forEach(function(cBox){
+		gameScene.addChild(cBox);
+	});
 	scoreScene = ScoreScene();
 	optionScene = OptionScene();
 	storeScene = StoreScene();
@@ -310,6 +309,10 @@ function Alien(){
 	this.activeAliens=[];
 	this.createAlien = function(){
 		var alien = sprite(filmstrip(assets["json/alien.png"],30,53));
+		var dBox = rectangle(5,400,"black","black");
+		alien.addChild(dBox);
+		alien.dBox = dBox;
+		dBox.visible = false;
 		alien.states = {
 			stand: 0,
 			walk: [1,6],
@@ -466,8 +469,8 @@ function Buildings(){
 	this.columns = 13;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
-	//attractors array
-	this.attract = [];
+	//attracts Arrays
+	this.attracts = [];
 
 	this.pattern = designs[randomInt(0,3)];
 
@@ -482,13 +485,10 @@ function Buildings(){
 			blocks.nextPos.X=building.x + randomInt(350,400);
 			blocks.nextPos.Y=400 + randomInt(-30,30);
 
-			var cBox = rectangle(30,g.canvas.height,"#272726","grey",2);
-			cBox.x = building.x;
-			cBox.Y = 0;
-			cBox.width = this.buildingWidth;
-			cBox.alpha=0.1;
+			var cBox = rectangle((75),g.canvas.height,"#272726","grey",1,building.x + building.width,0);
+			cBox.alpha = 0.1;	
+			this.attracts.push(cBox);
 			building.cBox = cBox;
-			this.attract.push(cBox);
 		}
 	};
 	this.designBuidlings = function(width,height,pattern,x,y){
