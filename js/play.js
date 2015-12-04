@@ -28,7 +28,7 @@ function play(){
 		var item = imgr.getItem();
 		item.visible= true;
 		itemGroup.addChild(item);
-		itemGroup.setPosition(g.canvas.width + randomInt(150,300),300);
+		itemGroup.setPosition(g.canvas.width + randomInt(150,300),blocks.nextPos.Y-100);
 	}
 
 	blocks.children.forEach(function(building){
