@@ -58,14 +58,10 @@ function play(){
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-		if(alien.release)
-			alien.vy += contr.gravity/2;
-		else {
+			alien.y += alien.vy;
 			alien.vy += contr.gravity;
-		}
-		alien.y += alien.vy;
-		alien.vx += alien.accelerationX;
-		alien.x += alien.vx;
+			alien.vx += alien.accelerationX;
+			alien.x += alien.vx;
 
 		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
 			aliens.freeAlien(alien);
@@ -112,17 +108,17 @@ function play(){
 				playerGroup.vy = 0;
 				if(player.state == "jump")	player.walk();
 			}
+			else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
+				playerGroup.isOnGround = false;
+			}
 		}
 
-		//Check alien and collision with buildings
+		//Check alien and collision with buildings //alien fall logic
 		aliens.activeAliens.forEach(function(alien){
 			if(alien.release == true){
-				var rayCol = aliencBoxCol(building.cBox,alien,false,true);
-				if(rayCol=="left"){
-						alien.x += -randomInt(5,10);
-				}
-				if(rayCol=="right"){
-						alien.x += 1;
+				var rayCol = aliencBoxCol(alien,building.cBox,false,true);
+				if(rayCol){
+						alien.vx = -6;
 				}
 			}
 
@@ -130,6 +126,7 @@ function play(){
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
 					alien.vy = 0;
+					alien.accelerationX = 0;
 					alien.vx = -contr.speed;
 					alien.release = false;
 

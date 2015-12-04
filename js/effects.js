@@ -130,7 +130,7 @@ function aliencBoxCol(r1, r2, bounce, global) {
 
         //Bounce
         if (bounce) {
-          r1.vy *= -1;
+          //r1.vy *= -1;
         }
       } else {
         //The collision is happening on the Y axis
@@ -144,7 +144,7 @@ function aliencBoxCol(r1, r2, bounce, global) {
 
         //Bounce
         if (bounce) {
-          r1.vx *= -1;
+          r1.vx *= -5;
         }
       }
     } else {

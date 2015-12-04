@@ -390,7 +390,7 @@ function Alien(){
 }
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
-	ship.setPosition(600,32);
+	ship.setPosition(g.canvas.width-150,32);
 	ship.startTime = Date.now();
 	ship.lastUpdateTime = ship.startTime;
 	return ship;
@@ -481,8 +481,9 @@ function Buildings(){
 			blocks.nextPos.X=building.x + randomInt(350,400);
 			blocks.nextPos.Y=400 + randomInt(-30,30);
 
-			var cBox = rectangle((75),g.canvas.height,"#272726","grey",1,building.x + building.width,0);
+			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
+			cBox.alpha = 0.1;
 			this.attracts.push(cBox);
 			building.cBox = cBox;
 		}
