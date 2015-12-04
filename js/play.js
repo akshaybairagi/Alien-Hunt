@@ -205,9 +205,9 @@ function play(){
 					item.visible = false;
 					topBar.update(1);
 				}
-				if(item.type == "mbox" && item.visible){
-					item.visible = false;
-				}
+				// if(item.type == "mbox" && item.visible){
+				// 	item.visible = false;
+				// }
 			}
 		}
 	});

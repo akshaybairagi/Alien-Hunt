@@ -639,16 +639,16 @@ function ItemManager(){
   };
   this.getItem = function(){
   	var item;
-    switch (randomInt(1,3)){
+    switch (randomInt(1,2)){
       case 1:
         item = this.car_snap;
         break;
       case 2:
         item = this.life;
         break;
-			case 3:
-        item = this.mBox;
-        break;
+			// case 3:
+      //   item = this.mBox;
+      //   break;
       default:
         console.log("Error in getting items");
     }
