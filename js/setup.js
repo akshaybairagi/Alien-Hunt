@@ -36,6 +36,7 @@ var designs = [];
 //Object to hold game variables/constants
 var controller = {
 	gravity: .4,	//force of gravity
+	gAttract: .2,
 	speed: 5,		//speed 275
 	jumpForce: 8,	// force to jump
 	bulletSpeed: 17, //speed of the bullet
@@ -59,7 +60,6 @@ function load(){
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
-
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.wav"];
@@ -70,6 +70,9 @@ function setup(){
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
+	bd.attracts.forEach(function(cBox){
+		gameScene.addChild(cBox);
+	});
 	scoreScene = ScoreScene();
 	optionScene = OptionScene();
 	storeScene = StoreScene();
@@ -318,6 +321,7 @@ function Alien(){
 		alien.isOnGround = false;
 		alien.isUnderCol = false;
 		alien.state = "";
+		alien.release = false;
 
 		alien.walk = function(){
 			if(alien.state!== "walk"){
@@ -363,6 +367,7 @@ function Alien(){
 		}
 		alien.setPosition(ship.centerX,ship.centerY);
 		alien.visible = true;
+		alien.release = true;
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
@@ -371,10 +376,12 @@ function Alien(){
 			alien.act = "defend";
 		}
 		this.activeAliens.push(alien);
+		return alien;
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
 		alien.isUnderCol = false;
+		alien.release = false;
 	 	alien.setPosition(ship.centerX,ship.centerY);
 	 	this.activeAliens.splice(this.activeAliens.indexOf(alien), 1);
 	 	// return the alien back into the pool
@@ -383,7 +390,7 @@ function Alien(){
 }
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
-	ship.setPosition(600,32);
+	ship.setPosition(g.canvas.width-150,32);
 	ship.startTime = Date.now();
 	ship.lastUpdateTime = ship.startTime;
 	return ship;
@@ -458,6 +465,8 @@ function Buildings(){
 	this.columns = 13;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
+	//attracts Arrays
+	this.attracts = [];
 
 	this.pattern = designs[randomInt(0,3)];
 
@@ -471,6 +480,12 @@ function Buildings(){
 			blocks.addChild(building);
 			blocks.nextPos.X=building.x + randomInt(350,400);
 			blocks.nextPos.Y=400 + randomInt(-30,30);
+
+			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
+			cBox.visible = false;
+			cBox.alpha = 0.1;
+			this.attracts.push(cBox);
+			building.cBox = cBox;
 		}
 	};
 	this.designBuidlings = function(width,height,pattern,x,y){
@@ -692,7 +707,7 @@ function getTitleScene(){
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	//title scene header
 	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("ALIEN HUNTER", "50px " +  o.headerFont, "white");
+	title = text("ALIEN HUNT", "50px " +  o.headerFont, "white");
 	o.header.addChild(title);
 
 	//playBtn

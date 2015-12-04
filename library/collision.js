@@ -403,7 +403,7 @@ b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` prope
 
 */
 function hitTestRectangle(r1, r2, global) {
-   var global = (typeof global !== 'undefined')? global : false;
+   var global = global || false;
   var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 
   //A variable to determine whether there's a collision

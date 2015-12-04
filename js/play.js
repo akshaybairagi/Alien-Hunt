@@ -37,8 +37,7 @@ function play(){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
-
-			//code to adjust the windows heigh and width
+			//code to adjust the windows height and width
 			var row=9;
 			var coloums=13;
 			var width = building.width /row;
@@ -53,17 +52,20 @@ function play(){
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=400 + randomInt(-30,30);
+
+		building.cBox.x = building.x + building.width;
 	});
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-			alien.vy += contr.gravity;
 			alien.y += alien.vy;
+			alien.vy += contr.gravity;
 			alien.vx += alien.accelerationX;
 			alien.x += alien.vx;
-			if((alien.x < + alien.width) < 0	|| alien.y > g.canvas.height){
-				aliens.freeAlien(alien);
-			}
+
+		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
+			aliens.freeAlien(alien);
+		}
 	});
 	//Move the bullet
 	bullets.activeBullets.forEach(function(bullet){
@@ -94,6 +96,7 @@ function play(){
 												};
 		}
 	}
+
 	//Check collision for various objects
 	blocks.children.forEach(function(building){
 		//Check players and block collision (buildings)
@@ -105,14 +108,27 @@ function play(){
 				playerGroup.vy = 0;
 				if(player.state == "jump")	player.walk();
 			}
+			else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
+				playerGroup.isOnGround = false;
+			}
 		}
-		//Check alien and collision with buildings
+
+		//Check alien and collision with buildings //alien fall logic
 		aliens.activeAliens.forEach(function(alien){
+			if(alien.release == true){
+				var rayCol = aliencBoxCol(alien,building.cBox,false,true);
+				if(rayCol){
+						alien.vx = -6;
+				}
+			}
+
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
 				if(colliAlienBlock == "bottom"){
 					alien.isOnGround = true;
 					alien.vy = 0;
+					alien.accelerationX = 0;
 					alien.vx = -contr.speed;
+					alien.release = false;
 
 					if(alien.act=="run"){
 						alien.vx += -3;
@@ -127,7 +143,7 @@ function play(){
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					building.y += -0.2;
+					building.y += -0.1;
 					shake(building, 0.02, true);
 				}
 		});
