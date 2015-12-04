@@ -7,7 +7,7 @@ var g = game(800, 600, setup,
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					"sounds/retro-action.wav",
+					"sounds/retro-action.mp3",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
@@ -62,7 +62,7 @@ function setup(){
 	progressBar.remove();
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.wav"];
+	bgMusic = assets["sounds/retro-action.mp3"];
 	bgMusic.loop = true;
 	bgMusic.volume= 0.5;
 	explosionSound = assets["sounds/explosion.wav"];
