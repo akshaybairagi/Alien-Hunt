@@ -28,7 +28,7 @@ function play(){
 		var item = imgr.getItem();
 		item.visible= true;
 		itemGroup.addChild(item);
-		itemGroup.setPosition(g.canvas.width + randomInt(150,300),300);
+		itemGroup.setPosition(g.canvas.width + randomInt(150,300),blocks.nextPos.Y-100);
 	}
 
 	blocks.children.forEach(function(building){
@@ -200,14 +200,16 @@ function play(){
 
 					playerGroup.item = car;
 					setTimeout(car.remove,5000);
+					carSound.restart();
 				}
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
+					pupSound.play();
 				}
-				if(item.type == "mbox" && item.visible){
-					item.visible = false;
-				}
+				// if(item.type == "mbox" && item.visible){
+				// 	item.visible = false;
+				// }
 			}
 		}
 	});

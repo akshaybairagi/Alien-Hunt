@@ -7,10 +7,13 @@ var g = game(800, 600, setup,
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
-					"sounds/retro-action.wav",
+					"sounds/retro-action.mp3",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
+					"sounds/entry.mp3",
+					"sounds/car.mp3",
+					"sounds/powerup.mp3",
 					"fonts/PetMe64.ttf"
 				]
 				,load
@@ -62,11 +65,15 @@ function setup(){
 	progressBar.remove();
 	//Sound and music
 	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.wav"];
+	bgMusic = assets["sounds/retro-action.mp3"];
 	bgMusic.loop = true;
-	bgMusic.volume= 0.5;
+	bgMusic.volume= 0.2;
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
+	entrySound = assets["sounds/entry.mp3"];
+	pupSound = assets["sounds/powerup.mp3"];
+	carSound = assets["sounds/car.mp3"];
+	carSound.loop = true;
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
@@ -292,6 +299,7 @@ function createCar(){
 			var carWobble = wobble(car, 1, 1.1);
 	};
 	car.remove = function(){
+		carSound.pause();
 		car.visible = false;
 		stage.addChild(car);
 
@@ -376,6 +384,7 @@ function Alien(){
 			alien.act = "defend";
 		}
 		this.activeAliens.push(alien);
+		entrySound.play();
 		return alien;
 	};
   this.freeAlien = function(alien){
@@ -639,16 +648,16 @@ function ItemManager(){
   };
   this.getItem = function(){
   	var item;
-    switch (randomInt(1,3)){
+    switch (randomInt(1,2)){
       case 1:
         item = this.car_snap;
         break;
       case 2:
         item = this.life;
         break;
-			case 3:
-        item = this.mBox;
-        break;
+			// case 3:
+      //   item = this.mBox;
+      //   break;
       default:
         console.log("Error in getting items");
     }
