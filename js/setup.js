@@ -11,6 +11,9 @@ var g = game(800, 600, setup,
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
 					"sounds/bounce.mp3",
+					"sounds/entry.mp3",
+					"sounds/car.mp3",
+					"sounds/powerup.mp3",
 					"fonts/PetMe64.ttf"
 				]
 				,load
@@ -64,9 +67,13 @@ function setup(){
 	shotSound = assets["sounds/shot.wav"];
 	bgMusic = assets["sounds/retro-action.mp3"];
 	bgMusic.loop = true;
-	bgMusic.volume= 0.5;
+	bgMusic.volume= 0.2;
 	explosionSound = assets["sounds/explosion.wav"];
 	jumpSound = assets["sounds/bounce.mp3"];
+	entrySound = assets["sounds/entry.mp3"];
+	pupSound = assets["sounds/powerup.mp3"];
+	carSound = assets["sounds/car.mp3"];
+	carSound.loop = true;
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
@@ -292,6 +299,7 @@ function createCar(){
 			var carWobble = wobble(car, 1, 1.1);
 	};
 	car.remove = function(){
+		carSound.pause();
 		car.visible = false;
 		stage.addChild(car);
 
@@ -376,6 +384,7 @@ function Alien(){
 			alien.act = "defend";
 		}
 		this.activeAliens.push(alien);
+		entrySound.play();
 		return alien;
 	};
   this.freeAlien = function(alien){

@@ -200,10 +200,12 @@ function play(){
 
 					playerGroup.item = car;
 					setTimeout(car.remove,5000);
+					carSound.restart();
 				}
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
+					pupSound.play();
 				}
 				// if(item.type == "mbox" && item.visible){
 				// 	item.visible = false;
