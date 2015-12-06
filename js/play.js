@@ -38,8 +38,8 @@ function play(){
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
 			//code to adjust the windows height and width
-			var row=9;
-			var coloums=13;
+			var row= bd.row;
+			var coloums= bd.columns;
 			var width = building.width /row;
 			var height = building.height/coloums;
 			building.children.forEach(function(window){

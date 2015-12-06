@@ -470,8 +470,8 @@ function Buildings(){
 	this.numOfBuilding = 4;
 	this.buildingWidth = 300;
 	this.buildingHeight = null;
-	this.row = 9;
-	this.columns = 13;
+	this.row = 7;
+	this.columns = 11;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	//attracts Arrays
@@ -593,7 +593,7 @@ function getSkyBackground(){
 		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
 }
 function drawMoon(){
-	var moon = circle(50);
+	var moon = circle(100);
 	moon.blendMode = "hard-light";
 	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
 	moon.setPosition(150,200);
