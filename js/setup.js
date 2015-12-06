@@ -470,8 +470,8 @@ function Buildings(){
 	this.numOfBuilding = 4;
 	this.buildingWidth = 300;
 	this.buildingHeight = null;
-	this.row = 9;
-	this.columns = 13;
+	this.row = 7;
+	this.columns = 11;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	//attracts Arrays
