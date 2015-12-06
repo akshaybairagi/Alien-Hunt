@@ -884,7 +884,6 @@ function renderWithInterpolation(canvas, lagOffset){
 		  //If the sprite contains child sprites in its
 		  //`children` array, display them by recursively calling this very same
 		  //`displaySprite` function again
-``
 		  if(sprite.children && sprite.children.length > 0){
 				//Reset the context back to the parent sprite's top left corner,
 				//relative to the pivot point

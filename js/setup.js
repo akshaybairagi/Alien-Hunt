@@ -779,7 +779,7 @@ function getTitleScene(){
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("z / ↑ to Jump,  x / → to fire, GamePad supported", "10px " + o.footerFont, "white");
+	footerText = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " + o.footerFont, "white");
 	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 	o.footer.addChild(copyrightText);
