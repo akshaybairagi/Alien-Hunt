@@ -593,7 +593,7 @@ function getSkyBackground(){
 		return tilingSprite(g.canvas.width,g.canvas.height,assets["snow.png"]);
 }
 function drawMoon(){
-	var moon = circle(50);
+	var moon = circle(100);
 	moon.blendMode = "hard-light";
 	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
 	moon.setPosition(150,200);

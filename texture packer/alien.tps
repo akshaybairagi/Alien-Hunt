@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.9.4</string>
+        <string>3.9.2</string>
         <key>fileName</key>
-        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/alien.tps</string>
+        <string>E:/Apps/Github/Alient-Hunter/texture packer/alien.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -90,7 +90,7 @@
             <key>width</key>
             <int>2048</int>
             <key>height</key>
-            <int>2048</int>
+            <int>64</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -190,14 +190,14 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0000_jump.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0001_frame7.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0002_frame6.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0003_frame5.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0004_frame4.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0005_frame3.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0006_frame2.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/alien/_0007_frame1.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0000_jump.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0001_frame7.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0002_frame6.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0003_frame5.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0004_frame4.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0005_frame3.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0006_frame2.png</filename>
+            <filename>../../../Art/Alient hunter/images/alien/_0007_frame1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

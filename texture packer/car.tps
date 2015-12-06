@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.9.4</string>
+        <string>3.9.2</string>
         <key>fileName</key>
-        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/car.tps</string>
+        <string>E:/Apps/Github/Alient-Hunter/texture packer/car.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -190,9 +190,9 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../Game Art/Alient hunter/images/car/carBody.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/car/carWheel.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/car/driver.png</filename>
+            <filename>../../../Art/Alient hunter/images/car/carBody.png</filename>
+            <filename>../../../Art/Alient hunter/images/car/carWheel.png</filename>
+            <filename>../../../Art/Alient hunter/images/car/driver.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

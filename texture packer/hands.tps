@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.9.4</string>
+        <string>3.9.2</string>
         <key>fileName</key>
-        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/hands.tps</string>
+        <string>E:/Apps/Github/Alient-Hunter/texture packer/hands.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -190,17 +190,17 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0000_hasMGun.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0001_hasPistol.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0002_slide.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0003_jump.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0004_frame7.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0005_frame6.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0006_frame5.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0007_frame4.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0008_frame3.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0009_frame2.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/hands/_0000s_0010_frame1.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0000_hasMGun.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0001_hasPistol.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0002_slide.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0003_jump.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0004_frame7.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0005_frame6.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0006_frame5.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0007_frame4.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0008_frame3.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0009_frame2.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/hands/_0000s_0010_frame1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
