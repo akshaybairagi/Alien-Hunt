@@ -454,6 +454,7 @@ function end(){
 		ai.oneAlienEvt = ai.startTime;
 		ai.twoAlienEvt = ai.startTime;
 		ai.threeAlienEvt = ai.startTime;
+		ai.fourAlienEvt = ai.startTime;
 	};
 }
 function restart(){
@@ -734,6 +735,7 @@ function getTitleScene(){
 		ai.oneAlienEvt = ai.startTime;
 		ai.twoAlienEvt = ai.startTime;
 		ai.threeAlienEvt = ai.startTime;
+		ai.fourAlienEvt = ai.startTime;
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
@@ -779,7 +781,7 @@ function getTitleScene(){
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("z / ↑ to Jump,  x / → to fire, GamePad supported", "10px " + o.footerFont, "white");
+	footerText = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " + o.footerFont, "white");
 	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 	o.footer.addChild(copyrightText);
@@ -1085,10 +1087,21 @@ function gameAI(){
 	this.oneAlienEvt = null;
 	this.twoAlienEvt = null;
 	this.threeAlienEvt = null;
+	this.fourAlienEvt = null;
 
 	this.setAlien = function(currTime){
 		if(currTime-this.oneAlienEvt >= 2000){
-			if(currTime-this.threeAlienEvt >= 12000){
+			if(currTime-this.fourAlienEvt >= 20000){
+				this.fourAlienEvt =currTime;
+				this.threeAlienEvt =currTime;
+				this.twoAlienEvt =currTime;
+				this.oneAlienEvt =currTime;
+				aliens.getAlien();
+				setTimeout(function(){aliens.getAlien();},175);
+				setTimeout(function(){aliens.getAlien();},300);
+				setTimeout(function(){aliens.getAlien();},450);
+			}
+			else if(currTime-this.threeAlienEvt >= 12000){
 				this.threeAlienEvt =currTime;
 				this.twoAlienEvt =currTime;
 				this.oneAlienEvt =currTime;
