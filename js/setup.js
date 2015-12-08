@@ -451,10 +451,6 @@ function end(){
 		//Set the game state to 'play' and 'resume' the game
 		g.resume();
 		ai.startTime = Date.now();
-		ai.oneAlienEvt = ai.startTime;
-		ai.twoAlienEvt = ai.startTime;
-		ai.threeAlienEvt = ai.startTime;
-		ai.fourAlienEvt = ai.startTime;
 	};
 }
 function restart(){
@@ -732,10 +728,6 @@ function getTitleScene(){
 		g.state = play;
 		bgMusic.play();
 		ai.startTime = Date.now();
-		ai.oneAlienEvt = ai.startTime;
-		ai.twoAlienEvt = ai.startTime;
-		ai.threeAlienEvt = ai.startTime;
-		ai.fourAlienEvt = ai.startTime;
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
@@ -1083,42 +1075,39 @@ function focusManager(){
 }
 //game AI to Introduce items/aliens in the game
 function gameAI(){
+	this.levels = [/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
+		[1,2,5],
+		[1,3,10],
+		[1,4,20],
+		[2,5,40]
+	];
+
 	this.startTime = null;
-	this.oneAlienEvt = null;
-	this.twoAlienEvt = null;
-	this.threeAlienEvt = null;
-	this.fourAlienEvt = null;
+	this.lastUpdtime = null;
+	this.curr_level = 0;
+	this.minAlien = this.levels[this.curr_level][0];
+	this.maxAlien = this.levels[this.curr_level][1];
+	this.alienToKill = this.levels[this.curr_level][2];
 
 	this.setAlien = function(currTime){
-		if(currTime-this.oneAlienEvt >= 2000){
-			if(currTime-this.fourAlienEvt >= 20000){
-				this.fourAlienEvt =currTime;
-				this.threeAlienEvt =currTime;
-				this.twoAlienEvt =currTime;
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
-				setTimeout(function(){aliens.getAlien();},175);
-				setTimeout(function(){aliens.getAlien();},300);
-				setTimeout(function(){aliens.getAlien();},450);
+		if(currTime-this.lastUpdtime >= 3000){
+			var randomNo = randomInt(this.minAlien,this.maxAlien);
+			for(var i = 0; i < randomNo; i++){
+				setTimeout(function(){aliens.getAlien();},i*150);
 			}
-			else if(currTime-this.threeAlienEvt >= 12000){
-				this.threeAlienEvt =currTime;
-				this.twoAlienEvt =currTime;
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
-				setTimeout(function(){aliens.getAlien();},175);
-				setTimeout(function(){aliens.getAlien();},300);
-			}
-			else if(currTime-this.twoAlienEvt >= 7000){
-				this.twoAlienEvt =currTime;
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
-				setTimeout(function(){aliens.getAlien();},175);
-			}
-			else{
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
+			this.lastUpdtime =  currTime;
+		}
+
+		if(score.aliensKilled > this.alienToKill){
+			if(this.curr_level < this.levels.length-1){
+				this.curr_level++;
+				this.minAlien = this.levels[this.curr_level][0];
+				this.maxAlien = this.levels[this.curr_level][1];
+				this.alienToKill = this.levels[this.curr_level][2];
+
+				score.aliensKilled = 0;
 			}
 		}
+
 	};
 }
