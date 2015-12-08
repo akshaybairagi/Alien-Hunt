@@ -85,6 +85,8 @@ function setup(){
 	storeScene = StoreScene();
 	creditScene = CreditScene();
 	pauseScene = PauseScene();
+	gameoverScene = GameOverScene();
+	// gameoverScene = GameOverScene()
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
 	toggleMenu(undefined,titleScene);
@@ -117,6 +119,13 @@ function setup(){
 	focusText = focusManager();
 	//Game AI object
 	ai = new gameAI();
+}
+function restarHandler(){
+	focusText.focus();
+	restart();
+	//Set the game state to 'play' and 'resume' the game
+	g.resume();
+	ai.startTime = Date.now();
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -442,15 +451,15 @@ function end(){
 	}
 
 	//Display the 'titleScene' and fade the 'gameScene' in bg
-	toggleMenu(undefined,titleScene);
+	toggleMenu(undefined,gameoverScene);
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.release = function(){
-		focusText.focus();
 		toggleMenu(titleScene,undefined);
-		restart();
-		//Set the game state to 'play' and 'resume' the game
-		g.resume();
-		ai.startTime = Date.now();
+		restarHandler();
+	};
+	gameoverScene.restartBtn.release = function(){
+		toggleMenu(gameoverScene,undefined);
+		restarHandler();
 	};
 }
 function restart(){
@@ -1025,6 +1034,57 @@ function CreditScene(){
 
 	return o;
 }
+function GameOverScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.alpha = 0.5;
+	o.visible = false;
+
+	//GameOver Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+
+	o.overText = text("GAME OVER", "40px " + o.contextFont, "white",0);
+
+	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
+	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
+	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
+	o.highScore = text("high score: 2500", "20px " + o.contextFont, "white",0);
+
+	o.restartBtn = text("restart >", "15px " + o.contextFont, "white",0);
+	o.restartBtn.release = function(){
+	};
+	o.restartBtn.over = function(){o.restartBtn.fillStyle = o.hoverColor;};
+	o.restartBtn.out = function(){o.restartBtn.fillStyle = "white";};
+	o.menuBtn = text("< menu", "15px " + o.contextFont, "white",0);
+	o.menuBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.menuBtn.over = function(){o.menuBtn.fillStyle = o.hoverColor;};
+	o.menuBtn.out = function(){o.menuBtn.fillStyle = "white";};
+
+	o.frontBg.putCenter(o.overText,0,-200);
+	o.overText.putBottom(o.noOfKills,0,50);
+	o.noOfKills.putBottom(o.deaths,0,20);
+	o.deaths.putBottom(o.score,0,20);
+	o.score.putBottom(o.highScore,0,20);
+	o.overText.putCenter(o.restartBtn,75,300);
+	o.overText.putCenter(o.menuBtn,-100,300);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.overText);
+	o.addChild(o.noOfKills);
+	o.addChild(o.deaths);
+	o.addChild(o.score);
+	o.addChild(o.highScore);
+	o.addChild(o.restartBtn);
+	o.addChild(o.menuBtn);
+	return o;
+}
 function PauseScene(){
 	var o = group([]);
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
@@ -1078,7 +1138,10 @@ function gameAI(){
 	this.levels = [/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
 		[1,2,5],
 		[1,3,10],
+		[2,3,10],
 		[1,4,20],
+		[2,4,20],
+		[3,4,20],
 		[2,5,40]
 	];
 
