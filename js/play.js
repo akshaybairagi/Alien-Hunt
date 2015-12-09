@@ -36,7 +36,7 @@ function play(){
 			});
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
-		blocks.nextPos.Y=400 + randomInt(-30,30);
+		blocks.nextPos.Y=375 + randomInt(-30,30);
 
 		building.cBox.x = building.x + building.width;
 	});
@@ -101,8 +101,8 @@ function play(){
 			if(alien.release == true){
 				var rayCol = aliencBoxCol(alien,building.cBox,false,true);
 				if(rayCol){
-						alien.vx = -6;
-				}
+						alien.vx = -randomInt(5,7);
+					}
 			}
 
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
@@ -182,7 +182,7 @@ function play(){
 					playerGroup.addChild(car);
 
 					playerGroup.item = car;
-					setTimeout(car.remove,5000);
+					setTimeout(car.remove,10000);
 					carSound.restart();
 				}
 				if(item.type == "heart" && item.visible){

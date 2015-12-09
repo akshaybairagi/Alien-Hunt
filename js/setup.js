@@ -119,6 +119,7 @@ function setup(){
 	focusText = focusManager();
 	//Game AI object
 	ai = new gameAI();
+	ai.init(Date.now());
 
 	levelText = text("Level 0", "15px " + "PetMe64", "white",0);
 	levelText.visible = false;
@@ -129,9 +130,10 @@ function restarHandler(){
 	restart();
 	//set the score to initials
 	score.init();
+	//set the ai variables to initials
+	ai.init(Date.now());
 	//Set the game state to 'play' and 'resume' the game
 	g.resume();
-	ai.startTime = Date.now();
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -388,7 +390,7 @@ function Alien(){
 		else {
 			alien = this.createAlien();
 		}
-		alien.setPosition(ship.centerX,ship.centerY);
+		alien.setPosition(ship.centerX + randomInt(-10,10),ship.centerY + randomInt(-5,5));
 		alien.visible = true;
 		alien.release = true;
 		alien.jump();
@@ -828,7 +830,7 @@ function getTitleScene(){
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " + o.footerFont, "white");
-	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
+	copyrightText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 	o.footer.addChild(copyrightText);
 
@@ -867,7 +869,7 @@ function ScoreScene(){
 	o.headerFont = "PetMe64";
 	o.footerFont = "PetMe64";
 	o.contextFont = "PetMe64";
-	o.vOffset = 25;
+	o.vOffset = 20;
 	o.hOffset = 0;
 	o.alpha = contr.menuAlpha;
 	o.visible = false;
@@ -894,7 +896,7 @@ function ScoreScene(){
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("Happy Scoring", "15px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -948,7 +950,7 @@ function OptionScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("Game Settings(under construction)", "15px " +  o.headerFont, "white");
+	o.content = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -960,7 +962,7 @@ function OptionScene(){
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -1000,7 +1002,7 @@ function StoreScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("In Game Purchases (Under Construction)", "20px " +  o.headerFont, "white");
+	o.content = text("In Game Purchases (Under Construction)", "10px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -1012,7 +1014,7 @@ function StoreScene(){
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -1052,7 +1054,7 @@ function CreditScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("Developer/Designer: Akshay Bairagi", "15px " +  o.headerFont, "white");
+	o.content = text("Developer/Designer: Akshay Bairagi", "10px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -1064,7 +1066,7 @@ function CreditScene(){
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -1191,30 +1193,40 @@ function focusManager(){
 }
 //game AI to Introduce items/aliens in the game
 function gameAI(){
-	this.levels = [/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
-		[1,1,1],
-		[1,2,5],
-		[1,3,5],
-		[2,3,10],
-		[1,4,20],
-		[2,4,20],
-		[3,4,20],
-		[2,5,40]
+	this.levels = [
+		/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
+		[1,1,1],		//Level 0
+		[1,2,5],		//Level 1
+		[1,3,5],		//Level 2
+		[2,3,10],		//Level 3
+		[1,4,20],		//Level 4
+		[2,4,20],		//Level 5
+		[3,4,20],		//Level 6
+		[2,5,40], 	//Level 7
+		[3,5,40],		//Level 8
+		[4,5,40], 	//Level 9
+		[5,6,40] 		//Level 10
 	];
 
 	this.startTime = null;
 	this.lastUpdAtime = null;
 	this.lastUpdPtime = null;
-	this.curr_level = 0;
-	this.scoreCtr = 0;
-	this.minAlien = this.levels[this.curr_level][0];
-	this.maxAlien = this.levels[this.curr_level][1];
-	this.alienToKill = this.levels[this.curr_level][2];
+	this.curr_level = null;
+	this.scoreCtr = null;
+	this.minAlien = null;
+	this.maxAlien = null;
+	this.alienToKill = null;
 
 	this.init = function(delta){
 		this.startTime = delta;
 		this.lastUpdAtime = delta;
 		this.lastUpdPtime = delta;
+
+		this.curr_level = 0;
+		this.scoreCtr = 0;
+		this.minAlien = this.levels[this.curr_level][0];
+		this.maxAlien = this.levels[this.curr_level][1];
+		this.alienToKill = this.levels[this.curr_level][2];
 	};
 
 	this.setAlien = function(currTime){
@@ -1222,7 +1234,7 @@ function gameAI(){
 		if(currTime-this.lastUpdAtime >= 3000){
 			var randomNo = randomInt(this.minAlien,this.maxAlien);
 			for(var i = 0; i < randomNo; i++){
-				setTimeout(function(){aliens.getAlien();},i*150);
+				setTimeout(function(){aliens.getAlien();},i*200);
 			}
 			this.lastUpdAtime =  currTime;
 		}
@@ -1232,7 +1244,7 @@ function gameAI(){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-				itemGroup.setPosition(g.canvas.width + randomInt(150,300),blocks.nextPos.Y-100);
+				itemGroup.setPosition(g.canvas.width + randomInt(150,300),g.canvas.height/2);
 				this.lastUpdPtime =  currTime;
 			}
 		}
