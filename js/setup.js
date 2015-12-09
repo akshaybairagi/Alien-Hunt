@@ -127,6 +127,8 @@ function setup(){
 function restarHandler(){
 	focusText.focus();
 	restart();
+	//set the score to initials
+	score.init();
 	//Set the game state to 'play' and 'resume' the game
 	g.resume();
 	ai.startTime = Date.now();
@@ -466,6 +468,8 @@ function end(){
 		restarHandler();
 	};
 	gameoverScene.showOverScreen();
+	//publish score to storage
+	score.publishHScore();
 }
 function restart(){
 	// gameScene.visible = true;
@@ -547,12 +551,41 @@ function Buildings(){
 		});
 	};
 }
-function Score(kill,level){
-	this.kills = kill;
-	this.level = level;
-	this.score = 0;
+function Score(){
+	this.hkills = null;
+	this.hlevel = null;
+	this.hscore = null;
+	this.kills = null;
+	this.level = null;
+	this.score = null;
 	this.scoreText = text("Score 0", "10px PetMe64", "white",32,32);
 	this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
+
+	this.init = function(){
+		//get high score from storage
+		//call here and update below variables
+
+		this.hkills = 0;
+		this.hlevel = 0;
+		this.hscore = 0;
+
+		this.kills = 0;
+		this.level = 0;
+		this.score = 0;
+		this.scoreText.content = "Score 0";
+	};
+
+	this.publishHScore = function(){
+		//get high score
+		if(this.score > this.hscore){
+			this.hkills = this.kills;
+			this.hlevel = this.level;
+			this.hscore = this.score;
+
+			//publish to database/storage
+			//function cal here
+		}
+	};
 
 	this.update = function(){
 		this.kills += 1;
@@ -702,7 +735,8 @@ function GameScene(){
 	topBar.create();
 	topBar.update(0);
 	//Display score
-	score = new Score(0,0);
+	score = new Score();
+	score.init();
 	//make player and set initials
 	player = makePlayer();
 	player.walk();
@@ -756,6 +790,7 @@ function getTitleScene(){
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.release = function(){
 		toggleMenu(o,scoreScene);
+		scoreScene.show();
 	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
@@ -832,7 +867,7 @@ function ScoreScene(){
 	o.headerFont = "PetMe64";
 	o.footerFont = "PetMe64";
 	o.contextFont = "PetMe64";
-	o.vOffset = 10;
+	o.vOffset = 25;
 	o.hOffset = 0;
 	o.alpha = contr.menuAlpha;
 	o.visible = false;
@@ -847,7 +882,6 @@ function ScoreScene(){
 	//playBtn
 	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
 	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
-	o.minutes = text("minutes: 500", "20px " + o.contextFont, "white",0);
 	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
 	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
 
@@ -870,8 +904,7 @@ function ScoreScene(){
 
 	o.header.putBottom(o.noOfKills,0,125);
 	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
-	o.deaths.putBottom(o.minutes,o.hOffset,o.vOffset);
-	o.minutes.putBottom(o.score,o.hOffset,o.vOffset);
+	o.deaths.putBottom(o.score,o.hOffset,o.vOffset);
 	o.score.putBottom(o.highScore,o.hOffset,o.vOffset);
 	o.highScore.putBottom(o.backBtn,0,75);
 
@@ -879,11 +912,17 @@ function ScoreScene(){
 	o.addChild(o.header);
 	o.addChild(o.noOfKills);
 	o.addChild(o.deaths)
-	o.addChild(o.minutes);
 	o.addChild(o.score);
 	o.addChild(o.highScore);
 	o.addChild(o.backBtn);
 	o.addChild(o.footer);
+
+	o.show = function(){
+		o.noOfKills.content = "kills: " + score.kills;
+		o.deaths.content = "level: " + score.level;
+		o.score.content = "score: " + score.score;
+		o.highScore.content = "high score: 2500";
+	};
 
 	return o;
 }
