@@ -1,8 +1,6 @@
 function play(){
-	//count the frames and set score
-	contr.distance += 1;
-	score.miles = contr.distance/15;
-	score.update(score.miles);
+	//insert aliens in the game as per AI logic
+	ai.setAlien(Date.now());
 
 	//tiling sky background
 	sky.tileX += 1;
@@ -16,19 +14,6 @@ function play(){
 
 	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
 		imgr.removeItem(itemGroup.children[0]);
-	}
-
-	// Reset the building desgin for different look
-	if(score.miles % 100 === 0){
-		contr.design = designs[randomInt(0,3)];
-		bd.resetBuildings(contr.design); //reset the building designs
-	}
-	//Introduce the powerUps/items in the game
-	if(score.miles % 10 === 0 && itemGroup.children.length === 0){
-		var item = imgr.getItem();
-		item.visible= true;
-		itemGroup.addChild(item);
-		itemGroup.setPosition(g.canvas.width + randomInt(150,300),blocks.nextPos.Y-100);
 	}
 
 	blocks.children.forEach(function(building){
@@ -79,8 +64,6 @@ function play(){
 	if(playerGroup.item.type == "car"){
 		car.start();
 	}
-	//insert aliens in the game as per AI logic
-	ai.setAlien(Date.now());
 
 	//check if player fell on the ground and stop the game loop
 	if(playerGroup.y > g.canvas.height){
@@ -159,7 +142,8 @@ function play(){
 				//explosionSound();
 				explosionSound.play();
 				bullet.visible = false;
-				score.aliensKilled += 1;
+				score.kills += 1;
+				ai.scoreCtr += 1;
 				aliens.freeAlien(alien);
 			 	bullets.freeBullet(bullet);
 			}

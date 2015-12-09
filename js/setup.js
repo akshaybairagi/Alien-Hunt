@@ -119,6 +119,10 @@ function setup(){
 	focusText = focusManager();
 	//Game AI object
 	ai = new gameAI();
+
+	levelText = text("Level 0", "15px " + "PetMe64", "white",0);
+	levelText.visible = false;
+	gameScene.addChild(levelText);
 }
 function restarHandler(){
 	focusText.focus();
@@ -461,6 +465,7 @@ function end(){
 		toggleMenu(gameoverScene,undefined);
 		restarHandler();
 	};
+	gameoverScene.showOverScreen();
 }
 function restart(){
 	// gameScene.visible = true;
@@ -542,10 +547,11 @@ function Buildings(){
 		});
 	};
 }
-function Score(){
-	this.aliensKilled = 0;
-	this.miles = 0;
-	this.score = text(this.miles, "10px PetMe64", "black",32,32);
+function Score(kill,level,score){
+	this.kills = kill;
+	this.score = score;
+	this.level = level;
+	this.score = text(this.kills, "10px PetMe64", "black",32,32);
 	this.score.setPosition(g.canvas.width- 2*this.score.width,0.5);
 
 	this.update = function(scoreVal){
@@ -692,7 +698,7 @@ function GameScene(){
 	topBar.create();
 	topBar.update(0);
 	//Display score
-	score = new Score();
+	score = new Score(0,0,0);
 	//make player and set initials
 	player = makePlayer();
 	player.walk();
@@ -736,7 +742,7 @@ function getTitleScene(){
 		toggleMenu(o,undefined);
 		g.state = play;
 		bgMusic.play();
-		ai.startTime = Date.now();
+		ai.init(Date.now());
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
@@ -1050,9 +1056,9 @@ function GameOverScene(){
 
 	o.overText = text("GAME OVER", "40px " + o.contextFont, "white",0);
 
-	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
-	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
-	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
+	o.noOfKills = text("kills: " + score.kills, "20px " + o.contextFont, "white",0);
+	o.deaths = text("level: " + score.level, "20px " + o.contextFont, "white",0);
+	o.score = text("score: " + score.miles, "20px " + o.contextFont, "white",0);
 	o.highScore = text("high score: 2500", "20px " + o.contextFont, "white",0);
 
 	o.restartBtn = text("restart >", "15px " + o.contextFont, "white",0);
@@ -1083,6 +1089,13 @@ function GameOverScene(){
 	o.addChild(o.highScore);
 	o.addChild(o.restartBtn);
 	o.addChild(o.menuBtn);
+
+	o.showOverScreen = function(){
+		o.noOfKills.content = "kills: " + score.kills;
+		o.deaths = "level: " + score.level;
+		o.score = "score: " + score.kills;
+		o.highScore = "high score: 2500";
+	};
 	return o;
 }
 function PauseScene(){
@@ -1136,8 +1149,9 @@ function focusManager(){
 //game AI to Introduce items/aliens in the game
 function gameAI(){
 	this.levels = [/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
+		[1,1,1],
 		[1,2,5],
-		[1,3,10],
+		[1,3,5],
 		[2,3,10],
 		[1,4,20],
 		[2,4,20],
@@ -1146,31 +1160,65 @@ function gameAI(){
 	];
 
 	this.startTime = null;
-	this.lastUpdtime = null;
+	this.lastUpdAtime = null;
+	this.lastUpdPtime = null;
 	this.curr_level = 0;
+	this.scoreCtr = 0;
 	this.minAlien = this.levels[this.curr_level][0];
 	this.maxAlien = this.levels[this.curr_level][1];
 	this.alienToKill = this.levels[this.curr_level][2];
 
+	this.init = function(delta){
+		this.startTime = delta;
+		this.lastUpdAtime = delta;
+		this.lastUpdPtime = delta;
+	};
+
 	this.setAlien = function(currTime){
-		if(currTime-this.lastUpdtime >= 3000){
+		// send aliens in the game
+		if(currTime-this.lastUpdAtime >= 3000){
 			var randomNo = randomInt(this.minAlien,this.maxAlien);
 			for(var i = 0; i < randomNo; i++){
 				setTimeout(function(){aliens.getAlien();},i*150);
 			}
-			this.lastUpdtime =  currTime;
+			this.lastUpdAtime =  currTime;
+		}
+		//Introduce the powerUps/items in the game
+		if(currTime-this.lastUpdPtime >= 10000){
+			if(itemGroup.children.length === 0){
+				var item = imgr.getItem();
+				item.visible= true;
+				itemGroup.addChild(item);
+				itemGroup.setPosition(g.canvas.width + randomInt(150,300),blocks.nextPos.Y-100);
+				this.lastUpdPtime =  currTime;
+			}
 		}
 
-		if(score.aliensKilled > this.alienToKill){
+		// Update level and change building design
+		if(this.scoreCtr >= this.alienToKill){
 			if(this.curr_level < this.levels.length-1){
 				this.curr_level++;
 				this.minAlien = this.levels[this.curr_level][0];
 				this.maxAlien = this.levels[this.curr_level][1];
 				this.alienToKill = this.levels[this.curr_level][2];
 
-				score.aliensKilled = 0;
+				this.scoreCtr = 0;
+				score.level = this.curr_level;
+
+				contr.design = designs[randomInt(0,3)];
+				bd.resetBuildings(contr.design); //reset the building designs wid levels
+
+				levelText.visible = true;
+				levelText.content = "Level " + score.level;
+				levelText.setPosition(g.canvas.width/2-levelText.width/2,g.canvas.height/2-levelText.height);
+				var fadeOutTweenPlayer = fadeOut(levelText,120);
+				fadeOutTweenPlayer.onComplete = function(){
+													levelText.visible = false;
+													levelText.alpha = 1;
+												};
 			}
 		}
-
 	};
+
+
 }
