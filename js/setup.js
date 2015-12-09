@@ -547,15 +547,19 @@ function Buildings(){
 		});
 	};
 }
-function Score(kill,level,score){
+function Score(kill,level){
 	this.kills = kill;
-	this.score = score;
 	this.level = level;
-	this.score = text(this.kills, "10px PetMe64", "black",32,32);
-	this.score.setPosition(g.canvas.width- 2*this.score.width,0.5);
+	this.score = 0;
+	this.scoreText = text("Score 0", "10px PetMe64", "white",32,32);
+	this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
 
-	this.update = function(scoreVal){
-		this.score.content = Math.ceil(scoreVal);
+	this.update = function(){
+		this.kills += 1;
+		ai.scoreCtr += 1;
+		this.score = this.kills*10;
+		this.scoreText.content = "Score " + this.score;
+		this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
 	};
 }
 function TopBar(){
@@ -698,7 +702,7 @@ function GameScene(){
 	topBar.create();
 	topBar.update(0);
 	//Display score
-	score = new Score(0,0,0);
+	score = new Score(0,0);
 	//make player and set initials
 	player = makePlayer();
 	player.walk();
@@ -712,7 +716,7 @@ function GameScene(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText]);
 }
 function getTitleScene(){
 	var o = group([]);
@@ -1048,7 +1052,7 @@ function GameOverScene(){
 	o.headerFont = "PetMe64";
 	o.footerFont = "PetMe64";
 	o.contextFont = "PetMe64";
-	o.alpha = 0.5;
+	o.alpha = 0.7;
 	o.visible = false;
 
 	//GameOver Scene background
@@ -1058,7 +1062,7 @@ function GameOverScene(){
 
 	o.noOfKills = text("kills: " + score.kills, "20px " + o.contextFont, "white",0);
 	o.deaths = text("level: " + score.level, "20px " + o.contextFont, "white",0);
-	o.score = text("score: " + score.miles, "20px " + o.contextFont, "white",0);
+	o.score = text("score: " + score.score, "20px " + o.contextFont, "white",0);
 	o.highScore = text("high score: 2500", "20px " + o.contextFont, "white",0);
 
 	o.restartBtn = text("restart >", "15px " + o.contextFont, "white",0);
@@ -1078,8 +1082,8 @@ function GameOverScene(){
 	o.noOfKills.putBottom(o.deaths,0,20);
 	o.deaths.putBottom(o.score,0,20);
 	o.score.putBottom(o.highScore,0,20);
-	o.overText.putCenter(o.restartBtn,75,300);
-	o.overText.putCenter(o.menuBtn,-100,300);
+	o.overText.putCenter(o.restartBtn,75,250);
+	o.overText.putCenter(o.menuBtn,-100,250);
 
 	o.addChild(o.frontBg);
 	o.addChild(o.overText);
@@ -1092,9 +1096,9 @@ function GameOverScene(){
 
 	o.showOverScreen = function(){
 		o.noOfKills.content = "kills: " + score.kills;
-		o.deaths = "level: " + score.level;
-		o.score = "score: " + score.kills;
-		o.highScore = "high score: 2500";
+		o.deaths.content = "level: " + score.level;
+		o.score.content = "score: " + score.score;
+		o.highScore.content = "high score: 2500";
 	};
 	return o;
 }
@@ -1205,8 +1209,9 @@ function gameAI(){
 				this.scoreCtr = 0;
 				score.level = this.curr_level;
 
+				//reset the building designs wid levels
 				contr.design = designs[randomInt(0,3)];
-				bd.resetBuildings(contr.design); //reset the building designs wid levels
+				bd.resetBuildings(contr.design);
 
 				levelText.visible = true;
 				levelText.content = "Level " + score.level;

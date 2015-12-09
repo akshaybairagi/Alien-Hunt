@@ -142,8 +142,7 @@ function play(){
 				//explosionSound();
 				explosionSound.play();
 				bullet.visible = false;
-				score.kills += 1;
-				ai.scoreCtr += 1;
+				score.update();
 				aliens.freeAlien(alien);
 			 	bullets.freeBullet(bullet);
 			}
