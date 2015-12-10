@@ -1,4 +1,5 @@
-var g = game(800, 600, setup,
+if(Modernizr.webaudio){
+	var g = game(800, 600, setup,
 				[	"json/sticky.png",
 					"json/hands.png",
 					"json/alien.png",
@@ -18,6 +19,29 @@ var g = game(800, 600, setup,
 				]
 				,load
 			);
+		}
+		else{
+			var g = game(800, 600, setup,
+						[	"json/sticky.png",
+							"json/hands.png",
+							"json/alien.png",
+							"json/alienHunter.json",
+							"json/car.json",
+							"images/texture.png",
+							"images/texture2.png",
+							"images/texture3.png",
+							// "sounds/retro-action.mp3",
+							// "sounds/shot.wav",
+							// "sounds/explosion.wav",
+							// "sounds/bounce.mp3",
+							// "sounds/entry.mp3",
+							// "sounds/car.mp3",
+							// "sounds/powerup.mp3",
+							"fonts/PetMe64.ttf"
+						]
+						,load
+					);
+		}
 //Start the engine
 g.start();
 
