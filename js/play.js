@@ -140,7 +140,8 @@ function play(){
 			if(collision){
 				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
 				//explosionSound();
-				explosionSound.play();
+				// explosionSound.play();
+				sBox.play(sBox.explosionSound);
 				bullet.visible = false;
 				score.update();
 				aliens.freeAlien(alien);
@@ -183,12 +184,14 @@ function play(){
 
 					playerGroup.item = car;
 					setTimeout(car.remove,10000);
-					carSound.restart();
+					// carSound.restart();
+					sBox.restart(sBox.carSound);
 				}
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
-					pupSound.play();
+					// pupSound.play();
+					sBox.play(sBox.pupSound);
 				}
 				// if(item.type == "mbox" && item.visible){
 				// 	item.visible = false;

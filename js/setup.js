@@ -64,16 +64,8 @@ function setup(){
 	//Remove the progress bar
 	progressBar.remove();
 	//Sound and music
-	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.mp3"];
-	bgMusic.loop = true;
-	bgMusic.volume= 0.2;
-	explosionSound = assets["sounds/explosion.wav"];
-	jumpSound = assets["sounds/bounce.mp3"];
-	entrySound = assets["sounds/entry.mp3"];
-	pupSound = assets["sounds/powerup.mp3"];
-	carSound = assets["sounds/car.mp3"];
-	carSound.loop = true;
+	sBox = new SoundBox();
+	sBox.init();
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
@@ -175,10 +167,12 @@ function keyHandler(){
 			g.resume();
 			contr.t0 = new Date().getTime(); //initialize value of t0
 			toggleMenu(pauseScene,undefined);
+			sBox.restart(sBox.bgMusic);
 		}
 		else {
 			g.pause();
 			toggleMenu(undefined,pauseScene);
+			sBox.pause(sBox.bgMusic);
 		}
 	}
 	//jump player
@@ -249,7 +243,8 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			jumpSound.play();
+			// jumpSound.play();
+			sBox.play(sBox.jumpSound);
 		}
 	};
 	o.slide = function(){
@@ -316,7 +311,8 @@ function createCar(){
 			var carWobble = wobble(car, 1, 1.1);
 	};
 	car.remove = function(){
-		carSound.pause();
+		// carSound.pause();
+		sBox.pause(sBox.carSound);
 		car.visible = false;
 		stage.addChild(car);
 
@@ -401,7 +397,8 @@ function Alien(){
 			alien.act = "defend";
 		}
 		this.activeAliens.push(alien);
-		entrySound.play();
+		// entrySound.play();
+		sBox.play(sBox.entrySound);
 		return alien;
 	};
   this.freeAlien = function(alien){
@@ -472,6 +469,7 @@ function end(){
 	gameoverScene.showOverScreen();
 	//publish score to storage
 	score.publishHScore();
+	sBox.pause(sBox.bgMusic);
 }
 function restart(){
 	// gameScene.visible = true;
@@ -481,6 +479,8 @@ function restart(){
 	contr.design = pattern;
 	contr.distance = 0;
 	bd.resetBuildings(pattern); //reset the building designs
+	//restart the bg music
+	sBox.restart(sBox.bgMusic);
 }
 function Buildings(){
 	//variables for building blocks
@@ -781,7 +781,8 @@ function getTitleScene(){
 		ship.visible = true;
 		toggleMenu(o,undefined);
 		g.state = play;
-		bgMusic.play();
+		// bgMusic.play();
+		sBox.play(sBox.bgMusic);
 		ai.init(Date.now());
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
@@ -1160,6 +1161,7 @@ function PauseScene(){
 		toggleMenu(o,gameScene);
 		focusText.focus();
 		g.resume();
+		sBox.restart(sBox.bgMusic);
 	};
 	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
 	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
@@ -1186,10 +1188,59 @@ function focusManager(){
 		if(!g.paused){
 			g.pause();
 			toggleMenu(undefined,pauseScene);
+			sBox.pause(sBox.bgMusic);
 		}
 
 	};
 	return focusText;
+}
+//Manage Sound in the game
+function SoundBox(){
+	this.mute = false;
+	//Sound and music
+	this.shotSound = null;
+	this.bgMusic = null;
+	this.explosionSound = null;
+	this.jumpSound = null;
+	this.entrySound = null;
+	this.pupSound = null;
+	this.carSound = null;
+
+	this.init = function(){
+		//check the support for web audio api
+		if(Modernizr.webaudio){
+			this.shotSound = assets["sounds/shot.wav"];
+			this.bgMusic = assets["sounds/retro-action.mp3"];
+			this.bgMusic.loop = true;
+			this.bgMusic.volume= 0.2;
+			this.explosionSound = assets["sounds/explosion.wav"];
+			this.jumpSound = assets["sounds/bounce.mp3"];
+			this.entrySound = assets["sounds/entry.mp3"];
+			this.pupSound = assets["sounds/powerup.mp3"];
+			this.carSound = assets["sounds/car.mp3"];
+			this.carSound.loop = true;
+		}
+		else{
+			console.log("webaudio api not supported - disabling sound");
+		}
+	};
+
+	this.play = function(soundObj){
+		if(soundObj && this.mute === false){
+			soundObj.play();
+		}
+	};
+	this.restart = function(soundObj){
+		if(soundObj && this.mute === false){
+			soundObj.restart();
+		}
+	};
+	this.pause = function(soundObj){
+		if(soundObj && this.mute === false){
+			soundObj.pause();
+		}
+	};
+
 }
 //game AI to Introduce items/aliens in the game
 function gameAI(){

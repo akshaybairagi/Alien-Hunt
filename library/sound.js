@@ -1,3 +1,6 @@
+//check the support for web audio api
+if(Modernizr.webaudio){
+
 //Create the audio context
 var actx = new AudioContext();
 
@@ -511,4 +514,6 @@ function jumpSound() {
 		undefined, //echo array: [delay, feedback, filter]
 		undefined //reverb array: [duration, decay, reverse?]
 	);
+}
+
 }
