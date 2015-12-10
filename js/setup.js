@@ -505,7 +505,7 @@ function Buildings(){
 				blocks.nextPos.X,blocks.nextPos.Y);
 			blocks.addChild(building);
 			blocks.nextPos.X=building.x + randomInt(350,400);
-			blocks.nextPos.Y=400 + randomInt(-30,30);
+			blocks.nextPos.Y=375 + randomInt(-30,30);
 
 			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
