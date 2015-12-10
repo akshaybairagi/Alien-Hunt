@@ -1,7 +1,7 @@
 //Game engine class
 function Game(width, height, setup, assetsToLoad, load){
 		//Make the canvas and initialize the stage
-		this.canvas = makeCanvas(width, height, "#cccccc","#ff9999");
+		this.canvas = makeCanvas(width, height, "#cccccc","#3b3224");
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 

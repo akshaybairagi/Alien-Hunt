@@ -84,12 +84,14 @@ function load(){
 	progressBar.create(g.canvas, assets);
 	progressBar.update();
 }
+//setup function of the game
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
 	//Sound and music
 	sBox = new SoundBox();
 	sBox.init();
+	sBox.mute = false;
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
