@@ -166,6 +166,9 @@ function keyHandler(){
 	//Jump the player with z key
 	keyboard(90).press = jump;
 	keyboard(38).press = jump;
+	jumpButton.press = jump;
+	fireButton.press = firePress;
+	fireButton.release = fireRelease;
 
 	//fire
 	function firePress(){
@@ -778,7 +781,14 @@ function GameScene(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText]);
+	jumpButton = text("\u21D1", "40px " + "PetMe64", "white",0);
+	fireButton = text("\u21D2", "40px " + "PetMe64", "white",0);
+	jumpButton.setPosition(10,400);
+	fireButton.setPosition(g.canvas.width-fireButton.width*2,400);
+	jumpButton.interactive = true;
+	fireButton.interactive = true;
+
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText,jumpButton,fireButton]);
 }
 function getTitleScene(){
 	var o = group([]);
