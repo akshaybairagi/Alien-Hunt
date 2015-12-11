@@ -1,8 +1,6 @@
 function play(){
-	//count the frames and set score
-	contr.distance += 1;
-	score.miles = contr.distance/15;
-	score.update(score.miles);
+	//insert aliens in the game as per AI logic
+	ai.setAlien(Date.now());
 
 	//tiling sky background
 	sky.tileX += 1;
@@ -16,19 +14,6 @@ function play(){
 
 	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
 		imgr.removeItem(itemGroup.children[0]);
-	}
-
-	// Reset the building desgin for different look
-	if(score.miles % 100 === 0){
-		contr.design = designs[randomInt(0,3)];
-		bd.resetBuildings(contr.design); //reset the building designs
-	}
-	//Introduce the powerUps/items in the game
-	if(score.miles % 10 === 0 && itemGroup.children.length === 0){
-		var item = imgr.getItem();
-		item.visible= true;
-		itemGroup.addChild(item);
-		itemGroup.setPosition(g.canvas.width + randomInt(150,300),blocks.nextPos.Y-100);
 	}
 
 	blocks.children.forEach(function(building){
@@ -51,7 +36,7 @@ function play(){
 			});
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
-		blocks.nextPos.Y=400 + randomInt(-30,30);
+		blocks.nextPos.Y=375 + randomInt(-30,30);
 
 		building.cBox.x = building.x + building.width;
 	});
@@ -79,8 +64,6 @@ function play(){
 	if(playerGroup.item.type == "car"){
 		car.start();
 	}
-	//insert aliens in the game as per AI logic
-	ai.setAlien(Date.now());
 
 	//check if player fell on the ground and stop the game loop
 	if(playerGroup.y > g.canvas.height){
@@ -118,8 +101,8 @@ function play(){
 			if(alien.release == true){
 				var rayCol = aliencBoxCol(alien,building.cBox,false,true);
 				if(rayCol){
-						alien.vx = -6;
-				}
+						alien.vx = -randomInt(5,7);
+					}
 			}
 
 			var colliAlienBlock = rectangleCollision(alien,building,false,true);
@@ -157,9 +140,10 @@ function play(){
 			if(collision){
 				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
 				//explosionSound();
-				explosionSound.play();
+				// explosionSound.play();
+				sBox.play(sBox.explosionSound);
 				bullet.visible = false;
-				score.aliensKilled += 1;
+				score.update();
 				aliens.freeAlien(alien);
 			 	bullets.freeBullet(bullet);
 			}
@@ -199,13 +183,15 @@ function play(){
 					playerGroup.addChild(car);
 
 					playerGroup.item = car;
-					setTimeout(car.remove,5000);
-					carSound.restart();
+					setTimeout(car.remove,10000);
+					// carSound.restart();
+					sBox.restart(sBox.carSound);
 				}
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
-					pupSound.play();
+					// pupSound.play();
+					sBox.play(sBox.pupSound);
 				}
 				// if(item.type == "mbox" && item.visible){
 				// 	item.visible = false;

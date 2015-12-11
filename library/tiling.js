@@ -90,11 +90,11 @@ function tilingSprite(width, height, source, x, y) {
   //so that you can scroll the tiling background
   Object.defineProperties(container, {
     tileX: {
-      get () {
+      get: function() {
         return tileGrid._tileX;
       },
 
-      set (value) {
+      set: function(value) {
 
         //Loop through all of the grid's child sprites
         tileGrid.children.forEach(function(child){
@@ -127,12 +127,12 @@ function tilingSprite(width, height, source, x, y) {
       enumerable: true, configurable: true
     },
     tileY: {
-      get() {
+      get: function() {
         return tileGrid._tileY;
       },
 
       //Follow the same format to wrap sprites on the y axis
-      set(value){
+      set: function(value){
         tileGrid.children.forEach(function(child){
           var difference = value - tileGrid._tileY;
           child.y += difference;

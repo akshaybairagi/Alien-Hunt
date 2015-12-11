@@ -1,4 +1,5 @@
-var g = game(800, 600, setup,
+if(Modernizr.webaudio){
+	var g = game(800, 600, setup,
 				[	"json/sticky.png",
 					"json/hands.png",
 					"json/alien.png",
@@ -18,6 +19,29 @@ var g = game(800, 600, setup,
 				]
 				,load
 			);
+		}
+		else{
+			var g = game(800, 600, setup,
+						[	"json/sticky.png",
+							"json/hands.png",
+							"json/alien.png",
+							"json/alienHunter.json",
+							"json/car.json",
+							"images/texture.png",
+							"images/texture2.png",
+							"images/texture3.png",
+							// "sounds/retro-action.mp3",
+							// "sounds/shot.wav",
+							// "sounds/explosion.wav",
+							// "sounds/bounce.mp3",
+							// "sounds/entry.mp3",
+							// "sounds/car.mp3",
+							// "sounds/powerup.mp3",
+							"fonts/PetMe64.ttf"
+						]
+						,load
+					);
+		}
 //Start the engine
 g.start();
 
@@ -60,20 +84,14 @@ function load(){
 	progressBar.create(g.canvas, assets);
 	progressBar.update();
 }
+//setup function of the game
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
 	//Sound and music
-	shotSound = assets["sounds/shot.wav"];
-	bgMusic = assets["sounds/retro-action.mp3"];
-	bgMusic.loop = true;
-	bgMusic.volume= 0.2;
-	explosionSound = assets["sounds/explosion.wav"];
-	jumpSound = assets["sounds/bounce.mp3"];
-	entrySound = assets["sounds/entry.mp3"];
-	pupSound = assets["sounds/powerup.mp3"];
-	carSound = assets["sounds/car.mp3"];
-	carSound.loop = true;
+	sBox = new SoundBox();
+	sBox.init();
+	sBox.mute = false;
 
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
@@ -85,6 +103,8 @@ function setup(){
 	storeScene = StoreScene();
 	creditScene = CreditScene();
 	pauseScene = PauseScene();
+	gameoverScene = GameOverScene();
+	// gameoverScene = GameOverScene()
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
 	toggleMenu(undefined,titleScene);
@@ -117,6 +137,21 @@ function setup(){
 	focusText = focusManager();
 	//Game AI object
 	ai = new gameAI();
+	ai.init(Date.now());
+
+	levelText = text("Level 0", "15px " + "PetMe64", "white",0);
+	levelText.visible = false;
+	gameScene.addChild(levelText);
+}
+function restarHandler(){
+	focusText.focus();
+	restart();
+	//set the score to initials
+	score.init();
+	//set the ai variables to initials
+	ai.init(Date.now());
+	//Set the game state to 'play' and 'resume' the game
+	g.resume();
 }
 function keyHandler(){
 	//pause the game with space bar key
@@ -131,6 +166,9 @@ function keyHandler(){
 	//Jump the player with z key
 	keyboard(90).press = jump;
 	keyboard(38).press = jump;
+	jumpButton.press = jump;
+	fireButton.press = firePress;
+	fireButton.release = fireRelease;
 
 	//fire
 	function firePress(){
@@ -158,10 +196,12 @@ function keyHandler(){
 			g.resume();
 			contr.t0 = new Date().getTime(); //initialize value of t0
 			toggleMenu(pauseScene,undefined);
+			sBox.restart(sBox.bgMusic);
 		}
 		else {
 			g.pause();
 			toggleMenu(undefined,pauseScene);
+			sBox.pause(sBox.bgMusic);
 		}
 	}
 	//jump player
@@ -232,7 +272,8 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			jumpSound.play();
+			// jumpSound.play();
+			sBox.play(sBox.jumpSound);
 		}
 	};
 	o.slide = function(){
@@ -299,7 +340,8 @@ function createCar(){
 			var carWobble = wobble(car, 1, 1.1);
 	};
 	car.remove = function(){
-		carSound.pause();
+		// carSound.pause();
+		sBox.pause(sBox.carSound);
 		car.visible = false;
 		stage.addChild(car);
 
@@ -373,7 +415,7 @@ function Alien(){
 		else {
 			alien = this.createAlien();
 		}
-		alien.setPosition(ship.centerX,ship.centerY);
+		alien.setPosition(ship.centerX + randomInt(-10,10),ship.centerY + randomInt(-5,5));
 		alien.visible = true;
 		alien.release = true;
 		alien.jump();
@@ -384,7 +426,8 @@ function Alien(){
 			alien.act = "defend";
 		}
 		this.activeAliens.push(alien);
-		entrySound.play();
+		// entrySound.play();
+		sBox.play(sBox.entrySound);
 		return alien;
 	};
   this.freeAlien = function(alien){
@@ -442,20 +485,20 @@ function end(){
 	}
 
 	//Display the 'titleScene' and fade the 'gameScene' in bg
-	toggleMenu(undefined,titleScene);
+	toggleMenu(undefined,gameoverScene);
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.release = function(){
-		focusText.focus();
 		toggleMenu(titleScene,undefined);
-		restart();
-		//Set the game state to 'play' and 'resume' the game
-		g.resume();
-		ai.startTime = Date.now();
-		ai.oneAlienEvt = ai.startTime;
-		ai.twoAlienEvt = ai.startTime;
-		ai.threeAlienEvt = ai.startTime;
-		ai.fourAlienEvt = ai.startTime;
+		restarHandler();
 	};
+	gameoverScene.restartBtn.release = function(){
+		toggleMenu(gameoverScene,undefined);
+		restarHandler();
+	};
+	gameoverScene.showOverScreen();
+	//publish score to storage
+	score.publishHScore();
+	sBox.pause(sBox.bgMusic);
 }
 function restart(){
 	// gameScene.visible = true;
@@ -465,6 +508,8 @@ function restart(){
 	contr.design = pattern;
 	contr.distance = 0;
 	bd.resetBuildings(pattern); //reset the building designs
+	//restart the bg music
+	sBox.restart(sBox.bgMusic);
 }
 function Buildings(){
 	//variables for building blocks
@@ -489,7 +534,7 @@ function Buildings(){
 				blocks.nextPos.X,blocks.nextPos.Y);
 			blocks.addChild(building);
 			blocks.nextPos.X=building.x + randomInt(350,400);
-			blocks.nextPos.Y=400 + randomInt(-30,30);
+			blocks.nextPos.Y=375 + randomInt(-30,30);
 
 			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
@@ -538,13 +583,47 @@ function Buildings(){
 	};
 }
 function Score(){
-	this.aliensKilled = 0;
-	this.miles = 0;
-	this.score = text(this.miles, "10px PetMe64", "black",32,32);
-	this.score.setPosition(g.canvas.width- 2*this.score.width,0.5);
+	this.hkills = null;
+	this.hlevel = null;
+	this.hscore = null;
+	this.kills = null;
+	this.level = null;
+	this.score = null;
+	this.scoreText = text("Score 0", "10px PetMe64", "white",32,32);
+	this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
 
-	this.update = function(scoreVal){
-		this.score.content = Math.ceil(scoreVal);
+	this.init = function(){
+		//get high score from storage
+		//call here and update below variables
+
+		this.hkills = 0;
+		this.hlevel = 0;
+		this.hscore = 0;
+
+		this.kills = 0;
+		this.level = 0;
+		this.score = 0;
+		this.scoreText.content = "Score 0";
+	};
+
+	this.publishHScore = function(){
+		//get high score
+		if(this.score > this.hscore){
+			this.hkills = this.kills;
+			this.hlevel = this.level;
+			this.hscore = this.score;
+
+			//publish to database/storage
+			//function cal here
+		}
+	};
+
+	this.update = function(){
+		this.kills += 1;
+		ai.scoreCtr += 1;
+		this.score = this.kills*10;
+		this.scoreText.content = "Score " + this.score;
+		this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
 	};
 }
 function TopBar(){
@@ -688,6 +767,7 @@ function GameScene(){
 	topBar.update(0);
 	//Display score
 	score = new Score();
+	score.init();
 	//make player and set initials
 	player = makePlayer();
 	player.walk();
@@ -701,7 +781,14 @@ function GameScene(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup]);
+	jumpButton = text("\u21D1", "40px " + "PetMe64", "white",0);
+	fireButton = text("\u21D2", "40px " + "PetMe64", "white",0);
+	jumpButton.setPosition(10,400);
+	fireButton.setPosition(g.canvas.width-fireButton.width*2,400);
+	jumpButton.interactive = true;
+	fireButton.interactive = true;
+
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText,jumpButton,fireButton]);
 }
 function getTitleScene(){
 	var o = group([]);
@@ -730,12 +817,9 @@ function getTitleScene(){
 		ship.visible = true;
 		toggleMenu(o,undefined);
 		g.state = play;
-		bgMusic.play();
-		ai.startTime = Date.now();
-		ai.oneAlienEvt = ai.startTime;
-		ai.twoAlienEvt = ai.startTime;
-		ai.threeAlienEvt = ai.startTime;
-		ai.fourAlienEvt = ai.startTime;
+		// bgMusic.play();
+		sBox.play(sBox.bgMusic);
+		ai.init(Date.now());
 	};
 	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
 	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
@@ -745,6 +829,7 @@ function getTitleScene(){
 	o.statsRect.addChild(statsBtn);
 	o.statsRect.release = function(){
 		toggleMenu(o,scoreScene);
+		scoreScene.show();
 	};
 	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
 	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
@@ -782,7 +867,7 @@ function getTitleScene(){
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
 	footerText = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " + o.footerFont, "white");
-	copyrightText = text("\u00a9copyright: akshay", "8px " + o.footerFont, "white");
+	copyrightText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 	o.footer.addChild(copyrightText);
 
@@ -821,7 +906,7 @@ function ScoreScene(){
 	o.headerFont = "PetMe64";
 	o.footerFont = "PetMe64";
 	o.contextFont = "PetMe64";
-	o.vOffset = 10;
+	o.vOffset = 20;
 	o.hOffset = 0;
 	o.alpha = contr.menuAlpha;
 	o.visible = false;
@@ -836,7 +921,6 @@ function ScoreScene(){
 	//playBtn
 	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
 	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
-	o.minutes = text("minutes: 500", "20px " + o.contextFont, "white",0);
 	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
 	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
 
@@ -849,7 +933,7 @@ function ScoreScene(){
 
 	//title scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("Happy Scoring", "15px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -859,8 +943,7 @@ function ScoreScene(){
 
 	o.header.putBottom(o.noOfKills,0,125);
 	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
-	o.deaths.putBottom(o.minutes,o.hOffset,o.vOffset);
-	o.minutes.putBottom(o.score,o.hOffset,o.vOffset);
+	o.deaths.putBottom(o.score,o.hOffset,o.vOffset);
 	o.score.putBottom(o.highScore,o.hOffset,o.vOffset);
 	o.highScore.putBottom(o.backBtn,0,75);
 
@@ -868,11 +951,17 @@ function ScoreScene(){
 	o.addChild(o.header);
 	o.addChild(o.noOfKills);
 	o.addChild(o.deaths)
-	o.addChild(o.minutes);
 	o.addChild(o.score);
 	o.addChild(o.highScore);
 	o.addChild(o.backBtn);
 	o.addChild(o.footer);
+
+	o.show = function(){
+		o.noOfKills.content = "kills: " + score.kills;
+		o.deaths.content = "level: " + score.level;
+		o.score.content = "score: " + score.score;
+		o.highScore.content = "high score: 2500";
+	};
 
 	return o;
 }
@@ -898,7 +987,7 @@ function OptionScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("Game Settings(under construction)", "15px " +  o.headerFont, "white");
+	o.content = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -910,7 +999,7 @@ function OptionScene(){
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -950,7 +1039,7 @@ function StoreScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("In Game Purchases (Under Construction)", "20px " +  o.headerFont, "white");
+	o.content = text("In Game Purchases (Under Construction)", "10px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -962,7 +1051,7 @@ function StoreScene(){
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "10px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -1002,7 +1091,7 @@ function CreditScene(){
 	o.header.addChild(title);
 
 	//content
-	o.content = text("Developer/Designer: Akshay Bairagi", "15px " +  o.headerFont, "white");
+	o.content = text("Developer/Designer: Akshay Bairagi", "10px " +  o.headerFont, "white");
 
 	// back button
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -1014,7 +1103,7 @@ function CreditScene(){
 
 	//Store scene footer
 	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright", "15px " + o.footerFont, "white");
+	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
 	o.footer.addChild(footerText);
 
 	o.frontBg.putCenter(o.header,0,-250);
@@ -1031,6 +1120,64 @@ function CreditScene(){
 	o.addChild(o.backBtn);
 	o.addChild(o.footer);
 
+	return o;
+}
+function GameOverScene(){
+	var o = group([]);
+	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
+	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
+	o.hoverColor = "#1d1812"; 	// "#1d1812"
+	o.headerFont = "PetMe64";
+	o.footerFont = "PetMe64";
+	o.contextFont = "PetMe64";
+	o.alpha = 0.7;
+	o.visible = false;
+
+	//GameOver Scene background
+	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
+
+	o.overText = text("GAME OVER", "40px " + o.contextFont, "white",0);
+
+	o.noOfKills = text("kills: " + score.kills, "20px " + o.contextFont, "white",0);
+	o.deaths = text("level: " + score.level, "20px " + o.contextFont, "white",0);
+	o.score = text("score: " + score.score, "20px " + o.contextFont, "white",0);
+	o.highScore = text("high score: 2500", "20px " + o.contextFont, "white",0);
+
+	o.restartBtn = text("restart >", "15px " + o.contextFont, "white",0);
+	o.restartBtn.release = function(){
+	};
+	o.restartBtn.over = function(){o.restartBtn.fillStyle = o.hoverColor;};
+	o.restartBtn.out = function(){o.restartBtn.fillStyle = "white";};
+	o.menuBtn = text("< menu", "15px " + o.contextFont, "white",0);
+	o.menuBtn.release = function(){
+		toggleMenu(o,titleScene);
+	};
+	o.menuBtn.over = function(){o.menuBtn.fillStyle = o.hoverColor;};
+	o.menuBtn.out = function(){o.menuBtn.fillStyle = "white";};
+
+	o.frontBg.putCenter(o.overText,0,-200);
+	o.overText.putBottom(o.noOfKills,0,50);
+	o.noOfKills.putBottom(o.deaths,0,20);
+	o.deaths.putBottom(o.score,0,20);
+	o.score.putBottom(o.highScore,0,20);
+	o.overText.putCenter(o.restartBtn,75,250);
+	o.overText.putCenter(o.menuBtn,-100,250);
+
+	o.addChild(o.frontBg);
+	o.addChild(o.overText);
+	o.addChild(o.noOfKills);
+	o.addChild(o.deaths);
+	o.addChild(o.score);
+	o.addChild(o.highScore);
+	o.addChild(o.restartBtn);
+	o.addChild(o.menuBtn);
+
+	o.showOverScreen = function(){
+		o.noOfKills.content = "kills: " + score.kills;
+		o.deaths.content = "level: " + score.level;
+		o.score.content = "score: " + score.score;
+		o.highScore.content = "high score: 2500";
+	};
 	return o;
 }
 function PauseScene(){
@@ -1050,6 +1197,7 @@ function PauseScene(){
 		toggleMenu(o,gameScene);
 		focusText.focus();
 		g.resume();
+		sBox.restart(sBox.bgMusic);
 	};
 	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
 	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
@@ -1076,49 +1224,144 @@ function focusManager(){
 		if(!g.paused){
 			g.pause();
 			toggleMenu(undefined,pauseScene);
+			sBox.pause(sBox.bgMusic);
 		}
 
 	};
 	return focusText;
 }
+//Manage Sound in the game
+function SoundBox(){
+	this.mute = false;
+	//Sound and music
+	this.shotSound = null;
+	this.bgMusic = null;
+	this.explosionSound = null;
+	this.jumpSound = null;
+	this.entrySound = null;
+	this.pupSound = null;
+	this.carSound = null;
+
+	this.init = function(){
+		//check the support for web audio api
+		if(Modernizr.webaudio){
+			this.shotSound = assets["sounds/shot.wav"];
+			this.bgMusic = assets["sounds/retro-action.mp3"];
+			this.bgMusic.loop = true;
+			this.bgMusic.volume= 0.2;
+			this.explosionSound = assets["sounds/explosion.wav"];
+			this.jumpSound = assets["sounds/bounce.mp3"];
+			this.entrySound = assets["sounds/entry.mp3"];
+			this.pupSound = assets["sounds/powerup.mp3"];
+			this.carSound = assets["sounds/car.mp3"];
+			this.carSound.loop = true;
+		}
+		else{
+			console.log("webaudio api not supported - disabling sound");
+		}
+	};
+
+	this.play = function(soundObj){
+		if(soundObj && this.mute === false){
+			soundObj.play();
+		}
+	};
+	this.restart = function(soundObj){
+		if(soundObj && this.mute === false){
+			soundObj.restart();
+		}
+	};
+	this.pause = function(soundObj){
+		if(soundObj && this.mute === false){
+			soundObj.pause();
+		}
+	};
+
+}
 //game AI to Introduce items/aliens in the game
 function gameAI(){
+	this.levels = [
+		/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
+		[1,1,1],		//Level 0
+		[1,2,5],		//Level 1
+		[1,3,5],		//Level 2
+		[2,3,10],		//Level 3
+		[1,4,20],		//Level 4
+		[2,4,20],		//Level 5
+		[3,4,20],		//Level 6
+		[2,5,40], 	//Level 7
+		[3,5,40],		//Level 8
+		[4,5,40], 	//Level 9
+		[5,6,40] 		//Level 10
+	];
+
 	this.startTime = null;
-	this.oneAlienEvt = null;
-	this.twoAlienEvt = null;
-	this.threeAlienEvt = null;
-	this.fourAlienEvt = null;
+	this.lastUpdAtime = null;
+	this.lastUpdPtime = null;
+	this.curr_level = null;
+	this.scoreCtr = null;
+	this.minAlien = null;
+	this.maxAlien = null;
+	this.alienToKill = null;
+
+	this.init = function(delta){
+		this.startTime = delta;
+		this.lastUpdAtime = delta;
+		this.lastUpdPtime = delta;
+
+		this.curr_level = 0;
+		this.scoreCtr = 0;
+		this.minAlien = this.levels[this.curr_level][0];
+		this.maxAlien = this.levels[this.curr_level][1];
+		this.alienToKill = this.levels[this.curr_level][2];
+	};
 
 	this.setAlien = function(currTime){
-		if(currTime-this.oneAlienEvt >= 2000){
-			if(currTime-this.fourAlienEvt >= 20000){
-				this.fourAlienEvt =currTime;
-				this.threeAlienEvt =currTime;
-				this.twoAlienEvt =currTime;
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
-				setTimeout(function(){aliens.getAlien();},175);
-				setTimeout(function(){aliens.getAlien();},300);
-				setTimeout(function(){aliens.getAlien();},450);
+		// send aliens in the game
+		if(currTime-this.lastUpdAtime >= 3000){
+			var randomNo = randomInt(this.minAlien,this.maxAlien);
+			for(var i = 0; i < randomNo; i++){
+				setTimeout(function(){aliens.getAlien();},i*200);
 			}
-			else if(currTime-this.threeAlienEvt >= 12000){
-				this.threeAlienEvt =currTime;
-				this.twoAlienEvt =currTime;
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
-				setTimeout(function(){aliens.getAlien();},175);
-				setTimeout(function(){aliens.getAlien();},300);
+			this.lastUpdAtime =  currTime;
+		}
+		//Introduce the powerUps/items in the game
+		if(currTime-this.lastUpdPtime >= 10000){
+			if(itemGroup.children.length === 0){
+				var item = imgr.getItem();
+				item.visible= true;
+				itemGroup.addChild(item);
+				itemGroup.setPosition(g.canvas.width + randomInt(150,300),g.canvas.height/2);
+				this.lastUpdPtime =  currTime;
 			}
-			else if(currTime-this.twoAlienEvt >= 7000){
-				this.twoAlienEvt =currTime;
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
-				setTimeout(function(){aliens.getAlien();},175);
-			}
-			else{
-				this.oneAlienEvt =currTime;
-				aliens.getAlien();
+		}
+
+		// Update level and change building design
+		if(this.scoreCtr >= this.alienToKill){
+			if(this.curr_level < this.levels.length-1){
+				this.curr_level++;
+				this.minAlien = this.levels[this.curr_level][0];
+				this.maxAlien = this.levels[this.curr_level][1];
+				this.alienToKill = this.levels[this.curr_level][2];
+
+				this.scoreCtr = 0;
+				score.level = this.curr_level;
+
+				//reset the building designs wid levels
+				contr.design = designs[randomInt(0,3)];
+				bd.resetBuildings(contr.design);
+
+				levelText.visible = true;
+				levelText.content = "Level " + score.level;
+				levelText.setPosition(g.canvas.width/2-levelText.width/2,g.canvas.height/2-levelText.height);
+				var fadeOutTweenPlayer = fadeOut(levelText,120);
+				fadeOutTweenPlayer.onComplete = function(){
+													levelText.visible = false;
+													levelText.alpha = 1;
+												};
 			}
 		}
 	};
+
+
 }

@@ -16,7 +16,8 @@ function smokeEmitter(x,y,source){
 }
 function fire(shooter){
 	bullets.getBullet(shooter,0,contr.bulletSpeed);
-	shotSound.play();
+	// shotSound.play();
+	sBox.play(sBox.shotSound);
 }
 function Bullet(){
 	//bullet Pool and active Pool
