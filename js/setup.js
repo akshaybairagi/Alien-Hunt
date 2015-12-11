@@ -538,7 +538,7 @@ function Buildings(){
 
 			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
-			cBox.alpha = 0.1;
+			// cBox.alpha = 0.1;
 			this.attracts.push(cBox);
 			building.cBox = cBox;
 		}
@@ -546,7 +546,7 @@ function Buildings(){
 	this.designBuidlings = function(width,height,pattern,x,y){
 		var building =rectangle(width,height,"#272726","grey",2,x,y);
 		if(pattern.image){
-			building.setPattern(pattern.image,"repeat");
+			// building.setPattern(pattern.image,"repeat");
 		}
 		var windowWidth = building.width /this.row;
 		var windowHeight = building.height/this.columns;
@@ -560,9 +560,9 @@ function Buildings(){
 					window.i = i;
 					window.j = j;
 					if(randomInt(0,1)){
-						window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+						// window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 					}
-					window.blendMode = "hard-light";
+					// window.blendMode = "hard-light";
 					building.addChild(window);
 				}
 			}
@@ -576,7 +576,7 @@ function Buildings(){
 			building.children.forEach(function(window){
 				window.gradient = false;
 				if(randomInt(0,1)){
-					window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+					// window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
 				}
 			});
 		});
@@ -674,8 +674,8 @@ function getSkyBackground(){
 }
 function drawMoon(){
 	var moon = circle(100);
-	moon.blendMode = "hard-light";
-	moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
+	// moon.blendMode = "hard-light";
+	// moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
 	moon.setPosition(150,200);
 	return moon;
 }
