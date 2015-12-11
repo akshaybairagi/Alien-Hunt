@@ -9,11 +9,11 @@ function play(){
 	playerGroup.vy += contr.gravity;
 	playerGroup.y += playerGroup.vy;
 
-	if(itemGroup.children.length > 0)
-		itemGroup.x -= contr.speed;
-
-	if(itemGroup.x + itemGroup.width < 0 && itemGroup.children.length > 0){
-		imgr.removeItem(itemGroup.children[0]);
+	if(itemGroup.children.length > 0){
+			itemGroup.x -= contr.speed;
+			if(itemGroup.x + itemGroup.width < 0){
+				imgr.removeItem(itemGroup.children[0]);
+			}
 	}
 
 	blocks.children.forEach(function(building){
@@ -23,16 +23,16 @@ function play(){
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
 			//code to adjust the windows height and width
-			var row= bd.row;
-			var coloums= bd.columns;
-			var width = building.width /row;
-			var height = building.height/coloums;
+			// var width = building.width /row;
+			// var height = building.height/coloums;
+			// var width = building.width /bd.row;
+			bd.height = building.height/bd.columns;
 			building.children.forEach(function(window){
 				//update the windows
-				window.x = width*window.j;
-				window.y = height*window.i;
-				window.width =width;
-				window.height = height;
+				window.x = bd.width*window.j;
+				window.y = bd.height*window.i;
+				window.width =bd.width;
+				window.height = bd.height;
 			});
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
@@ -99,14 +99,12 @@ function play(){
 		//Check alien and collision with buildings //alien fall logic
 		aliens.activeAliens.forEach(function(alien){
 			if(alien.release == true){
-				var rayCol = aliencBoxCol(alien,building.cBox,false,true);
-				if(rayCol){
+				if(aliencBoxCol(alien,building.cBox,false,true)){
 						alien.vx = -randomInt(5,7);
 					}
 			}
-
-			var colliAlienBlock = rectangleCollision(alien,building,false,true);
-				if(colliAlienBlock == "bottom"){
+			//opitmization change putting alien.isOnGround==false in condi. removed
+				if(rectangleCollision(alien,building,false,true) == "bottom"){
 					alien.isOnGround = true;
 					alien.vy = 0;
 					alien.accelerationX = 0;
@@ -136,11 +134,8 @@ function play(){
 	aliens.activeAliens.forEach(function(alien){
 		bullets.activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
-			var collision = hitTestRectangle(bullet.cBox, alien,true);
-			if(collision){
+			if(hitTestRectangle(bullet.cBox, alien,true)){
 				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
-				//explosionSound();
-				// explosionSound.play();
 				sBox.play(sBox.explosionSound);
 				bullet.visible = false;
 				score.update();
@@ -149,8 +144,8 @@ function play(){
 			}
 		});
 
-		var playerAlienCollision = hitTestRectangle(playerGroup,alien,true);
-		if(playerAlienCollision===true && alien.isUnderCol === false){
+		// var playerAlienCollision = hitTestRectangle(playerGroup,alien,true);
+		if(hitTestRectangle(playerGroup,alien,true)===true && alien.isUnderCol === false){
 			alien.isUnderCol = true;
 			if(player.grp.visible){
 				topBar.update(-1);
@@ -167,9 +162,8 @@ function play(){
 	});
 	//handle the collision with items
 	itemGroup.children.forEach(function(item){
-		if(playerGroup.item.type == "gun"){
-			var collision = rectangleCollision(item,playerGroup,false,true);
-			if(collision){
+		if(playerGroup.item.type == "gun" && itemGroup.children.length){
+			if(rectangleCollision(item,playerGroup,false,true)){
 				if(item.type == "car"){
 					player.grp.visible = false;
 					gun.visible = false;
@@ -184,18 +178,13 @@ function play(){
 
 					playerGroup.item = car;
 					setTimeout(car.remove,10000);
-					// carSound.restart();
 					sBox.restart(sBox.carSound);
 				}
 				if(item.type == "heart" && item.visible){
 					item.visible = false;
 					topBar.update(1);
-					// pupSound.play();
 					sBox.play(sBox.pupSound);
 				}
-				// if(item.type == "mbox" && item.visible){
-				// 	item.visible = false;
-				// }
 			}
 		}
 	});

@@ -525,6 +525,9 @@ function Buildings(){
 	//attracts Arrays
 	this.attracts = [];
 
+	this.width = this.buildingWidth /this.row;
+	this.height = this.buildingHeight/this.columns;
+
 	this.pattern = designs[randomInt(0,4)];
 
 	this.createBuildings = function(){
