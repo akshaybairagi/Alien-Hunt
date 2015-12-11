@@ -8,6 +8,7 @@ if(Modernizr.webaudio){
 					"images/texture.png",
 					"images/texture2.png",
 					"images/texture3.png",
+					"images/texture4.png",
 					"sounds/retro-action.mp3",
 					"sounds/shot.wav",
 					"sounds/explosion.wav",
@@ -30,6 +31,7 @@ if(Modernizr.webaudio){
 							"images/texture.png",
 							"images/texture2.png",
 							"images/texture3.png",
+							"images/texture4.png",
 							// "sounds/retro-action.mp3",
 							// "sounds/shot.wav",
 							// "sounds/explosion.wav",
@@ -504,10 +506,10 @@ function restart(){
 	// gameScene.visible = true;
 	playerGroup.setPosition(150,300);
 	topBar.reset(5);
-  var pattern = designs[randomInt(0,3)];
-	contr.design = pattern;
+	bd.pattern = designs[randomInt(0,4)];
+	contr.design = bd.pattern;
 	contr.distance = 0;
-	bd.resetBuildings(pattern); //reset the building designs
+	bd.resetBuildings(bd.pattern); //reset the building designs
 	//restart the bg music
 	sBox.restart(sBox.bgMusic);
 }
@@ -523,7 +525,7 @@ function Buildings(){
 	//attracts Arrays
 	this.attracts = [];
 
-	this.pattern = designs[randomInt(0,3)];
+	this.pattern = designs[randomInt(0,4)];
 
 	this.createBuildings = function(){
 		blocks.nextPos = { X: 0, Y:400 };
@@ -546,7 +548,7 @@ function Buildings(){
 	this.designBuidlings = function(width,height,pattern,x,y){
 		var building =rectangle(width,height,"#272726","grey",2,x,y);
 		if(pattern.image){
-			// building.setPattern(pattern.image,"repeat");
+			building.setPattern(pattern.image,"repeat");
 		}
 		var windowWidth = building.width /this.row;
 		var windowHeight = building.height/this.columns;
@@ -559,10 +561,10 @@ function Buildings(){
 					window.y = windowHeight*i;
 					window.i = i;
 					window.j = j;
+					window.fillStyle = pattern.color2;
 					if(randomInt(0,1)){
-						// window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+						window.fillStyle = pattern.color1;
 					}
-					// window.blendMode = "hard-light";
 					building.addChild(window);
 				}
 			}
@@ -572,11 +574,15 @@ function Buildings(){
 	this.resetBuildings = function(pattern){
 		blocks.children.forEach(function(building){
 			building.pattern = false;
-			if(pattern.image)	building.setPattern(pattern.image,"repeat");
+			if(pattern.image)	{
+				building.setPattern(pattern.image,"repeat");
+			}
 			building.children.forEach(function(window){
-				window.gradient = false;
 				if(randomInt(0,1)){
-					// window.setRadialGradient(pattern.color,"grey",0,0,pattern.startR,0,0,pattern.endR);
+					window.fillStyle = pattern.color1;
+				}
+				else{
+						window.fillStyle = pattern.color2;
 				}
 			});
 		});
@@ -682,32 +688,34 @@ function drawMoon(){
 function initDesigns(){
 	var design1 = {
 			image: undefined,
-			color: "white",
-			startR: 3,
-			endR: 17
+			color1: "grey",
+			color2: "grey"
 	};
 	var design2 = {
 			image: assets["images/texture.png"],
-			color:"#f00e2e",
-			startR: 10,
-			endR: 17
+			color1:"#f00e2e",
+			color2: "grey"
 	};
 	var design3 = {
 			image: assets["images/texture2.png"],
-			color:"black",
-			startR: 15,
-			endR: 17
+			color1:"black",
+			color2: "grey"
 	};
 	var design4 = {
 			image: assets["images/texture3.png"],
-			color:"black",
-			startR: 15,
-			endR: 17
+			color1:"black",
+			color2: "grey"
+	};
+	var design5 = {
+			image: assets["images/texture4.png"],
+			color1:"black",
+			color2: "grey"
 	};
 	designs.push(design1);
 	designs.push(design2);
 	designs.push(design3);
 	designs.push(design4);
+	designs.push(design5);
 }
 function ItemManager(){
   this.initItems = function(){
@@ -1348,7 +1356,8 @@ function gameAI(){
 				score.level = this.curr_level;
 
 				//reset the building designs wid levels
-				contr.design = designs[randomInt(0,3)];
+				bd.pattern = designs[randomInt(0,4)];
+				contr.design = bd.pattern;
 				bd.resetBuildings(contr.design);
 
 				levelText.visible = true;

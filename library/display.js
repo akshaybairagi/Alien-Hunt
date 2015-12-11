@@ -76,9 +76,6 @@ function DisplayObject(){
 	//Optional blend mode property
 	this.blendMode = undefined;
 
-	//radial gradient
-	this.gradient = false;
-
 	//pattern
 	this.pattern = false;
 
@@ -183,13 +180,6 @@ DisplayObject.prototype = {
 		this.y = y;
 	},
 
-	//method to create and intialize radial gradient variables
-	setRadialGradient: function(startColor,endColor,x0, y0, r0, x1, y1, r1){
-		this.gradient = true;
-		this.gradient = canvas.ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
-		this.gradient.addColorStop(0,startColor);
-		this.gradient.addColorStop(1,endColor);
-	},
 	//method to create and intialize pattern
 	setPattern: function(image,pattern){
 		this.pattern = true;
