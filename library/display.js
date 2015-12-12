@@ -421,8 +421,8 @@ function render(canvas) {
 
 	//Clear the canvas
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//Loop through each sprite object in the stage's `children` array
 
+	//Loop through each sprite object in the stage's `children` array
 	stage.children.forEach(displaySprite);
 	function displaySprite(sprite) {
 		//Only display the sprite if it's visible
