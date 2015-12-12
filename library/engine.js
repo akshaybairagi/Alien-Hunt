@@ -100,8 +100,13 @@ Game.prototype = {
 		//Scale the canvas based on whichever value is less: `scaleX` or `scaleY`
 		scale = Math.min(scaleX, scaleY);
 		scale = Math.round(scale);
+
+		//To fix the IE11 width problem bug
+		if(scale > 1.5) scale = 1;
+
 		this.canvas.style.transformOrigin = "0 0";
 		this.canvas.style.transform = "scale(" + scale + ")";
+		console.log(scale);
 		//2. Center the canvas.
 		//Decide whether to center the canvas vertically or horizontally.
 		//Wide canvases should be centered vertically, and
