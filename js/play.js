@@ -34,6 +34,8 @@ function play(){
 				window.width =bd.width;
 				window.height = bd.height;
 			});
+
+			building.shake = false;
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
 		blocks.nextPos.Y=375 + randomInt(-30,30);
@@ -51,6 +53,7 @@ function play(){
 		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
 			aliens.freeAlien(alien);
 		}
+
 	});
 	//Move the bullet
 	bullets.activeBullets.forEach(function(bullet){
@@ -124,8 +127,13 @@ function play(){
 						alien.isOnGround = false;
 						alien.jump();
 					}
-					building.y += -0.1;
-					shake(building, 0.02, true);
+					// building.y += -0.05;
+					//shake the building only once
+					if(building.shake === false){
+						shake(building, 0.02, true,120);
+						building.shake = true;
+					}
+
 				}
 		});
 	});

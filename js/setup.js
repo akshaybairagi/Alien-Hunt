@@ -520,6 +520,7 @@ function Buildings(){
 	this.buildingHeight = null;
 	this.row = 7;
 	this.columns = 11;
+	this.shake = false;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	//attracts Arrays
@@ -543,7 +544,7 @@ function Buildings(){
 
 			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
-			// cBox.alpha = 0.1;
+			//cBox.alpha = 0.1;
 			this.attracts.push(cBox);
 			building.cBox = cBox;
 		}
@@ -730,10 +731,6 @@ function ItemManager(){
     this.life.type = "heart";
     this.life.visible = false;
 
-		this.mBox = rectangle(15,10,"red","black",2);
-		this.mBox.type = "mbox";
-		this.mBox.visible = false;
-		gameScene.addChild(this.mBox);
     gameScene.addChild(this.car_snap);
     gameScene.addChild(this.life);
   };
@@ -746,9 +743,6 @@ function ItemManager(){
       case 2:
         item = this.life;
         break;
-			// case 3:
-      //   item = this.mBox;
-      //   break;
       default:
         console.log("Error in getting items");
     }
@@ -1328,21 +1322,32 @@ function gameAI(){
 	};
 
 	this.setAlien = function(currTime){
+
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
-			var randomNo = randomInt(this.minAlien,this.maxAlien);
-			for(var i = 0; i < randomNo; i++){
-				setTimeout(function(){aliens.getAlien();},i*200);
+			var coll = false;
+			bd.attracts.forEach(function(cBox){
+				coll = hitTestRectangle(cBox,ship,true)
+			});
+			if(!coll){
+				var randomNo = randomInt(this.minAlien,this.maxAlien);
+				for(var i = 0; i < randomNo; i++){
+					setTimeout(function(){aliens.getAlien();},i*200);
+				}
+				this.lastUpdAtime =  currTime;
 			}
-			this.lastUpdAtime =  currTime;
+			else{
+				this.lastUpdAtime += 1000;
+			}
+
 		}
 		//Introduce the powerUps/items in the game
-		if(currTime-this.lastUpdPtime >= 10000){
+		if(currTime-this.lastUpdPtime >= 1000){
 			if(itemGroup.children.length === 0){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-				itemGroup.setPosition(g.canvas.width + randomInt(150,300),g.canvas.height/2);
+				itemGroup.setPosition(g.canvas.width + randomInt(150,300),g.canvas.height/2-10);
 				this.lastUpdPtime =  currTime;
 			}
 		}
