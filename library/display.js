@@ -1330,13 +1330,13 @@ var progressBar = {
 };
 
 
-function shake(sprite, magnitude, angular){
+function shake(sprite, magnitude, angular,noOfFrames){
 	var magnitude = checkIfUndefined(magnitude,16),
 		angular = checkIfUndefined(angular,false);
 	//A counter to count the number of shakes
 	var counter = 1;
 	//The total number of shakes (there will be 1 shake per frame)
-	var numberOfShakes = 10;
+	var numberOfShakes = noOfFrames || 10;
 	//Capture the sprite's position and angle so you can
 	//restore them after the shaking has finished
 	var startX = sprite.x,

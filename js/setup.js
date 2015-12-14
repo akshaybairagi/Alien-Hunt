@@ -199,11 +199,13 @@ function keyHandler(){
 			contr.t0 = new Date().getTime(); //initialize value of t0
 			toggleMenu(pauseScene,undefined);
 			sBox.restart(sBox.bgMusic);
+			player.walk();
 		}
 		else {
 			g.pause();
 			toggleMenu(undefined,pauseScene);
 			sBox.pause(sBox.bgMusic);
+			player.stop();
 		}
 	}
 	//jump player
@@ -264,6 +266,8 @@ function makePlayer(){
 			o.state = "walk";
 			o.sticky.playSequence(o.sticky.states.walk);
 			o.hands.playSequence(o.hands.states.walk);
+			o.leye.y = 4.2;
+			o.reye.y = 4.2;
 		}
 	};
 	o.breath = function(){
@@ -276,6 +280,8 @@ function makePlayer(){
 			o.hands.show(o.hands.states.jump);
 			// jumpSound.play();
 			sBox.play(sBox.jumpSound);
+			o.leye.y = 5.8;
+			o.reye.y = 5.8;
 		}
 	};
 	o.slide = function(){
@@ -352,6 +358,7 @@ function createCar(){
 		playerGroup.addChild(player.grp);
 		playerGroup.addChild(gun);
 		playerGroup.item = gun;
+		ai.hasItem = false;
 	}
 	return car;// return a car object
 }
@@ -374,6 +381,7 @@ function Alien(){
 		alien.isUnderCol = false;
 		alien.state = "";
 		alien.release = false;
+		alien.canJump = false;
 
 		alien.walk = function(){
 			if(alien.state!== "walk"){
@@ -423,6 +431,9 @@ function Alien(){
 		alien.jump();
 		if(randomInt(0,1)){
 			alien.act = "run";
+			if(randomInt(0,1)){
+				alien.canJump = true;
+			}
 		}
 		else{
 			alien.act = "defend";
@@ -434,6 +445,7 @@ function Alien(){
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
+		alien.canJump = false;
 		alien.isUnderCol = false;
 		alien.release = false;
 	 	alien.setPosition(ship.centerX,ship.centerY);
@@ -520,6 +532,7 @@ function Buildings(){
 	this.buildingHeight = null;
 	this.row = 7;
 	this.columns = 11;
+	this.shake = false;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	//attracts Arrays
@@ -541,7 +554,7 @@ function Buildings(){
 			blocks.nextPos.X=building.x + randomInt(350,400);
 			blocks.nextPos.Y=375 + randomInt(-30,30);
 
-			var cBox = rectangle(45,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
+			var cBox = rectangle(25,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
 			// cBox.alpha = 0.1;
 			this.attracts.push(cBox);
@@ -730,10 +743,6 @@ function ItemManager(){
     this.life.type = "heart";
     this.life.visible = false;
 
-		this.mBox = rectangle(15,10,"red","black",2);
-		this.mBox.type = "mbox";
-		this.mBox.visible = false;
-		gameScene.addChild(this.mBox);
     gameScene.addChild(this.car_snap);
     gameScene.addChild(this.life);
   };
@@ -746,9 +755,6 @@ function ItemManager(){
       case 2:
         item = this.life;
         break;
-			// case 3:
-      //   item = this.mBox;
-      //   break;
       default:
         console.log("Error in getting items");
     }
@@ -1209,6 +1215,7 @@ function PauseScene(){
 		focusText.focus();
 		g.resume();
 		sBox.restart(sBox.bgMusic);
+		player.walk();
 	};
 	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
 	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
@@ -1236,6 +1243,7 @@ function focusManager(){
 			g.pause();
 			toggleMenu(undefined,pauseScene);
 			sBox.pause(sBox.bgMusic);
+			player.stop();
 		}
 
 	};
@@ -1330,11 +1338,13 @@ function gameAI(){
 	this.setAlien = function(currTime){
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
-			var randomNo = randomInt(this.minAlien,this.maxAlien);
-			for(var i = 0; i < randomNo; i++){
-				setTimeout(function(){aliens.getAlien();},i*200);
-			}
-			this.lastUpdAtime =  currTime;
+				var randomNo = randomInt(this.minAlien,this.maxAlien);
+				for(var i = 0; i < randomNo; i++){
+					setTimeout(function(){
+						aliens.getAlien();
+					},i*350);
+				}
+				this.lastUpdAtime =  currTime;
 		}
 		//Introduce the powerUps/items in the game
 		if(currTime-this.lastUpdPtime >= 10000){
@@ -1342,7 +1352,11 @@ function gameAI(){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-				itemGroup.setPosition(g.canvas.width + randomInt(150,300),g.canvas.height/2);
+					blocks.children.forEach(function(building){
+						if(building.gx > g.canvas.width){
+							itemGroup.setPosition(building.gx + randomInt(50,250),building.gy-50);
+						}
+					});
 				this.lastUpdPtime =  currTime;
 			}
 		}
@@ -1374,6 +1388,4 @@ function gameAI(){
 			}
 		}
 	};
-
-
 }
