@@ -5,6 +5,8 @@ function Game(width, height, setup, assetsToLoad, load){
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 
+		//for mobile
+		this.mobile = false;
 		//Make the pointer
 		this.pointer = makePointer(this.canvas);
 		//The game's scale
@@ -102,7 +104,7 @@ Game.prototype = {
 		scale = Math.round(scale);
 
 		//To fix the IE11 width problem bug
-		if(scale > 1.5) scale = 1;
+		// if(scale > 1.5) scale = 1;
 
 		this.canvas.style.transformOrigin = "0 0";
 		this.canvas.style.transform = "scale(" + scale + ")";
@@ -140,6 +142,7 @@ Game.prototype = {
 		this.pointer.scale = scale;
 		this.scale = scale;
 	},
+	
 	updateGameEffects: function(){
 		//Update the game logic
 		//Update all the buttons
