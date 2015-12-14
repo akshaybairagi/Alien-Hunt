@@ -90,6 +90,7 @@ function load(){
 function setup(){
 	//Remove the progress bar
 	progressBar.remove();
+
 	//Sound and music
 	sBox = new SoundBox();
 	sBox.init();
@@ -106,7 +107,6 @@ function setup(){
 	creditScene = CreditScene();
 	pauseScene = PauseScene();
 	gameoverScene = GameOverScene();
-	// gameoverScene = GameOverScene()
 	//Create the 'titleScene' group
 	titleScene = getTitleScene();
 	toggleMenu(undefined,titleScene);
@@ -133,6 +133,8 @@ function setup(){
 	imgr = new ItemManager();
 	imgr.initItems();
 
+	//create the touch controls
+	TouchControls();
 	//Assign the key events
 	keyHandler();
 
@@ -168,9 +170,10 @@ function keyHandler(){
 	//Jump the player with z key
 	keyboard(90).press = jump;
 	keyboard(38).press = jump;
-	jumpButton.press = jump;
-	fireButton.press = firePress;
-	fireButton.release = fireRelease;
+	//handlers for Touch Buttons
+	jumpTBtn.press = jump;
+	fireTBtn.press = firePress;
+	fireTBtn.release = fireRelease;
 
 	//fire
 	function firePress(){
@@ -227,6 +230,30 @@ function keyHandler(){
 		playerGroup.rotation = 0;
 		player.unSlide();
 	};
+}
+//support for touch controls - mobile phones
+function TouchControls(){
+	var gutterWidth = 10;
+	var unitWidth = g.canvas.width/10;
+	var blockWidth = unitWidth-gutterWidth;
+	var yLoc = g.canvas.height - unitWidth;
+
+	jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth,yLoc);
+	jumpText = text("j", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
+	jumpTBtn.putCenter(jumpText);
+	jumpTBtn.alpha = 0.5;
+
+	fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-gutterWidth-unitWidth,yLoc);
+	fireText = text("f", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
+	fireTBtn.putCenter(fireText);
+
+	jumpTBtn.alpha = 0.5;
+	fireTBtn.alpha = 0.5;
+	jumpTBtn.interactive = true;
+	fireTBtn.interactive = true;
+
+	gameScene.addChild(jumpTBtn);
+	gameScene.addChild(fireTBtn);
 }
 function makePlayer(){
 	var o = {};
@@ -798,14 +825,7 @@ function GameScene(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	jumpButton = text("\u21D1", "40px " + "PetMe64", "white",0);
-	fireButton = text("\u21D2", "40px " + "PetMe64", "white",0);
-	jumpButton.setPosition(10,400);
-	fireButton.setPosition(g.canvas.width-fireButton.width*2,400);
-	jumpButton.interactive = true;
-	fireButton.interactive = true;
-
-	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText,jumpButton,fireButton]);
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText]);
 }
 function getTitleScene(){
 	var o = group([]);
