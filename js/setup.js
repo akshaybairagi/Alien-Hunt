@@ -136,7 +136,7 @@ function setup(){
 	//Assign the key events
 	keyHandler();
 
-	focusText = focusManager();
+	// focusText = focusManager();
 	//Game AI object
 	ai = new gameAI();
 	ai.init(Date.now());
@@ -146,7 +146,7 @@ function setup(){
 	gameScene.addChild(levelText);
 }
 function restarHandler(){
-	focusText.focus();
+	// focusText.focus();
 	restart();
 	//set the score to initials
 	score.init();
@@ -829,7 +829,7 @@ function getTitleScene(){
 	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
 	o.playRect.addChild(playBtn);
 	o.playRect.release = function(){
-		focusText.focus();
+		// focusText.focus();
 		playerGroup.visible = true;
 		ship.visible = true;
 		toggleMenu(o,undefined);
@@ -1212,7 +1212,7 @@ function PauseScene(){
 	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
 	o.frontBg.release = function(){
 		toggleMenu(o,gameScene);
-		focusText.focus();
+		// focusText.focus();
 		g.resume();
 		sBox.restart(sBox.bgMusic);
 		player.walk();
