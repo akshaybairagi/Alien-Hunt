@@ -37,7 +37,7 @@ function play(){
 
 			building.shake = false;
 		}
-		blocks.nextPos.X=building.x + building.width + randomInt(50,100);
+		blocks.nextPos.X=building.x + building.width + randomInt(50,80);
 		blocks.nextPos.Y=375 + randomInt(-30,30);
 
 		building.cBox.x = building.x + building.width;
@@ -73,13 +73,16 @@ function play(){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
 			playerGroup.setPosition(150,300);
-			var _speed = contr.speed;
-			contr.speed = 0;
+			// var _speed = contr.speed;
+			// contr.speed = 0;
+			g.pause();
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
 				fadeOutTweenPlayer.onComplete = function(){
-													contr.speed = _speed;
+													// contr.speed = _speed;
 													var fadeInTween = fadeIn(player.grp,50);
+													g.resume();
 												};
+
 		}
 	}
 
@@ -92,7 +95,9 @@ function play(){
 				playerGroup.isOnGround = true;
 				playerGroup.building_id = building.id;
 				playerGroup.vy = 0;
-				if(player.state == "jump")	player.walk();
+				if(player.state == "jump"){
+					player.walk();
+				}
 			}
 			else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
 				playerGroup.isOnGround = false;
@@ -103,7 +108,8 @@ function play(){
 		aliens.activeAliens.forEach(function(alien){
 			if(alien.release == true){
 				if(aliencBoxCol(alien,building.cBox,false,true)){
-						alien.vx = -randomInt(5,7);
+						alien.vx = -7;//randomInt(5,7);
+						alien.act="run";
 					}
 			}
 			//opitmization change putting alien.isOnGround==false in condi. removed
@@ -121,7 +127,7 @@ function play(){
 					else{
 						alien.stand();
 					}
-					if(building.gx >= alien.x && alien.act=="run"){
+					if(building.gx >= alien.x && alien.act=="run" && alien.canJump){
 						alien.vy = -contr.jumpForce;
 						alien.vx += -2;
 						alien.isOnGround = false;
@@ -185,7 +191,7 @@ function play(){
 					playerGroup.addChild(car);
 
 					playerGroup.item = car;
-					setTimeout(car.remove,10000);
+					setTimeout(car.remove,8000);
 					sBox.restart(sBox.carSound);
 				}
 				if(item.type == "heart" && item.visible){
