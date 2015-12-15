@@ -45,18 +45,21 @@ if(Modernizr.webaudio){
 					);
 		}
 //Start the engine
-g.start();
+// g.start();
 
 // //Scale and center the game
 // g.scaleToWindow();
 //
-// //Optionally rescale the canvas if the browser window is changed
-// window.addEventListener("resize", function(event){
-// 	g.scaleToWindow();
-// });
+//Optionally rescale the canvas if the browser window is changed
+window.addEventListener("resize", function(event){
+	// g.scaleToWindow();
+	g.setupMobile();
+});
 
 //set up mobile version
 g.setupMobile();
+//Start the engine
+g.start();
 
 //Global variables
 var player,sky,ship,gun,mGun,car;
@@ -562,16 +565,25 @@ function Buildings(){
 	this.buildingHeight = g.canvas.height*.6;
 	this.row = 7;
 	this.columns = 11;
+	this.endGap = this.buildingWidth*.25;
+	this.strtGap = this.endGap*.6;
+	this.hGap = this.buildingHeight*.1;
 	this.shake = false;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	//attracts Arrays
 	this.attracts = [];
 
+	//selected pattern for building background
+	this.pattern = designs[randomInt(0,4)];
+
+	if(g.mobile === true){
+		this.row = 5;
+		this.columns = 7;
+	}
+
 	this.width = this.buildingWidth /this.row;
 	this.height = this.buildingHeight/this.columns;
-
-	this.pattern = designs[randomInt(0,4)];
 
 	this.createBuildings = function(){
 		blocks.nextPos = { X: 0, Y: this.buildingHeight };
@@ -580,8 +592,8 @@ function Buildings(){
 			// this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
 			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,blocks.nextPos.X,blocks.nextPos.Y);
 			blocks.addChild(building);
-			blocks.nextPos.X = building.x + building.width + randomInt(50,80);
-			blocks.nextPos.Y = this.buildingHeight + randomInt(-30,30);
+			blocks.nextPos.X = building.x + building.width + randomInt(this.strtGap,this.endGap);
+			blocks.nextPos.Y = this.buildingHeight + randomInt(-this.hGap,this.hGap);
 
 			var cBox = rectangle(25,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;

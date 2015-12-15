@@ -148,7 +148,7 @@ Game.prototype = {
 				hasTouch = !!('ontouchstart' in window),
 				w = window.innerWidth, h = window.innerHeight;
 		if(hasTouch){
-			mobile = true;
+			this.mobile = true;
 		}
 		if(this.canvas.width >= 1280 || !hasTouch){
 			return false;

@@ -37,8 +37,8 @@ function play(){
 
 			building.shake = false;
 		}
-		blocks.nextPos.X=building.x + building.width + randomInt(50,80);
-		blocks.nextPos.Y=bd.buildingHeight + randomInt(-30,30);
+		blocks.nextPos.X=building.x + building.width + randomInt(bd.strtGap,bd.endGap);
+		blocks.nextPos.Y=bd.buildingHeight + randomInt(-bd.hGap,bd.hGap);
 
 		building.cBox.x = building.x + building.width;
 	});
