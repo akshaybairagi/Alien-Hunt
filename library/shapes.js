@@ -194,10 +194,10 @@ function Text(content,font,fillStyle,x,y) {
 	//Set `strokeText` to "none"
 	this.strokeText = "none";
 
-	canvas.ctx.font = this.font;
-	canvas.ctx.textBaseline = "top";
-	this.width = canvas.ctx.measureText(this.content).width;
-	this.height = canvas.ctx.measureText("M").width;
+	g.canvas.ctx.font = this.font;
+	g.canvas.ctx.textBaseline = "top";
+	this.width = g.canvas.ctx.measureText(this.content).width;
+	this.height = g.canvas.ctx.measureText("M").width;
 }
 Text.prototype = new DisplayObject();
 Text.prototype.constructor = Text;

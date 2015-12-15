@@ -47,13 +47,16 @@ if(Modernizr.webaudio){
 //Start the engine
 g.start();
 
-//Scale and center the game
-g.scaleToWindow();
+// //Scale and center the game
+// g.scaleToWindow();
+//
+// //Optionally rescale the canvas if the browser window is changed
+// window.addEventListener("resize", function(event){
+// 	g.scaleToWindow();
+// });
 
-//Optionally rescale the canvas if the browser window is changed
-window.addEventListener("resize", function(event){
-	g.scaleToWindow();
-});
+//set up mobile version
+g.setupMobile();
 
 //Global variables
 var player,sky,ship,gun,mGun,car;
@@ -493,7 +496,7 @@ function createPlayerGroup(){
 	o.isOnGround = false;
 	o.building_id = "";
 	o.item = gun;
-	o.setPosition(150,300);
+	o.setPosition((g.canvas.width*.36)/2,200);
 	return	o;
 }
 function createGun(){
@@ -555,8 +558,8 @@ function restart(){
 function Buildings(){
 	//variables for building blocks
 	this.numOfBuilding = 4;
-	this.buildingWidth = 300;
-	this.buildingHeight = null;
+	this.buildingWidth = g.canvas.width*.36;
+	this.buildingHeight = g.canvas.height*.6;
 	this.row = 7;
 	this.columns = 11;
 	this.shake = false;
@@ -571,15 +574,14 @@ function Buildings(){
 	this.pattern = designs[randomInt(0,4)];
 
 	this.createBuildings = function(){
-		blocks.nextPos = { X: 0, Y:400 };
+		blocks.nextPos = { X: 0, Y: this.buildingHeight };
 		//Procedural Generation of buildings
 		for (var k =0; k < this.numOfBuilding; k++){
-			this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
-				blocks.nextPos.X,blocks.nextPos.Y);
+			// this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
+			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,blocks.nextPos.X,blocks.nextPos.Y);
 			blocks.addChild(building);
-			blocks.nextPos.X=building.x + randomInt(350,400);
-			blocks.nextPos.Y=375 + randomInt(-30,30);
+			blocks.nextPos.X = building.x + building.width + randomInt(50,80);
+			blocks.nextPos.Y = this.buildingHeight + randomInt(-30,30);
 
 			var cBox = rectangle(25,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;

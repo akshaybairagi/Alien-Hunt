@@ -29,6 +29,16 @@ function makeCanvas(width, height,border,backgroundColor) {
 	return canvas;
 }
 
+function getCanvas(border,backgroundColor){
+	var canvas = document.getElementById("game");
+	canvas.style.border = border;
+	canvas.style.backgroundColor = backgroundColor;
+	//Create the context as a property of the canvas
+	canvas.ctx = canvas.getContext("2d");
+	//Return the canvas
+	return canvas;
+}
+
 function DisplayObject(){
 	//The sprite's position and size
 	this.x = 0;
@@ -183,7 +193,7 @@ DisplayObject.prototype = {
 	//method to create and intialize pattern
 	setPattern: function(image,pattern){
 		this.pattern = true;
-		this.pattern = canvas.ctx.createPattern(image,pattern);
+		this.pattern = g.canvas.ctx.createPattern(image,pattern);
 	},
 
 	//The `localBounds` and `globalBounds` methods return an object

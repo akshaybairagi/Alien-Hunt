@@ -1,7 +1,8 @@
 //Game engine class
 function Game(width, height, setup, assetsToLoad, load){
 		//Make the canvas and initialize the stage
-		this.canvas = makeCanvas(width, height, "#cccccc","#3b3224");
+		// this.canvas = makeCanvas(width, height, "#cccccc","#3b3224");
+		this.canvas = getCanvas("#cccccc","#3b3224");
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 
@@ -142,7 +143,59 @@ Game.prototype = {
 		this.pointer.scale = scale;
 		this.scale = scale;
 	},
-	
+	setupMobile: function(){
+		var container = document.getElementById("container"),
+				hasTouch = !!('ontouchstart' in window),
+				w = window.innerWidth, h = window.innerHeight;
+		if(hasTouch){
+			mobile = true;
+		}
+		if(this.canvas.width >= 1280 || !hasTouch){
+			return false;
+		}
+		if(w < h){
+			alert("Please rotate the device and then click OK");
+			w = window.innerWidth; h = window.innerHeight;
+		}
+		container.style.height = h*2 + "px";
+		window.scrollTo(0,1);
+		h = window.innerHeight + 2;
+		container.style.height = h + "px";
+		container.style.width = w + "px";
+		container.style.padding = 0;
+		if(h >= this.canvas.height * 1.75 || w >= this.canvas.height * 1.75){
+			this.canvasMultiplier = 2;
+			this.canvas.width = w / 2;
+			this.canvas.height = h / 2;
+			this.canvas.style.width = w + "px";
+			this.canvas.style.height = h + "px";
+		}
+		else{
+			this.canvas.width = w;
+			this.canvas.height = h;
+		}
+		this.canvas.style.position='absolute';
+		this.canvas.style.left="0px";
+		this.canvas.style.top="0px";
+
+		//scale to window code
+		if(0){
+			var scaleX, scaleY, scale, center;
+			//1. Scale the canvas to the correct size
+			//Figure out the scale amount on each axis
+			scaleX = window.innerWidth / this.canvas.width;
+			scaleY = window.innerHeight / this.canvas.height;
+			//Scale the canvas based on whichever value is less: `scaleX` or `scaleY`
+			scale = Math.min(scaleX, scaleY);
+			scale = Math.round(scale);
+
+			this.canvas.style.transformOrigin = "0 0";
+			this.canvas.style.transform = "scale(" + scale + ")";
+
+			this.pointer.scale = scale;
+			this.scale = scale;
+		}
+	},
 	updateGameEffects: function(){
 		//Update the game logic
 		//Update all the buttons
