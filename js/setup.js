@@ -139,8 +139,6 @@ function setup(){
 	imgr = new ItemManager();
 	imgr.initItems();
 
-	//create the touch controls
-	TouchControls();
 	//Assign the key events
 	keyHandler();
 
@@ -152,6 +150,15 @@ function setup(){
 	levelText = text("Level 0", "15px " + "PetMe64", "white",0);
 	levelText.visible = false;
 	gameScene.addChild(levelText);
+
+	if(g.mobile === true){
+		touchCtrl.jumpTBtn.visible = true;
+		touchCtrl.fireTBtn.visible = true;
+		touchCtrl.jumpText.visible = true;
+		touchCtrl.fireText.visible = true;
+		touchCtrl.jumpTBtn.interactive = true;
+		touchCtrl.fireTBtn.interactive = true;
+	}
 }
 function restarHandler(){
 	// focusText.focus();
@@ -177,9 +184,9 @@ function keyHandler(){
 	keyboard(90).press = jump;
 	keyboard(38).press = jump;
 	//handlers for Touch Buttons
-	jumpTBtn.press = jump;
-	fireTBtn.press = firePress;
-	fireTBtn.release = fireRelease;
+	touchCtrl.jumpTBtn.press = jump;
+	touchCtrl.fireTBtn.press = firePress;
+	touchCtrl.fireTBtn.release = fireRelease;
 
 	//fire
 	function firePress(){
@@ -244,22 +251,28 @@ function TouchControls(){
 	var blockWidth = unitWidth-gutterWidth;
 	var yLoc = g.canvas.height - unitWidth;
 
-	jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth,yLoc);
-	jumpText = text("j", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
-	jumpTBtn.putCenter(jumpText);
-	jumpTBtn.alpha = 0.5;
+	var o = {};
 
-	fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-gutterWidth-unitWidth,yLoc);
-	fireText = text("f", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
-	fireTBtn.putCenter(fireText);
+	o.jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth,yLoc);
+	o.jumpText = text("j", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
+	o.jumpTBtn.putCenter(o.jumpText);
+	o.jumpTBtn.alpha = 0.5;
 
-	jumpTBtn.alpha = 0.5;
-	fireTBtn.alpha = 0.5;
-	jumpTBtn.interactive = true;
-	fireTBtn.interactive = true;
+	o.fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-gutterWidth-unitWidth,yLoc);
+	o.fireText = text("f", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
+	o.fireTBtn.putCenter(o.fireText);
 
-	gameScene.addChild(jumpTBtn);
-	gameScene.addChild(fireTBtn);
+	o.jumpTBtn.alpha = 0.5;
+	o.fireTBtn.alpha = 0.5;
+
+	o.jumpTBtn.visible = false;
+	o.fireTBtn.visible = false;
+	o.jumpText.visible = false;
+	o.fireText.visible = false;
+	o.jumpTBtn.interactive = false;
+	o.fireTBtn.interactive = false;
+
+	return o;
 }
 function makePlayer(){
 	var o = {};
@@ -839,7 +852,11 @@ function GameScene(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText]);
+	//create the touch controls
+	touchCtrl = TouchControls();
+
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText,
+		touchCtrl.jumpTBtn,touchCtrl.fireTBtn,touchCtrl.jumpText,touchCtrl.fireText]);
 }
 function getTitleScene(){
 	var o = group([]);
