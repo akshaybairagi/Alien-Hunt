@@ -7,17 +7,17 @@ function play(){
 
 	//Move the player by applying the new calculated velocity
 	playerGroup.vy += contr.gravity;
-	playerGroup.y += playerGroup.vy;
+	playerGroup.y += playerGroup.vy*ai.dt;
 
 	if(itemGroup.children.length > 0){
-			itemGroup.x -= contr.speed;
+			itemGroup.x -= contr.speed*ai.dt;
 			if(itemGroup.x + itemGroup.width < 0){
 				imgr.removeItem(itemGroup.children[0]);
 			}
 	}
 
 	blocks.children.forEach(function(building){
-		building.x -= contr.speed;
+		building.x -= contr.speed*ai.dt;
 		if(building.x <= 0-building.width-contr.speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
@@ -45,20 +45,19 @@ function play(){
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-			alien.y += alien.vy;
+			alien.y += alien.vy*ai.dt;
 			alien.vy += contr.gravity;
 			alien.vx += alien.accelerationX;
-			alien.x += alien.vx;
+			alien.x += alien.vx*ai.dt;
 
 		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
 			aliens.freeAlien(alien);
 		}
-
 	});
 	//Move the bullet
 	bullets.activeBullets.forEach(function(bullet){
-		bullet.x += bullet.vx;
-		bullet.y += bullet.vy;
+		bullet.x += bullet.vx*ai.dt;
+		bullet.y += bullet.vy*ai.dt;
 		if(bullet.x > g.canvas.width){
 			bullets.freeBullet(bullet);
 		}
@@ -72,7 +71,7 @@ function play(){
 	if(playerGroup.y > g.canvas.height){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
-			playerGroup.setPosition(150,300);
+			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 			// var _speed = contr.speed;
 			// contr.speed = 0;
 			g.pause();
@@ -117,11 +116,11 @@ function play(){
 					alien.isOnGround = true;
 					alien.vy = 0;
 					alien.accelerationX = 0;
-					alien.vx = -contr.speed;
+					alien.vx = -contr.speed*ai.dt;
 					alien.release = false;
 
 					if(alien.act=="run"){
-						alien.vx += -3;
+						alien.vx += -3*ai.dt;
 						alien.walk();
 					}
 					else{
@@ -129,7 +128,7 @@ function play(){
 					}
 					if(building.gx >= alien.x && alien.act=="run" && alien.canJump){
 						alien.vy = -contr.jumpForce;
-						alien.vx += -2;
+						alien.vx += -2*ai.dt;
 						alien.isOnGround = false;
 						alien.jump();
 					}
@@ -149,7 +148,9 @@ function play(){
 		bullets.activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			if(hitTestRectangle(bullet.cBox, alien,true)){
-				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
+				if(g.mobile === false){
+					smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
+				}
 				sBox.play(sBox.explosionSound);
 				bullet.visible = false;
 				score.update();
@@ -202,4 +203,7 @@ function play(){
 			}
 		}
 	});
+
+
+	ai.t0 = ai.t1;
 }

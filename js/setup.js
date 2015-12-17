@@ -72,7 +72,7 @@ var designs = [];
 var controller = {
 	gravity: .4,	//force of gravity
 	gAttract: .2,
-	speed: 5,		//speed 275
+	speed: 5,//5,		//speed 275
 	jumpForce: 8,	// force to jump
 	bulletSpeed: 17, //speed of the bullet
 	d0: 0,	// time at last call
@@ -247,18 +247,17 @@ function keyHandler(){
 //support for touch controls - mobile phones
 function TouchControls(){
 	var gutterWidth = 10;
-	var unitWidth = g.canvas.width/10;
+	var unitWidth = g.canvas.width/7;
 	var blockWidth = unitWidth-gutterWidth;
 	var yLoc = g.canvas.height - unitWidth;
-
 	var o = {};
 
-	o.jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth,yLoc);
+	o.jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth+blockWidth,yLoc);
 	o.jumpText = text("j", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
 	o.jumpTBtn.putCenter(o.jumpText);
 	o.jumpTBtn.alpha = 0.5;
 
-	o.fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-gutterWidth-unitWidth,yLoc);
+	o.fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-(gutterWidth+unitWidth+blockWidth),yLoc);
 	o.fireText = text("f", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
 	o.fireTBtn.putCenter(o.fireText);
 
@@ -512,7 +511,7 @@ function createPlayerGroup(){
 	o.isOnGround = false;
 	o.building_id = "";
 	o.item = gun;
-	o.setPosition((g.canvas.width*.36)/2,200);
+	o.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	return	o;
 }
 function createGun(){
@@ -562,7 +561,7 @@ function end(){
 }
 function restart(){
 	// gameScene.visible = true;
-	playerGroup.setPosition(150,300);
+	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	topBar.reset(5);
 	bd.pattern = designs[randomInt(0,4)];
 	contr.design = bd.pattern;
@@ -575,7 +574,7 @@ function Buildings(){
 	//variables for building blocks
 	this.numOfBuilding = 4;
 	this.buildingWidth = g.canvas.width*.36;
-	this.buildingHeight = g.canvas.height*.6;
+	this.buildingHeight = g.canvas.height*.65;
 	this.row = 7;
 	this.columns = 11;
 	this.endGap = this.buildingWidth*.25;
@@ -1350,6 +1349,7 @@ function SoundBox(){
 }
 //game AI to Introduce items/aliens in the game
 function gameAI(){
+	//Game level Information
 	this.levels = [
 		/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
 		[1,1,1],		//Level 0
@@ -1374,6 +1374,11 @@ function gameAI(){
 	this.maxAlien = null;
 	this.alienToKill = null;
 
+	//Time based motion
+	this.t0 = null;
+	this.t1 = null;
+	this.dt = null;
+
 	this.init = function(delta){
 		this.startTime = delta;
 		this.lastUpdAtime = delta;
@@ -1384,9 +1389,15 @@ function gameAI(){
 		this.minAlien = this.levels[this.curr_level][0];
 		this.maxAlien = this.levels[this.curr_level][1];
 		this.alienToKill = this.levels[this.curr_level][2];
+
+		this.t0 = delta;
+		this.t1 = delta;
 	};
 
 	this.setAlien = function(currTime){
+		this.t1 = currTime;
+		this.dt = (this.t1-this.t0)*(60/1000);
+
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
 				var randomNo = randomInt(this.minAlien,this.maxAlien);

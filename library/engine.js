@@ -179,7 +179,7 @@ Game.prototype = {
 		this.canvas.style.top="0px";
 
 		//scale to window code
-		if(0){
+		if(1){
 			var scaleX, scaleY, scale, center;
 			//1. Scale the canvas to the correct size
 			//Figure out the scale amount on each axis
