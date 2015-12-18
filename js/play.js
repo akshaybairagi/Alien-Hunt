@@ -45,8 +45,8 @@ function play(){
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-			alien.y += alien.vy*ai.dt;
 			alien.vy += contr.gravity;
+			alien.y += alien.vy*ai.dt;
 			alien.vx += alien.accelerationX;
 			alien.x += alien.vx*ai.dt;
 
@@ -80,8 +80,9 @@ function play(){
 													// contr.speed = _speed;
 													var fadeInTween = fadeIn(player.grp,50);
 													g.resume();
+													//reset the time for motion
+													ai.t0 = Date.now();
 												};
-
 		}
 	}
 
@@ -203,7 +204,6 @@ function play(){
 			}
 		}
 	});
-
-
+	//Assign current time equal to last update time for time based motion
 	ai.t0 = ai.t1;
 }

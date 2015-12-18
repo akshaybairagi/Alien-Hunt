@@ -72,11 +72,9 @@ var designs = [];
 var controller = {
 	gravity: .4,	//force of gravity
 	gAttract: .2,
-	speed: 5,//5,		//speed 275
-	jumpForce: 8,	// force to jump
+	speed: 5,		//speed 275
+	jumpForce: 7.8,	// 8 force to jump
 	bulletSpeed: 17, //speed of the bullet
-	d0: 0,	// time at last call
-	dt:	0,	// elapsed time between calls
 	design: null,
 	distance: null,
 	miles: null,
@@ -212,7 +210,6 @@ function keyHandler(){
 	function pauseGame(){
 		if(g.paused){
 			g.resume();
-			contr.t0 = new Date().getTime(); //initialize value of t0
 			toggleMenu(pauseScene,undefined);
 			sBox.restart(sBox.bgMusic);
 			player.walk();
@@ -323,7 +320,6 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			// jumpSound.play();
 			sBox.play(sBox.jumpSound);
 			o.leye.y = 5.8;
 			o.reye.y = 5.8;
@@ -560,13 +556,13 @@ function end(){
 	sBox.pause(sBox.bgMusic);
 }
 function restart(){
-	// gameScene.visible = true;
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	topBar.reset(5);
 	bd.pattern = designs[randomInt(0,4)];
 	contr.design = bd.pattern;
 	contr.distance = 0;
-	bd.resetBuildings(bd.pattern); //reset the building designs
+	 //reset the building designs
+	bd.resetBuildings(bd.pattern);
 	//restart the bg music
 	sBox.restart(sBox.bgMusic);
 }
@@ -1390,13 +1386,15 @@ function gameAI(){
 		this.maxAlien = this.levels[this.curr_level][1];
 		this.alienToKill = this.levels[this.curr_level][2];
 
+		//initalize the time based variables
 		this.t0 = delta;
 		this.t1 = delta;
 	};
 
 	this.setAlien = function(currTime){
 		this.t1 = currTime;
-		this.dt = (this.t1-this.t0)*(60/1000);
+		// this.dt = (currTime-this.t0)*(60/1000);
+		this.dt = 1;
 
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
@@ -1416,7 +1414,7 @@ function gameAI(){
 				itemGroup.addChild(item);
 					blocks.children.forEach(function(building){
 						if(building.gx > g.canvas.width){
-							itemGroup.setPosition(building.gx + randomInt(50,250),building.gy-50);
+							itemGroup.setPosition(building.gx + randomInt(50,150),building.gy-50);
 						}
 					});
 				this.lastUpdPtime =  currTime;
