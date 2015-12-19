@@ -157,7 +157,6 @@ function setup(){
 		touchCtrl.jumpTBtn.interactive = true;
 		touchCtrl.fireTBtn.interactive = true;
 	}
-
 }
 function restarHandler(){
 	// focusText.focus();
