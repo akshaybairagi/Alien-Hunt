@@ -164,7 +164,7 @@ Game.prototype = {
 		container.style.width = w + "px";
 		container.style.padding = 0;
 		if(h >= this.canvas.height * 1.75 || w >= this.canvas.height * 1.75){
-			this.canvasMultiplier = 2;
+			// this.canvasMultiplier = 2;
 			this.canvas.width = w / 2;
 			this.canvas.height = h / 2;
 			this.canvas.style.width = w + "px";

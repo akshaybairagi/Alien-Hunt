@@ -83,7 +83,7 @@ Circle.prototype.render= function(ctx) {
 	if (this.mask && this.mask === true) ctx.clip();
 };
 //A higher level wrapper for the circle sprite
-function circle(diameter, fillStyle, strokeStyle, lineWidth, x, y) {
+function circle(diameter, fillStyle, strokeStyle, lineWidth, x, y){
 	var sprite = new Circle(diameter, fillStyle, strokeStyle, lineWidth, x, y);
 	stage.addChild(sprite);
 	return sprite;
