@@ -157,6 +157,7 @@ function setup(){
 		touchCtrl.jumpTBtn.interactive = true;
 		touchCtrl.fireTBtn.interactive = true;
 	}
+
 }
 function restarHandler(){
 	// focusText.focus();
@@ -299,7 +300,6 @@ function makePlayer(){
 	//eyes
 	o.leye = ellipse(7,4.2,2,5);
 	o.reye = ellipse(10,4.2,2,5);
-
 	//group to assemble player parts
 	o.grp = group([o.sticky,o.hands,o.leye,o.reye]);
 

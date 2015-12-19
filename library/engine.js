@@ -6,7 +6,7 @@ function Game(width, height, setup, assetsToLoad, load){
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 
-		//for mobile
+		//for mobile implementation
 		this.mobile = false;
 		//Make the pointer
 		this.pointer = makePointer(this.canvas);
@@ -177,24 +177,6 @@ Game.prototype = {
 		this.canvas.style.position='absolute';
 		this.canvas.style.left="0px";
 		this.canvas.style.top="0px";
-
-		//scale to window code
-		if(1){
-			var scaleX, scaleY, scale, center;
-			//1. Scale the canvas to the correct size
-			//Figure out the scale amount on each axis
-			scaleX = window.innerWidth / this.canvas.width;
-			scaleY = window.innerHeight / this.canvas.height;
-			//Scale the canvas based on whichever value is less: `scaleX` or `scaleY`
-			scale = Math.min(scaleX, scaleY);
-			scale = Math.round(scale);
-
-			this.canvas.style.transformOrigin = "0 0";
-			this.canvas.style.transform = "scale(" + scale + ")";
-
-			this.pointer.scale = scale;
-			this.scale = scale;
-		}
 	},
 	updateGameEffects: function(){
 		//Update the game logic

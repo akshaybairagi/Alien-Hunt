@@ -494,7 +494,7 @@ function Group(spritesToGroup){
 Group.prototype = new DisplayObject();
 Group.prototype.constructor = Group;
 
-Group.prototype.addChild = function(sprite) {
+Group.prototype.addChild = function(sprite){
 	if (sprite.parent) {
 		sprite.parent.removeChild(sprite);
 	}
@@ -733,11 +733,11 @@ Sprite.prototype.gotoAndStop = function(frameNumber) {
 Sprite.prototype.render = function(ctx) {
 	ctx.drawImage(
 	  this.source,
-	  Math.round(this.sourceX), Math.round(this.sourceY),
-	  Math.round(this.sourceWidth), Math.round(this.sourceHeight),
-	  Math.round(-this.width * this.pivotX),
-	  Math.round(-this.height * this.pivotY),
-	  Math.round(this.width), Math.round(this.height)
+	  this.sourceX, this.sourceY,
+		this.sourceWidth, this.sourceHeight,
+	  (-this.width * this.pivotX),
+	  (-this.height * this.pivotY),
+	  this.width, this.height
 	);
 };
 

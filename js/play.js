@@ -34,12 +34,10 @@ function play(){
 				window.width =bd.width;
 				window.height = bd.height;
 			});
-
 			building.shake = false;
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(bd.strtGap,bd.endGap);
 		blocks.nextPos.Y=bd.buildingHeight + randomInt(-bd.hGap,bd.hGap);
-
 		building.cBox.x = building.x + building.width;
 	});
 
