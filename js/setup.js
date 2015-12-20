@@ -1415,11 +1415,7 @@ function gameAI(){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-					blocks.children.forEach(function(building){
-						if(building.gx > g.canvas.width){
-							itemGroup.setPosition(building.gx + randomInt(50,150),building.gy-50);
-						}
-					});
+				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*2);
 				this.lastUpdPtime =  currTime;
 			}
 		}
