@@ -208,17 +208,19 @@ function keyHandler(){
 	}
 	//pause function for stopping the game
 	function pauseGame(){
-		if(g.paused){
+		if(g.paused && ai.state == 'pause'){
 			g.resume();
 			toggleMenu(pauseScene,undefined);
 			sBox.restart(sBox.bgMusic);
 			player.walk();
+			ai.state='play';
 		}
-		else {
+		else if(ai.state!=='end') {
 			g.pause();
 			toggleMenu(undefined,pauseScene);
 			sBox.pause(sBox.bgMusic);
 			player.stop();
+			ai.state = 'pause'
 		}
 	}
 	//jump player
@@ -553,6 +555,7 @@ function end(){
 	//publish score to storage
 	score.publishHScore();
 	sBox.pause(sBox.bgMusic);
+	ai.state = 'end';
 }
 function restart(){
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
@@ -564,6 +567,7 @@ function restart(){
 	bd.resetBuildings(bd.pattern);
 	//restart the bg music
 	sBox.restart(sBox.bgMusic);
+	ai.state = 'play';
 }
 function Buildings(){
 	//variables for building blocks
@@ -1357,6 +1361,8 @@ function gameAI(){
 		[4,5,40], 	//Level 9
 		[5,6,40] 		//Level 10
 	];
+	//game state
+	this.state = null;// 'play' 'end' 'pause'
 
 	this.startTime = null;
 	this.lastUpdAtime = null;
