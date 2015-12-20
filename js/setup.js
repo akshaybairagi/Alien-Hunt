@@ -55,7 +55,6 @@ window.addEventListener("resize", function(event){
 	// g.scaleToWindow();
 	g.setupMobile();
 });
-
 //set up mobile version
 g.setupMobile();
 //Start the engine
