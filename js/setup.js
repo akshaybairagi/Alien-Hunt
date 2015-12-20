@@ -824,8 +824,7 @@ function GameScene(){
 	ship = createShip();
 	//draw moon sprites
 	moon = drawMoon();
-	//Add a black border along the top of the screen
-	//create life sprite pool
+	//create life bar sprite pool
 	topBar = new TopBar();
 	topBar.create();
 	topBar.update(0);
@@ -1026,7 +1025,6 @@ function ScoreScene(){
 
 	return o;
 }
-
 function OptionScene(){
 	var o = group([]);
 	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
