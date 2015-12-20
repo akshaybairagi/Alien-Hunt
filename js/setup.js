@@ -49,7 +49,7 @@ if(Modernizr.webaudio){
 
 // //Scale and center the game
 // g.scaleToWindow();
-//
+
 //Optionally rescale the canvas if the browser window is changed
 window.addEventListener("resize", function(event){
 	// g.scaleToWindow();
@@ -57,6 +57,7 @@ window.addEventListener("resize", function(event){
 });
 //set up mobile version
 g.setupMobile();
+
 //Start the engine
 g.start();
 
@@ -537,8 +538,9 @@ function end(){
 		bullets.freeBullet(bullets.activeBullets[i]);
 	}
 
-	//Display the 'titleScene' and fade the 'gameScene' in bg
+	//Display the 'gameoverScene'
 	toggleMenu(undefined,gameoverScene);
+	gameoverScene.showOverScreen();
 	//Assign a new button 'press' action to restart the game
 	titleScene.playRect.release = function(){
 		toggleMenu(titleScene,undefined);
@@ -548,7 +550,6 @@ function end(){
 		toggleMenu(gameoverScene,undefined);
 		restarHandler();
 	};
-	gameoverScene.showOverScreen();
 	//publish score to storage
 	score.publishHScore();
 	sBox.pause(sBox.bgMusic);

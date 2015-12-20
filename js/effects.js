@@ -81,7 +81,6 @@ function toggleMenu(caller,callee){
 	}
 }
 
-
 function aliencBoxCol(r1, r2, bounce, global) {
 
   var collision, combinedHalfWidths, combinedHalfHeights,

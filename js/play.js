@@ -22,10 +22,6 @@ function play(){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
-			//code to adjust the windows height and width
-			// var width = building.width /row;
-			// var height = building.height/coloums;
-			// var width = building.width /bd.row;
 			bd.height = building.height/bd.columns;
 			building.children.forEach(function(window){
 				//update the windows
@@ -70,13 +66,11 @@ function play(){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
-			// var _speed = contr.speed;
-			// contr.speed = 0;
 			g.pause();
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
 				fadeOutTweenPlayer.onComplete = function(){
-													// contr.speed = _speed;
 													var fadeInTween = fadeIn(player.grp,50);
+													//resume the game
 													g.resume();
 													//reset the time for motion
 													ai.t0 = Date.now();
