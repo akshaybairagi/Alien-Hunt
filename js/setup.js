@@ -726,6 +726,9 @@ function TopBar(){
 			}
 		}
 		else{
+			for(var i=0;i < this.maxLife;i++){
+					this.container.children[i].visible = false;
+			}
 			playerGroup.vy = 0;
 			player.stop();
 			g.pause();
