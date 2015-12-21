@@ -15,7 +15,7 @@ function play(){
 				imgr.removeItem(itemGroup.children[0]);
 			}
 	}
-	//move buildings
+
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*ai.dt;
 		if(building.x <= 0-building.width-contr.speed){
@@ -74,9 +74,7 @@ function play(){
 													g.resume();
 													//reset the time for motion
 													ai.t0 = Date.now();
-													fadeInTween = null;
 												};
-			fadeOutTweenPlayer = null;
 		}
 	}
 
@@ -97,7 +95,6 @@ function play(){
 				playerGroup.isOnGround = false;
 			}
 		}
-		colliPlayerBlock = null;
 
 		//Check alien and collision with buildings //alien fall logic
 		aliens.activeAliens.forEach(function(alien){
@@ -163,9 +160,7 @@ function play(){
 				var fadeOutTweenPlayer = fadeOut(player.grp,10);
 				fadeOutTweenPlayer.onComplete = function(){
 													var fadeInTween = fadeIn(player.grp,20);
-													fadeInTween = null;
 												};
-				fadeOutTweenPlayer = null;
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;

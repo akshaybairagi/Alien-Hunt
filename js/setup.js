@@ -120,7 +120,7 @@ function setup(){
 
 	//Create Aliens
 	aliens = new Alien();
-	for(var i=0;i < 6;i++){
+	for(var i=0;i < 5;i++){
 		var alienObj = aliens.createAlien();
 		alienObj.visible = false;
 		alienObj.setPosition(ship.centerX,ship.centerY);
@@ -128,7 +128,7 @@ function setup(){
 	}
 	//Create Bullets
 	bullets = new Bullet();
-	for(var i=0;i < 10;i++){
+	for(var i=0;i < 5;i++){
 		var bulletObj = bullets.createBullet();
 		bulletObj.visible = false;
 		bullets.bulletPool.push(bulletObj);
@@ -483,7 +483,7 @@ function Alien(){
 		this.activeAliens.push(alien);
 		// entrySound.play();
 		sBox.play(sBox.entrySound);
-		alien = null;
+		return alien;
 	};
   this.freeAlien = function(alien){
 	 	alien.visible = false;
@@ -556,10 +556,6 @@ function end(){
 	score.publishHScore();
 	sBox.pause(sBox.bgMusic);
 	ai.state = 'end';
-
-
-	console.log(aliens.alienPool);
-	console.log(bullets.bulletPool);
 }
 function restart(){
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
@@ -757,7 +753,7 @@ function drawMoon(){
 	var moon = circle(100);
 	// moon.blendMode = "hard-light";
 	// moon.setRadialGradient("white","#e6e6e2",0,0,10,0,0,35);
-	moon.setPosition(150,g.canvas.height*0.34);
+	moon.setPosition(150,200);
 	return moon;
 }
 function initDesigns(){
@@ -1351,16 +1347,6 @@ function SoundBox(){
 	};
 
 }
-// Storage
-function Storage(){
-
-	this.saveData = function(key,value){
-		localStorage.setItem(key,value);
-	};
-	this.getData = function(key){
-		return localStorage.getItem(key);
-	};
-}
 //game AI to Introduce items/aliens in the game
 function gameAI(){
 	//Game level Information
@@ -1424,18 +1410,16 @@ function gameAI(){
 						aliens.getAlien();
 					},i*350);
 				}
-				randomNo = null;
 				this.lastUpdAtime =  currTime;
 		}
 		//Introduce the powerUps/items in the game
-		if(currTime-this.lastUpdPtime >= 1000){
+		if(currTime-this.lastUpdPtime >= 10000){
 			if(itemGroup.children.length === 0){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
 				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*2);
 				this.lastUpdPtime =  currTime;
-				item = null;
 			}
 		}
 
@@ -1463,7 +1447,6 @@ function gameAI(){
 													levelText.visible = false;
 													levelText.alpha = 1;
 												};
-				fadeOutTweenPlayer = null;
 			}
 		}
 	};
