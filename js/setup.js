@@ -1396,21 +1396,21 @@ function gameAI(){
 		[5,6,40] 		//Level 10
 	];
 	//game state
-	this.state = null;// 'play' 'end' 'pause'
+	this.state = '';// 'play' 'end' 'pause'
 
-	this.startTime = null;
-	this.lastUpdAtime = null;
-	this.lastUpdPtime = null;
-	this.curr_level = null;
-	this.scoreCtr = null;
-	this.minAlien = null;
-	this.maxAlien = null;
-	this.alienToKill = null;
+	this.startTime = 0;
+	this.lastUpdAtime = 0;
+	this.lastUpdPtime = 0;
+	this.curr_level = 0;
+	this.scoreCtr = 0;
+	this.minAlien = 0;
+	this.maxAlien = 0;
+	this.alienToKill = 0;
 
 	//Time based motion
-	this.t0 = null;
-	this.t1 = null;
-	this.dt = null;
+	this.t0 = 0;
+	this.t1 = 0;
+	this.dt = 0;
 
 	this.init = function(delta){
 		this.startTime = delta;
@@ -1435,8 +1435,8 @@ function gameAI(){
 
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
-				var randomNo = randomInt(this.minAlien,this.maxAlien);
-				for(var i = 0; i < randomNo; i++){
+				// var randomNo = randomInt(this.minAlien,this.maxAlien);
+				for(var i = 0; i < randomInt(this.minAlien,this.maxAlien); i++){
 					setTimeout(function(){
 						aliens.getAlien();
 					},i*350);
@@ -1451,6 +1451,7 @@ function gameAI(){
 				itemGroup.addChild(item);
 				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*2);
 				this.lastUpdPtime =  currTime;
+				item = null;
 			}
 		}
 
@@ -1477,6 +1478,7 @@ function gameAI(){
 				fadeOutTweenPlayer.onComplete = function(){
 													levelText.visible = false;
 													levelText.alpha = 1;
+													fadeOutTweenPlayer = null;
 												};
 			}
 		}
