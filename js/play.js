@@ -131,7 +131,6 @@ function play(){
 						shake(building, 0.02, true,120);
 						building.shake = true;
 					}
-
 				}
 		});
 	});

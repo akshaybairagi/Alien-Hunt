@@ -101,6 +101,9 @@ function setup(){
 	sBox.init();
 	sBox.mute = false;
 
+	//get the storage api object
+	ds = Storage();
+
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
 	bd.attracts.forEach(function(cBox){
@@ -531,6 +534,12 @@ function createMGun(){
 	return mGun;
 }
 function end(){
+	//publish score to storage
+	score.publishHScore();
+	//stop the background music
+	sBox.pause(sBox.bgMusic);
+	ai.state = 'end';
+
 	//remove aliens
 	for(var i=aliens.activeAliens.length-1;i>=0;i--){
 		aliens.freeAlien(aliens.activeAliens[i]);
@@ -552,10 +561,6 @@ function end(){
 		toggleMenu(gameoverScene,undefined);
 		restarHandler();
 	};
-	//publish score to storage
-	score.publishHScore();
-	sBox.pause(sBox.bgMusic);
-	ai.state = 'end';
 }
 function restart(){
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
@@ -657,22 +662,24 @@ function Buildings(){
 	};
 }
 function Score(){
-	this.hkills = null;
-	this.hlevel = null;
-	this.hscore = null;
-	this.kills = null;
-	this.level = null;
-	this.score = null;
+	this.hkills = 0;
+	this.hlevel = 0;
+	this.hscore = 0;
+	this.kills = 0;
+	this.level = 0;
+	this.score = 0;
 	this.scoreText = text("Score 0", "10px PetMe64", "white",32,32);
 	this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
 
 	this.init = function(){
 		//get high score from storage
 		//call here and update below variables
-
-		this.hkills = 0;
-		this.hlevel = 0;
-		this.hscore = 0;
+		var data = ds.retrieveData();
+		if(data){
+			this.hkills = data.kills;
+			this.hlevel = data.level;
+			this.hscore = data.score;
+		}
 
 		this.kills = 0;
 		this.level = 0;
@@ -688,7 +695,14 @@ function Score(){
 			this.hscore = this.score;
 
 			//publish to database/storage
-			//function cal here
+			var gameData = {
+				playerName: "Test Player",
+				kills: this.hkills,
+				level: 	this.hlevel,
+				score: this.hscore,
+				coins: 100
+			};
+			ds.saveData(gameData);
 		}
 	};
 
@@ -989,7 +1003,6 @@ function ScoreScene(){
 	//playBtn
 	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
 	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
-	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
 	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
 
 	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
@@ -1011,26 +1024,22 @@ function ScoreScene(){
 
 	o.header.putBottom(o.noOfKills,0,125);
 	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
-	o.deaths.putBottom(o.score,o.hOffset,o.vOffset);
-	o.score.putBottom(o.highScore,o.hOffset,o.vOffset);
+	o.deaths.putBottom(o.highScore,o.hOffset,o.vOffset);
 	o.highScore.putBottom(o.backBtn,0,75);
 
 	o.addChild(o.frontBg);
 	o.addChild(o.header);
 	o.addChild(o.noOfKills);
 	o.addChild(o.deaths)
-	o.addChild(o.score);
 	o.addChild(o.highScore);
 	o.addChild(o.backBtn);
 	o.addChild(o.footer);
 
 	o.show = function(){
-		o.noOfKills.content = "kills: " + score.kills;
-		o.deaths.content = "level: " + score.level;
-		o.score.content = "score: " + score.score;
-		o.highScore.content = "high score: 2500";
+		o.noOfKills.content = "kills: " + score.hkills;
+		o.deaths.content = "level: " + score.hlevel;
+		o.highScore.content = "high score:" + score.hscore;
 	};
-
 	return o;
 }
 function OptionScene(){
@@ -1243,7 +1252,7 @@ function GameOverScene(){
 		o.noOfKills.content = "kills: " + score.kills;
 		o.deaths.content = "level: " + score.level;
 		o.score.content = "score: " + score.score;
-		o.highScore.content = "high score: 2500";
+		o.highScore.content = "high score: " + score.hscore;
 	};
 	return o;
 }
@@ -1346,6 +1355,24 @@ function SoundBox(){
 		}
 	};
 
+}
+//Store the game data
+function Storage(){
+	var o = {};
+	o.saveData = function(gameData){
+		var gameDataJSON = JSON.stringify(gameData);
+		localStorage.setItem("gameData", gameDataJSON);
+	};
+	o.retrieveData = function(){
+		var loadedData = localStorage.getItem("gameData");
+		if(loadedData){
+			var data = JSON.parse(loadedData);
+			return data;
+		}
+		return null;
+	};
+
+	return o;
 }
 //game AI to Introduce items/aliens in the game
 function gameAI(){
