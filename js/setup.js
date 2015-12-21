@@ -124,7 +124,7 @@ function setup(){
 
 	//Create Aliens
 	aliens = new Alien();
-	for(var i=0;i < 5;i++){
+	for(var i=0;i < 6;i++){
 		var alienObj = aliens.createAlien();
 		alienObj.visible = false;
 		alienObj.setPosition(ship.centerX,ship.centerY);
@@ -132,10 +132,17 @@ function setup(){
 	}
 	//Create Bullets
 	bullets = new Bullet();
-	for(var i=0;i < 5;i++){
+	for(var i=0;i < 10;i++){
 		var bulletObj = bullets.createBullet();
 		bulletObj.visible = false;
 		bullets.bulletPool.push(bulletObj);
+	}
+	//Create smoke particles
+	smokes = new smokeSprites();
+	for(var i=0;i < 15;i++){
+		var smokeObj = smokes.createSmoke();
+		smokeObj.visible = false;
+		smokes.smokePool.push(smokeObj);
 	}
 	//Initi items
 	imgr = new ItemManager();
@@ -499,6 +506,49 @@ function Alien(){
 	 	this.alienPool.push(alien);
 	};
 }
+//smoke sprites
+function smokeSprites(){
+	//smoke Pool and active Pool
+	this.smokePool = [];
+	this.activeSmoke=[];
+
+	this.createSmoke = function(){
+		var smoke = sprite(assets["smoke.png"]);
+		gameScene.addChild(smoke);
+		return smoke;
+	};
+	this.getSmoke = function(){
+		var smoke = null;
+		if(this.smokePool.length > 0){
+			smoke = this.smokePool.pop();
+		}
+		else {
+			smoke = this.createSmoke();
+		}
+		smoke.visible = true;
+		this.activeSmoke.push(smoke);
+		return smoke;
+	};
+	this.freeSmoke = function(smoke){
+	 	smoke.visible = false;
+		smoke.x = 0;
+		smoke.y = 0;
+		smoke.vx = 0;
+		smoke.vy = 0;
+		smoke.width = 10;
+		smoke.height = 10;
+		smoke.rotation = 0;
+		smoke.alpha = 1;
+		smoke.scaleSpeed = 1;
+		smoke.alphaSpeed = 1;
+		smoke.rotationSpeed = 1;
+		smoke.scaleX = 1;
+		smoke.scaleY = 1;
+	 	this.activeSmoke.splice(this.activeSmoke.indexOf(smoke), 1);
+	 	// return the smoke back into the pool
+	 	this.smokePool.push(smoke);
+	};
+}
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
 	ship.setPosition(g.canvas.width-150,32);
@@ -840,7 +890,7 @@ function ItemManager(){
     gameScene.addChild(item);
   };
 }
-	// The 'gameScene' sprites
+// The 'gameScene' sprites
 function GameScene(){
 	//Make the sky background
 	sky = getSkyBackground();

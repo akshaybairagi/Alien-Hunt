@@ -2,7 +2,7 @@ function smokeEmitter(x,y,source){
 	particleEffect(
 		x, //The particle's starting x position
 		y, //The particle's starting y position
-		function () { return sprite(source); },
+		function() { return smokes.getSmoke(); },//get smoke sprite function() { return sprite(source); }
 		2, //Number of particles
 		0, //Gravity
 		true, //Random spacing
