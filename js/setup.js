@@ -534,6 +534,12 @@ function createMGun(){
 	return mGun;
 }
 function end(){
+	//pause the game
+	g.pause();
+	//stop the player
+	playerGroup.vy = 0;
+	player.stop();
+
 	//publish score to storage
 	score.publishHScore();
 	//stop the background music
@@ -743,10 +749,8 @@ function TopBar(){
 			for(var i=0;i < this.maxLife;i++){
 					this.container.children[i].visible = false;
 			}
-			playerGroup.vy = 0;
-			player.stop();
-			g.pause();
-			setTimeout(end,1000);
+			end();
+			// setTimeout(end,1000);
 		}
 	};
 	this.reset = function(){
