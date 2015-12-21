@@ -50,13 +50,14 @@ if(Modernizr.webaudio){
 // //Scale and center the game
 // g.scaleToWindow();
 
+//set up mobile version
+g.setupMobile();
+
 //Optionally rescale the canvas if the browser window is changed
 window.addEventListener("resize", function(event){
 	// g.scaleToWindow();
 	g.setupMobile();
 });
-//set up mobile version
-g.setupMobile();
 
 //Start the engine
 g.start();
@@ -387,7 +388,6 @@ function createCar(){
 	car.start = function(){
 			cLWheel.rotation += cLWheel.rotate;
 			cRWheel.rotation += cRWheel.rotate;
-			var carWobble = wobble(car, 1, 1.1);
 	};
 	car.remove = function(){
 		// carSound.pause();
