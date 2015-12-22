@@ -3,11 +3,12 @@ canvas {
 	float: left;
 }
 #menu {
-    visibility: hidden;
+    /*visibility: hidden;*/
 }
 .menu {
     text-align: center;
 	  background-color: #3b3224;
+		opacity: 0.8;
     position: absolute;
     color: #fff;
     float: left;
