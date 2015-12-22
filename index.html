@@ -4,6 +4,7 @@
 		<meta charset ="utf-8" />
 		<title>Alient Hunt</title>
 		<link rel="stylesheet" href="style/style.css" type="text/css" />
+		<link rel="stylesheet" href="style/menu.css" type="text/css" />
 		<link rel=icon href=images/favicon.png sizes="16x16" type="image/png">
 
 		<meta name="viewport" content="width=device-width, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
@@ -13,7 +14,70 @@
 	<body>
 		<div id='container'>
 			<canvas id='game' width='800' height='600'>Please upgrade your browser</canvas>
+			<div class="menu" id="menu">
+				<div class="list" id="titleScene">
+					<h1>alien hunt</h1>
+					<ul>
+						<li><a id="m1playBtn">play</a></li>
+						<li><a id="m1scoreBtn">score</a></li>
+						<li><a id="m1optionsBtn">options</a></li>
+						<li><a id="m1storeBtn">store</a></li>
+						<li><a id="m1creditsBtn">credits</a></li>
+					</ul>
+					<p class="nav">z / ↑ to Jump,  x / → to Fire, Space to pause/resume</p>
+				</div>
+				<div class="score" id="scoreScene">
+					<h1>score</h1>
+					<ul>
+						<li>kills:<span id="m2kills">0</span></li>
+						<li>level:<span id="m2level">0</span></li>
+						<li>high score:<span id="m2hscore">0</span></li>
+					</ul>
+					<a class="button" href="button" id="m2backBtn">back</a>
+				</div>
+				<div class="options" id="optionScene">
+					<h1>options</h1>
+					<p class="nav">
+					<ul>
+						<li>z / ↑ to Jump</li>
+						<li>x / → to Fire</li>
+						<li>Space to pause/resume</li>
+					</ul>
+					</p>
+					<a class="button" href="button" id="m3backBtn">back</a>
+				</div>
+
+				<div class="store" id="storeScene">
+					<h1>store</h1>
+					<p>in game purchases (under construction)</p>
+					<a class="button" href="button" id="m4backBtn">back</a>
+				</div>
+
+				<div class="credits" id="creditScene">
+					<h1>credits</h1>
+					<p class="info">developer: akshay bairagi</p>
+					<p class="info">designer: pooja vaishnav</p>
+					<a class="button" href="button" id="m5backBtn">back</a>
+				</div>
+				<div class="gameOver" id="gameOverScene">
+					<h1>GAME OVER</h1>
+					<ul>
+						<li>kills:<span id="m6kills">0</span></li>
+						<li>level:<span id="m6level">0</span></li>
+						<li>score:<span id="m6score">0</span></li>
+						<li>high score:<span id="m6hscore">0</span></li>
+						<li><span id="m6menuBtn">< menu</span><span id="m6restartBtn">restart ></span></li>
+					</ul>
+				</div>
+				<div class="pauseScene" id="pauseScene">
+					<h1>GAME PAUSED</h1>
+					<a class="button" href="button" id="m7backBtn">click to continue...</a>
+				</div>
+
+				<span class="copy">&copycopyright: 3riM</span>
+			</div>
 		</div>
+
 		<script src="library/modernizr.min.js"></script>
 		<script src="library/Font.min.js"></script>
 		<!-- <script src="library/engine.min.js"></script> -->

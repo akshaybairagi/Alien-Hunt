@@ -63,21 +63,10 @@ function Bullet(){
 }
 function toggleMenu(caller,callee){
 	if(caller !== undefined){
-		caller.visible = false;
-		caller.children.forEach(function(scene){
-			if(scene.release){
-				scene.interactive = false;
-				scene.state ="up";
-			}
-		});
+		caller.div.style.visibility = "hidden";
 	}
 	if(callee !== undefined){
-		callee.visible = true;
-		callee.children.forEach(function(scene){
-			if(scene.release){
-				scene.interactive = true;
-			}
-		});
+		callee.div.style.visibility = "visible";
 	}
 }
 

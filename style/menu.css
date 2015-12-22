@@ -1,0 +1,148 @@
+/* Give canvas a background */
+canvas {
+	float: left;
+}
+#menu {
+    visibility: hidden;
+}
+.menu {
+    text-align: center;
+	  background-color: #3b3224;
+    position: absolute;
+    color: #fff;
+    float: left;
+    width: 800px;
+    height: 600px;
+}
+.menu h1 {
+    font-size: 50px;
+    font-family: PetMe64;
+    text-transform: uppercase;
+    margin-top: 50px;
+}
+.menu ul {
+	float: left;
+  width: 100%;
+	margin-top: 8%;
+	margin-bottom: 12%;
+	color: #fff;
+	font-family: PetMe64;
+}
+.list ul li {
+	padding: 8px 0px;
+}
+.list ul li:hover {
+  background-color: #000;
+}
+.list ul li a {
+  color: #fff;
+  font-family: PetMe64;
+  font-size: 35px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+p.nav {
+  color: #fff;
+  font-family: PetMe64;
+  font-size: 11px;
+  margin-bottom: 25px;
+}
+span.copy{
+  color: #fff;
+  font-family: PetMe64;
+  font-size: 8px;
+}
+
+.list {
+    visibility: hidden;
+}
+
+.score {
+  float: left;
+  width: 100%;
+  position: absolute;
+  top: 0;
+	visibility: hidden;
+}
+.score li {
+  font-size: 20px;
+  padding: 15px 0px;
+}
+a.button {
+  float: left;
+  width: 100%;
+  color: #fff;
+  font-family: PetMe64;
+  font-size: 20px;
+  margin: 6% 0%;
+  text-decoration: none;
+}
+a.button:hover {
+  color: #000;
+}
+.options {
+  float: left;
+  width: 100%;
+  position: absolute;
+  top: 0;
+	visibility: hidden;
+}
+
+.options ul li {
+  padding: 20px 0px;
+}
+.store {
+  float: left;
+  width: 100%;
+  position: absolute;
+  top: 0;
+	visibility: hidden;
+}
+.store p {
+  color: #fff;
+  font-family: PetMe64;
+  font-size: 20px;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  text-transform: capitalize;
+}
+
+.credits {
+  float: left;
+  width: 100%;
+  position: absolute;
+  top: 0;
+	visibility: hidden;
+}
+.credits h1 {
+  margin-bottom: 15%;
+}
+p.info {
+  color: #fff;
+  font-family: PetMe64;
+  font-size: 15px;
+  margin: 4% 0%;
+  text-transform: capitalize;
+}
+.gameOver {
+    float: left;
+    width: 100%;
+    position: absolute;
+    top: 0;
+	  visibility: hidden;
+}
+.pauseScene {
+    float: left;
+    width: 100%;
+    position: absolute;
+    top: 0;
+	  visibility: hidden;
+}
+.gameOver li {
+  font-size: 20px;
+  padding: 15px 0px;
+}
+.pauseScene li {
+  font-size: 20px;
+  padding: 15px 0px;
+}

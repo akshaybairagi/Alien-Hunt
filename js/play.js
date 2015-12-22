@@ -6,8 +6,10 @@ function play(){
 	sky.tileX += 1;
 
 	//Move the player by applying the new calculated velocity
-	playerGroup.vy += contr.gravity;
-	playerGroup.y += playerGroup.vy*ai.dt;
+	if(playerGroup.building_index===undefined){
+		playerGroup.vy += contr.gravity;
+		playerGroup.y += playerGroup.vy*ai.dt;
+	}
 
 	if(itemGroup.children.length > 0){
 			itemGroup.x -= contr.speed*ai.dt;
@@ -56,7 +58,7 @@ function play(){
 			bullets.freeBullet(bullet);
 		}
 	});
-
+//rotate car wheels
 	if(playerGroup.item.type == "car"){
 		car.start();
 	}
@@ -66,6 +68,7 @@ function play(){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
+			playerGroup.building_index = undefined;
 			g.pause();
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
 				fadeOutTweenPlayer.onComplete = function(){
@@ -79,25 +82,47 @@ function play(){
 		}
 	}
 
-	//Check collision for various objects
-	blocks.children.forEach(function(building){
-		//Check players and block collision (buildings)
-		var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
-		if(colliPlayerBlock){
-			if(colliPlayerBlock == "bottom"){
-				playerGroup.isOnGround = true;
-				playerGroup.building_id = building.id;
-				playerGroup.vy = 0;
-				if(player.state == "jump"){
-					player.walk();
+//check player and building collision
+	if(playerGroup.building_index===undefined){
+			playerGroup.checkColl = true;
+	}
+	else{
+		var building = blocks.children[playerGroup.building_index];
+		if((building.gx+building.width)< playerGroup.gx){
+			//check collision
+			playerGroup.checkColl = true;
+			playerGroup.building_index = undefined;
+		}
+		else{
+			playerGroup.checkColl = false;
+		}
+		building = null;
+	}
+	if(playerGroup.checkColl){
+		blocks.children.forEach(function(building){
+			//Check players and block collision (buildings)
+			var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
+			if(colliPlayerBlock){
+				if(colliPlayerBlock == "bottom"){
+					// console.log(1);
+					playerGroup.isOnGround = true;
+					playerGroup.building_index = blocks.children.indexOf(building);
+					playerGroup.vy = 0;
+					if(player.state == "jump"){
+						player.walk();
+					}
+				}
+				else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
+					playerGroup.isOnGround = false;
+					playerGroup.building_index = undefined;
 				}
 			}
-			else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
-				playerGroup.isOnGround = false;
-			}
-		}
-		colliPlayerBlock = null;
+			colliPlayerBlock = null;
+		});
+	}
 
+	//Check collision for various objects
+	blocks.children.forEach(function(building){
 		//Check alien and collision with buildings //alien fall logic
 		aliens.activeAliens.forEach(function(alien){
 			if(alien.release == true){
@@ -130,7 +155,7 @@ function play(){
 					// building.y += -0.05;
 					//shake the building only once
 					if(building.shake === false){
-						shake(building, 0.02, true,120);
+						// shake(building, 0.02, true,120);
 						building.shake = true;
 					}
 				}
@@ -187,6 +212,7 @@ function play(){
 					playerGroup.addChild(car);
 
 					playerGroup.item = car;
+					playerGroup.building_index = undefined;
 					setTimeout(car.remove,8000);
 					sBox.restart(sBox.carSound);
 				}

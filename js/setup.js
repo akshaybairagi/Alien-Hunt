@@ -168,6 +168,9 @@ function setup(){
 		touchCtrl.jumpTBtn.interactive = true;
 		touchCtrl.fireTBtn.interactive = true;
 	}
+
+	//get the refrence for menu
+	menu = document.getElementById("menu");
 }
 function restarHandler(){
 	// focusText.focus();
@@ -239,6 +242,7 @@ function keyHandler(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
 			playerGroup.vy = -contr.jumpForce;
+			playerGroup.building_index = undefined;
 			player.jump();
 			}
 	}
@@ -410,6 +414,7 @@ function createCar(){
 		playerGroup.addChild(player.grp);
 		playerGroup.addChild(gun);
 		playerGroup.item = gun;
+		playerGroup.building_index = undefined;
 		ai.hasItem = false;
 	}
 	return car;// return a car object
@@ -559,7 +564,8 @@ function createShip(){
 function createPlayerGroup(){
 	var o = group([player.grp,gun]);
 	o.isOnGround = false;
-	o.building_id = "";
+	o.building_index = undefined;
+	o.checkColl = true;
 	o.item = gun;
 	o.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	return	o;
@@ -609,17 +615,18 @@ function end(){
 	toggleMenu(undefined,gameoverScene);
 	gameoverScene.showOverScreen();
 	//Assign a new button 'press' action to restart the game
-	titleScene.playRect.release = function(){
+	titleScene.playBtn.onclick = function(){
 		toggleMenu(titleScene,undefined);
 		restarHandler();
 	};
-	gameoverScene.restartBtn.release = function(){
+	gameoverScene.restartBtn.onclick = function(){
 		toggleMenu(gameoverScene,undefined);
 		restarHandler();
 	};
 }
 function restart(){
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
+	playerGroup.building_index = undefined;
 	topBar.reset(5);
 	bd.pattern = designs[randomInt(0,4)];
 	contr.design = bd.pattern;
@@ -925,28 +932,12 @@ function GameScene(){
 	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText,
 		touchCtrl.jumpTBtn,touchCtrl.fireTBtn,touchCtrl.jumpText,touchCtrl.fireText]);
 }
+//Title menu scene
 function getTitleScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-	//title scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//title scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("ALIEN HUNT", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//playBtn
-	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
-	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
-	o.playRect.addChild(playBtn);
-	o.playRect.release = function(){
+	var o = {};
+	o.div = document.getElementById("titleScene");
+	o.playBtn = document.getElementById("m1playBtn");
+	o.playBtn.onclick = function(){
 		// focusText.focus();
 		playerGroup.visible = true;
 		ship.visible = true;
@@ -956,138 +947,36 @@ function getTitleScene(){
 		sBox.play(sBox.bgMusic);
 		ai.init(Date.now());
 	};
-	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
-	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
-	//stats of the player
-	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	statsBtn = text("STATS", "35px " + o.contextFont, "white");
-	o.statsRect.addChild(statsBtn);
-	o.statsRect.release = function(){
+	o.scoreBtn = document.getElementById("m1scoreBtn");
+	o.scoreBtn.onclick = function(){
 		toggleMenu(o,scoreScene);
 		scoreScene.show();
 	};
-	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
-	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
-
-	//options
-	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
-	o.optionsRect.addChild(optionsBtn);
-	o.optionsRect.release = function(){
-			toggleMenu(o,optionScene);
+	o.optionsBtn = document.getElementById("m1optionsBtn");
+	o.optionsBtn.onclick = function(){
+		toggleMenu(o,optionScene);
 	};
-	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
-	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
-
-	//store button
-	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	storeBtn = text("STORE", "35px " + o.contextFont, "white");
-	o.storeRect.addChild(storeBtn);
-	o.storeRect.release = function(){
+	o.storeBtn = document.getElementById("m1storeBtn");
+	o.storeBtn.onclick = function(){
 		toggleMenu(o,storeScene);
 	};
-	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
-	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
-
-	//credit button
-	o.creditRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	creditBtn = text("CREDITS", "35px " + o.contextFont, "white");
-	o.creditRect.addChild(creditBtn);
-	o.creditRect.release = function(){
+	o.creditsBtn = document.getElementById("m1creditsBtn");
+	o.creditsBtn.onclick = function(){
 		toggleMenu(o,creditScene);
 	};
-	o.creditRect.over = function(){o.creditRect.fillStyle = o.hoverColor;};
-	o.creditRect.out = function(){o.creditRect.fillStyle = o.color;};
-
-	//title scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " + o.footerFont, "white");
-	copyrightText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-	o.footer.addChild(copyrightText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.playRect.putCenter(playBtn);
-	o.statsRect.putCenter(statsBtn);
-	o.optionsRect.putCenter(optionsBtn);
-	o.storeRect.putCenter(storeBtn);
-	o.creditRect.putCenter(creditBtn);
-	o.footer.putCenter(footerText);
-	o.footer.putCenter(copyrightText,0,30);
-	o.frontBg.putCenter(o.footer,0,225);
-
-	o.header.putBottom(o.playRect,0,100);
-	o.playRect.putBottom(o.statsRect);
-	o.statsRect.putBottom(o.optionsRect);
-	o.optionsRect.putBottom(o.storeRect);
-	o.storeRect.putBottom(o.creditRect);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.playRect);
-	o.addChild(o.statsRect);
-	o.addChild(o.optionsRect);
-	o.addChild(o.storeRect);
-	o.addChild(o.creditRect);
-	o.addChild(o.footer);
 	return o;
 }
+//score menu option
 function ScoreScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 20;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//ScoreScene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Score scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("SCORE", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//playBtn
-	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
-	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
-	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
-
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("scoreScene");
+	o.kills = document.getElementById("m2kills");
+	o.level = document.getElementById("m2level");
+	o.hscore = document.getElementById("m2hscore");
+	o.backBtn = document.getElementById("m2backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//title scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.header.putBottom(o.noOfKills,0,125);
-	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
-	o.deaths.putBottom(o.highScore,o.hOffset,o.vOffset);
-	o.highScore.putBottom(o.backBtn,0,75);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.noOfKills);
-	o.addChild(o.deaths)
-	o.addChild(o.highScore);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	o.show = function(){
 		o.noOfKills.content = "kills: " + score.hkills;
 		o.deaths.content = "level: " + score.hlevel;
@@ -1095,253 +984,72 @@ function ScoreScene(){
 	};
 	return o;
 }
+//options scene for settings
 function OptionScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("OPTIONS", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("optionScene");
+	o.backBtn = document.getElementById("m3backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	return o;
 }
+//store scene for buying life
 function StoreScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("STORE", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("In Game Purchases (Under Construction)", "10px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("storeScene");
+	o.backBtn = document.getElementById("m4backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	return o;
 }
+//game credits
 function CreditScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("CREDITS", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("Developer/Designer: Akshay Bairagi", "10px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("creditScene");
+	o.backBtn = document.getElementById("m5backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	return o;
 }
+//show game over menu
 function GameOverScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.alpha = 0.7;
-	o.visible = false;
+	var o = {};
+	o.div = document.getElementById("gameOverScene");
+	o.kills = document.getElementById("m6kills");
+	o.level = document.getElementById("m6level");
+	o.score = document.getElementById("m6score");
+	o.hscore = document.getElementById("m6hscore");
 
-	//GameOver Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-
-	o.overText = text("GAME OVER", "40px " + o.contextFont, "white",0);
-
-	o.noOfKills = text("kills: " + score.kills, "20px " + o.contextFont, "white",0);
-	o.deaths = text("level: " + score.level, "20px " + o.contextFont, "white",0);
-	o.score = text("score: " + score.score, "20px " + o.contextFont, "white",0);
-	o.highScore = text("high score: 2500", "20px " + o.contextFont, "white",0);
-
-	o.restartBtn = text("restart >", "15px " + o.contextFont, "white",0);
-	o.restartBtn.release = function(){
-	};
-	o.restartBtn.over = function(){o.restartBtn.fillStyle = o.hoverColor;};
-	o.restartBtn.out = function(){o.restartBtn.fillStyle = "white";};
-	o.menuBtn = text("< menu", "15px " + o.contextFont, "white",0);
-	o.menuBtn.release = function(){
+	o.menuBtn = document.getElementById("m6menuBtn");
+	o.menuBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.menuBtn.over = function(){o.menuBtn.fillStyle = o.hoverColor;};
-	o.menuBtn.out = function(){o.menuBtn.fillStyle = "white";};
 
-	o.frontBg.putCenter(o.overText,0,-200);
-	o.overText.putBottom(o.noOfKills,0,50);
-	o.noOfKills.putBottom(o.deaths,0,20);
-	o.deaths.putBottom(o.score,0,20);
-	o.score.putBottom(o.highScore,0,20);
-	o.overText.putCenter(o.restartBtn,75,250);
-	o.overText.putCenter(o.menuBtn,-100,250);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.overText);
-	o.addChild(o.noOfKills);
-	o.addChild(o.deaths);
-	o.addChild(o.score);
-	o.addChild(o.highScore);
-	o.addChild(o.restartBtn);
-	o.addChild(o.menuBtn);
+	o.restartBtn = document.getElementById("m6restartBtn");
 
 	o.showOverScreen = function(){
-		o.noOfKills.content = "kills: " + score.kills;
-		o.deaths.content = "level: " + score.level;
-		o.score.content = "score: " + score.score;
-		o.highScore.content = "high score: " + score.hscore;
+		o.kills = "kills: " + score.kills;
+		o.level = "level: " + score.level;
+		o.score = "score: " + score.score;
+		o.highScore = "high score: " + score.hscore;
 	};
+
 	return o;
 }
+//show pause screen
 function PauseScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.alpha = 0.5;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	o.frontBg.release = function(){
-		toggleMenu(o,gameScene);
+	var o = {};
+	o.div = document.getElementById("pauseScene");
+	o.div.onclick = function(){
+		toggleMenu(o,undefined);
 		// focusText.focus();
 		g.resume();
 		sBox.restart(sBox.bgMusic);
 		player.walk();
 	};
-	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
-	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
-
-	// back button
-	o.pauseText = text("GAME PAUSED", "40px " + o.contextFont, "white",0);
-	o.backBtn = text("click to continue..", "15px " + o.contextFont, "white",0);
-
-	o.frontBg.putCenter(o.pauseText,0,-50);
-	o.pauseText.putBottom(o.backBtn,0,20);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.pauseText);
-	o.addChild(o.backBtn);
 	return o;
 }
 //Managing focus on game window
