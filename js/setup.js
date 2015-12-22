@@ -122,7 +122,7 @@ function setup(){
 	playerGroup.visible = false;
 	ship.visible = false;
 
-	//Create Aliens
+	//Create Aliens pool
 	aliens = new Alien();
 	for(var i=0;i < 6;i++){
 		var alienObj = aliens.createAlien();
@@ -130,16 +130,16 @@ function setup(){
 		alienObj.setPosition(ship.centerX,ship.centerY);
 		aliens.alienPool.push(alienObj);
 	}
-	//Create Bullets
+	//Create Bullets pool
 	bullets = new Bullet();
-	for(var i=0;i < 10;i++){
+	for(var i=0;i < 12;i++){
 		var bulletObj = bullets.createBullet();
 		bulletObj.visible = false;
 		bullets.bulletPool.push(bulletObj);
 	}
-	//Create smoke particles
+	//Create smoke particles pool
 	smokes = new smokeSprites();
-	for(var i=0;i < 15;i++){
+	for(var i=0;i < 12;i++){
 		var smokeObj = smokes.createSmoke();
 		smokeObj.visible = false;
 		smokes.smokePool.push(smokeObj);
@@ -751,14 +751,13 @@ function Score(){
 			this.hscore = this.score;
 
 			//publish to database/storage
-			var gameData = {
+			ds.saveData({
 				playerName: "Test Player",
 				kills: this.hkills,
 				level: 	this.hlevel,
 				score: this.hscore,
 				coins: 100
-			};
-			ds.saveData(gameData);
+			});
 		}
 	};
 
@@ -1425,7 +1424,6 @@ function Storage(){
 		}
 		return null;
 	};
-
 	return o;
 }
 //game AI to Introduce items/aliens in the game
