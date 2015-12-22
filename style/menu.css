@@ -2,9 +2,6 @@
 canvas {
 	float: left;
 }
-#menu {
-    /*visibility: hidden;*/
-}
 .menu {
     text-align: center;
 	  background-color: #3b3224;
@@ -30,12 +27,15 @@ canvas {
 	font-family: PetMe64;
 }
 .list ul li {
-	padding: 8px 0px;
+    padding: 8px 0px;
+    float: left;
+    width: 100%;
+    cursor: pointer;
 }
 .list ul li:hover {
-  background-color: #000;
+  background-color: #1d1812;
 }
-.list ul li a {
+.list ul a li{
   color: #fff;
   font-family: PetMe64;
   font-size: 35px;
@@ -79,7 +79,8 @@ a.button {
   text-decoration: none;
 }
 a.button:hover {
-  color: #000;
+    color: #000;
+    cursor: pointer;
 }
 .options {
   float: left;
@@ -136,7 +137,7 @@ p.info {
     float: left;
     width: 100%;
     position: absolute;
-    top: 0;
+    top: 20%;
 	  visibility: hidden;
 }
 .gameOver li {
@@ -146,4 +147,7 @@ p.info {
 .pauseScene li {
   font-size: 20px;
   padding: 15px 0px;
+}
+.goverMargin {
+	margin: 0px 60px;
 }
