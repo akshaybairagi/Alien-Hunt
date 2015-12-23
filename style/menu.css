@@ -23,7 +23,6 @@ canvas {
 	float: left;
   width: 100%;
 	margin-top: 8%;
-	margin-bottom: 12%;
 	color: #fff;
 	font-family: PetMe64;
 }
@@ -44,10 +43,12 @@ canvas {
   text-decoration: none;
 }
 p.nav {
-  color: #fff;
-  font-family: PetMe64;
-  font-size: 11px;
-  margin-bottom: 25px;
+    color: #fff;
+    font-family: PetMe64;
+    font-size: 11px;
+    margin: 8% 0px;
+    float: left;
+    width: 100%;
 }
 span.copy{
   color: #fff;
@@ -72,13 +73,15 @@ a.button {
   float: left;
   width: 100%;
   color: #fff;
+	text-transform: uppercase;
   font-family: PetMe64;
   font-size: 20px;
   margin: 6% 0%;
+	padding: 15px 0px;
   text-decoration: none;
 }
 a.button:hover {
-    color: #000;
+		background-color: #1d1812;
     cursor: pointer;
 }
 .options {
@@ -102,7 +105,7 @@ a.button:hover {
 .store p {
   color: #fff;
   font-family: PetMe64;
-  font-size: 20px;
+  font-size: 15px;
   margin-top: 10%;
   margin-bottom: 10%;
   text-transform: capitalize;
@@ -145,10 +148,27 @@ p.info {
 #pauseScene:hover {
   cursor: pointer;
 }
+a#m7backBtn {
+    font-size: 13px;
+    text-transform: lowercase;
+}
+a#m7backBtn:hover {
+    background: none;
+}
 .gameOver li {
   font-size: 20px;
   padding: 15px 0px;
 }
 .goverMargin {
-	margin: 0px 60px;
+    float: left;
+    width: 100%;
+    padding: 12px 0px;
+		text-transform: uppercase;
+}
+.goverMargin:hover {
+	background-color: #1d1812;
+	cursor: pointer;
+}
+span#m6menuBtn {
+    margin-top: 35px;
 }
