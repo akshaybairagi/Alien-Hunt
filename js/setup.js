@@ -45,7 +45,7 @@ if(Modernizr.webaudio){
 					);
 		}
 //Start the engine
-// g.start();
+g.start();
 
 // //Scale and center the game
 // g.scaleToWindow();
@@ -59,8 +59,6 @@ window.addEventListener("resize", function(event){
 	g.setupMobile();
 });
 
-//Start the engine
-g.start();
 
 //Global variables
 var player,sky,ship,gun,mGun,car;
@@ -129,6 +127,7 @@ function setup(){
 		alienObj.visible = false;
 		alienObj.setPosition(ship.centerX,ship.centerY);
 		aliens.alienPool.push(alienObj);
+		alienObj = null;
 	}
 	//Create Bullets pool
 	bullets = new Bullet();
@@ -136,6 +135,7 @@ function setup(){
 		var bulletObj = bullets.createBullet();
 		bulletObj.visible = false;
 		bullets.bulletPool.push(bulletObj);
+		bulletObj = null;
 	}
 	//Create smoke particles pool
 	smokes = new smokeSprites();
@@ -143,6 +143,7 @@ function setup(){
 		var smokeObj = smokes.createSmoke();
 		smokeObj.visible = false;
 		smokes.smokePool.push(smokeObj);
+		smokeObj = null;
 	}
 	//Initi items
 	imgr = new ItemManager();
@@ -609,6 +610,10 @@ function end(){
 	//remove bullets
 	for(var i=bullets.activeBullets.length-1;i>=0;i--){
 		bullets.freeBullet(bullets.activeBullets[i]);
+	}
+	//remove smoke particles
+	for(var i=smokes.activeSmoke.length-1;i>=0;i--){
+		smokes.freeSmoke(smokes.activeSmoke[i]);
 	}
 
 	//Display the 'gameoverScene'

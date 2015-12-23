@@ -88,7 +88,7 @@ function play(){
 	}
 	else{
 		var building = blocks.children[playerGroup.building_index];
-		if((building.gx+building.width)< playerGroup.gx){
+		if((building.gx+building.width)< (playerGroup.gx+playerGroup.width)){
 			//check collision
 			playerGroup.checkColl = true;
 			playerGroup.building_index = undefined;
