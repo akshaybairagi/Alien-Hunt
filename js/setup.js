@@ -978,9 +978,9 @@ function ScoreScene(){
 		toggleMenu(o,titleScene);
 	};
 	o.show = function(){
-		o.noOfKills.content = "kills: " + score.hkills;
-		o.deaths.content = "level: " + score.hlevel;
-		o.highScore.content = "high score:" + score.hscore;
+		o.kills.textContent = score.hkills;
+		o.level.textContent = score.hlevel;
+		o.hscore.textContent = score.hscore;
 	};
 	return o;
 }
@@ -1031,12 +1031,11 @@ function GameOverScene(){
 	o.restartBtn = document.getElementById("m6restartBtn");
 
 	o.showOverScreen = function(){
-		o.kills = "kills: " + score.kills;
-		o.level = "level: " + score.level;
-		o.score = "score: " + score.score;
-		o.highScore = "high score: " + score.hscore;
+		o.kills.textContent = score.kills;
+		o.level.textContent = score.level;
+		o.score.textContent = score.score;
+		o.hscore.textContent = score.hscore;
 	};
-
 	return o;
 }
 //show pause screen

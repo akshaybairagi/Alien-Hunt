@@ -67,6 +67,10 @@ function toggleMenu(caller,callee){
 	}
 	if(callee !== undefined){
 		callee.div.style.visibility = "visible";
+		menu.style.visibility = "visible";
+	}
+	else{
+		menu.style.visibility = "hidden";
 	}
 }
 
