@@ -94,7 +94,7 @@ Game.prototype = {
 		this.paused = false;
 	},
 	scaleToWindow: function(backgroundColor){
-		var backgroundColor = checkIfUndefined(backgroundColor,"#2C3539");
+		var backgroundColor = backgroundColor || "#2C3539";
 		var scaleX, scaleY, scale, center;
 		//1. Scale the canvas to the correct size
 		//Figure out the scale amount on each axis
@@ -223,8 +223,8 @@ Game.prototype = {
 	}
 };
 function game(width, height, setup, assetsToLoad, load){
-	var width = checkIfUndefined(width,256),
-		height = checkIfUndefined(height,256);
+	var width = width || 256,
+		height = height || 256;
 	return new Game(width, height, setup, assetsToLoad, load);
 }
 function capturePreviousPositions(stage){

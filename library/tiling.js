@@ -5,7 +5,8 @@ tilingSprite
 //function tilingSprite(spriteFunction, tileHeight, tileWidth, totalWidth, totalHeight) {
 function tilingSprite(width, height, source, x, y) {
 
-  var x= checkIfUndefined(x,0), y= checkIfUndefined(y,0);
+  var x = x || 0,
+      y = y || 0;
   //Figure out the tile's width and height
   var tileWidth, tileHeight;
 
