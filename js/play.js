@@ -23,15 +23,15 @@ function play(){
 		if(building.x <= 0-building.width-contr.speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
-			building.height = g.canvas.height - blocks.nextPos.Y;
+			// building.height = g.canvas.height - blocks.nextPos.Y;
 			bd.height = building.height/bd.columns;
-			building.children.forEach(function(window){
-				//update the windows
-				window.x = bd.width*window.j;
-				window.y = bd.height*window.i;
-				window.width =bd.width;
-				window.height = bd.height;
-			});
+			// building.children.forEach(function(window){
+			// 	//update the windows
+			// 	window.x = bd.width*window.j;
+			// 	window.y = bd.height*window.i;
+			// 	window.width =bd.width;
+			// 	window.height = bd.height;
+			// });
 			building.shake = false;
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(bd.strtGap,bd.endGap);

@@ -1194,7 +1194,6 @@ function gameAI(){
 
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
-				// var randomNo = randomInt(this.minAlien,this.maxAlien);
 				for(var i = 0; i < randomInt(this.minAlien,this.maxAlien); i++){
 					setTimeout(function(){
 						aliens.getAlien();
@@ -1203,12 +1202,12 @@ function gameAI(){
 				this.lastUpdAtime =  currTime;
 		}
 		//Introduce the powerUps/items in the game
-		if(currTime-this.lastUpdPtime >= 10000){
+		if(currTime-this.lastUpdPtime >= 100){
 			if(itemGroup.children.length === 0){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*2);
+				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*1.6);
 				this.lastUpdPtime =  currTime;
 				item = null;
 			}
