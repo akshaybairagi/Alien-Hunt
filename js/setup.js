@@ -1201,17 +1201,6 @@ function gameAI(){
 				}
 				this.lastUpdAtime =  currTime;
 		}
-		//Introduce the powerUps/items in the game
-		if(currTime-this.lastUpdPtime >= 100){
-			if(itemGroup.children.length === 0){
-				var item = imgr.getItem();
-				item.visible= true;
-				itemGroup.addChild(item);
-				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*1.6);
-				this.lastUpdPtime =  currTime;
-				item = null;
-			}
-		}
 
 		// Update level and change building design
 		if(this.scoreCtr >= this.alienToKill){
@@ -1238,6 +1227,20 @@ function gameAI(){
 													levelText.alpha = 1;
 													fadeOutTweenPlayer = null;
 												};
+			}
+		}
+	};
+//Introduce the powerUps/items in the game
+	this.getItem = function(currTime,building){
+		if(currTime-this.lastUpdPtime >= 1000){
+			if(itemGroup.children.length === 0){
+				var item = imgr.getItem();
+				item.visible= true;
+				itemGroup.addChild(item);
+				itemGroup.x = building.gx + randomInt(0,building.width);
+				itemGroup.y = building.gy-playerGroup.height-bd.hGap;
+				this.lastUpdPtime =  currTime;
+				item = null;
 			}
 		}
 	};
