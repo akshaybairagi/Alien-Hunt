@@ -47,13 +47,18 @@ if(Modernizr.webaudio){
 //Start the engine
 g.start();
 
-//Scale and center the game
-g.scaleToWindow();
+// //Scale and center the game
+// g.scaleToWindow();
+
+//set up mobile version
+g.setupMobile();
 
 //Optionally rescale the canvas if the browser window is changed
 window.addEventListener("resize", function(event){
-	g.scaleToWindow();
+	// g.scaleToWindow();
+	g.setupMobile();
 });
+
 
 //Global variables
 var player,sky,ship,gun,mGun,car;
@@ -67,10 +72,8 @@ var controller = {
 	gravity: .4,	//force of gravity
 	gAttract: .2,
 	speed: 5,		//speed 275
-	jumpForce: 8,	// force to jump
+	jumpForce: 7.8,	// 8 force to jump
 	bulletSpeed: 17, //speed of the bullet
-	d0: 0,	// time at last call
-	dt:	0,	// elapsed time between calls
 	design: null,
 	distance: null,
 	miles: null,
@@ -96,6 +99,9 @@ function setup(){
 	sBox.init();
 	sBox.mute = false;
 
+	//get the storage api object
+	ds = Storage();
+
 	//Add the game sprites to the 'gameScene' group
 	gameScene = GameScene();
 	bd.attracts.forEach(function(cBox){
@@ -114,27 +120,35 @@ function setup(){
 	playerGroup.visible = false;
 	ship.visible = false;
 
-	//Create Aliens
+	//Create Aliens pool
 	aliens = new Alien();
-	for(var i=0;i < 5;i++){
+	for(var i=0;i < 6;i++){
 		var alienObj = aliens.createAlien();
 		alienObj.visible = false;
 		alienObj.setPosition(ship.centerX,ship.centerY);
 		aliens.alienPool.push(alienObj);
+		alienObj = null;
 	}
-	//Create Bullets
+	//Create Bullets pool
 	bullets = new Bullet();
-	for(var i=0;i < 5;i++){
+	for(var i=0;i < 12;i++){
 		var bulletObj = bullets.createBullet();
 		bulletObj.visible = false;
 		bullets.bulletPool.push(bulletObj);
+		bulletObj = null;
+	}
+	//Create smoke particles pool
+	smokes = new smokeSprites();
+	for(var i=0;i < 12;i++){
+		var smokeObj = smokes.createSmoke();
+		smokeObj.visible = false;
+		smokes.smokePool.push(smokeObj);
+		smokeObj = null;
 	}
 	//Initi items
 	imgr = new ItemManager();
 	imgr.initItems();
 
-	//create the touch controls
-	TouchControls();
 	//Assign the key events
 	keyHandler();
 
@@ -146,6 +160,18 @@ function setup(){
 	levelText = text("Level 0", "15px " + "PetMe64", "white",0);
 	levelText.visible = false;
 	gameScene.addChild(levelText);
+
+	if(g.mobile === true){
+		touchCtrl.jumpTBtn.visible = true;
+		touchCtrl.fireTBtn.visible = true;
+		touchCtrl.jumpText.visible = true;
+		touchCtrl.fireText.visible = true;
+		touchCtrl.jumpTBtn.interactive = true;
+		touchCtrl.fireTBtn.interactive = true;
+	}
+
+	//get the refrence for menu
+	menu = document.getElementById("menu");
 }
 function restarHandler(){
 	// focusText.focus();
@@ -171,9 +197,9 @@ function keyHandler(){
 	keyboard(90).press = jump;
 	keyboard(38).press = jump;
 	//handlers for Touch Buttons
-	jumpTBtn.press = jump;
-	fireTBtn.press = firePress;
-	fireTBtn.release = fireRelease;
+	touchCtrl.jumpTBtn.press = jump;
+	touchCtrl.fireTBtn.press = firePress;
+	touchCtrl.fireTBtn.release = fireRelease;
 
 	//fire
 	function firePress(){
@@ -197,18 +223,19 @@ function keyHandler(){
 	}
 	//pause function for stopping the game
 	function pauseGame(){
-		if(g.paused){
+		if(g.paused && ai.state == 'pause'){
 			g.resume();
-			contr.t0 = new Date().getTime(); //initialize value of t0
 			toggleMenu(pauseScene,undefined);
 			sBox.restart(sBox.bgMusic);
 			player.walk();
+			ai.state='play';
 		}
-		else {
+		else if(ai.state!=='end') {
 			g.pause();
 			toggleMenu(undefined,pauseScene);
 			sBox.pause(sBox.bgMusic);
 			player.stop();
+			ai.state = 'pause'
 		}
 	}
 	//jump player
@@ -216,6 +243,7 @@ function keyHandler(){
 		if (playerGroup.isOnGround){
 			playerGroup.isOnGround = false;
 			playerGroup.vy = -contr.jumpForce;
+			playerGroup.building_index = undefined;
 			player.jump();
 			}
 	}
@@ -234,26 +262,31 @@ function keyHandler(){
 //support for touch controls - mobile phones
 function TouchControls(){
 	var gutterWidth = 10;
-	var unitWidth = g.canvas.width/10;
+	var unitWidth = g.canvas.width/7;
 	var blockWidth = unitWidth-gutterWidth;
 	var yLoc = g.canvas.height - unitWidth;
+	var o = {};
 
-	jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth,yLoc);
-	jumpText = text("j", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
-	jumpTBtn.putCenter(jumpText);
-	jumpTBtn.alpha = 0.5;
+	o.jumpTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,gutterWidth+blockWidth,yLoc);
+	o.jumpText = text("j", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
+	o.jumpTBtn.putCenter(o.jumpText);
+	o.jumpTBtn.alpha = 0.5;
 
-	fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-gutterWidth-unitWidth,yLoc);
-	fireText = text("f", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
-	fireTBtn.putCenter(fireText);
+	o.fireTBtn = rectangle(blockWidth,blockWidth,"grey","grey",1,g.canvas.width-(gutterWidth+unitWidth+blockWidth),yLoc);
+	o.fireText = text("f", (3*unitWidth/4) + "px " + "PetMe64", "white",0);
+	o.fireTBtn.putCenter(o.fireText);
 
-	jumpTBtn.alpha = 0.5;
-	fireTBtn.alpha = 0.5;
-	jumpTBtn.interactive = true;
-	fireTBtn.interactive = true;
+	o.jumpTBtn.alpha = 0.5;
+	o.fireTBtn.alpha = 0.5;
 
-	gameScene.addChild(jumpTBtn);
-	gameScene.addChild(fireTBtn);
+	o.jumpTBtn.visible = false;
+	o.fireTBtn.visible = false;
+	o.jumpText.visible = false;
+	o.fireText.visible = false;
+	o.jumpTBtn.interactive = false;
+	o.fireTBtn.interactive = false;
+
+	return o;
 }
 function makePlayer(){
 	var o = {};
@@ -284,7 +317,6 @@ function makePlayer(){
 	//eyes
 	o.leye = ellipse(7,4.2,2,5);
 	o.reye = ellipse(10,4.2,2,5);
-
 	//group to assemble player parts
 	o.grp = group([o.sticky,o.hands,o.leye,o.reye]);
 
@@ -305,7 +337,6 @@ function makePlayer(){
 			o.state = "jump";
 			o.sticky.show(o.sticky.states.jump);
 			o.hands.show(o.hands.states.jump);
-			// jumpSound.play();
 			sBox.play(sBox.jumpSound);
 			o.leye.y = 5.8;
 			o.reye.y = 5.8;
@@ -372,7 +403,6 @@ function createCar(){
 	car.start = function(){
 			cLWheel.rotation += cLWheel.rotate;
 			cRWheel.rotation += cRWheel.rotate;
-			var carWobble = wobble(car, 1, 1.1);
 	};
 	car.remove = function(){
 		// carSound.pause();
@@ -385,6 +415,7 @@ function createCar(){
 		playerGroup.addChild(player.grp);
 		playerGroup.addChild(gun);
 		playerGroup.item = gun;
+		playerGroup.building_index = undefined;
 		ai.hasItem = false;
 	}
 	return car;// return a car object
@@ -481,6 +512,49 @@ function Alien(){
 	 	this.alienPool.push(alien);
 	};
 }
+//smoke sprites
+function smokeSprites(){
+	//smoke Pool and active Pool
+	this.smokePool = [];
+	this.activeSmoke=[];
+
+	this.createSmoke = function(){
+		var smoke = sprite(assets["smoke.png"]);
+		gameScene.addChild(smoke);
+		return smoke;
+	};
+	this.getSmoke = function(){
+		var smoke = null;
+		if(this.smokePool.length > 0){
+			smoke = this.smokePool.pop();
+		}
+		else {
+			smoke = this.createSmoke();
+		}
+		smoke.visible = true;
+		this.activeSmoke.push(smoke);
+		return smoke;
+	};
+	this.freeSmoke = function(smoke){
+	 	smoke.visible = false;
+		smoke.x = 0;
+		smoke.y = 0;
+		smoke.vx = 0;
+		smoke.vy = 0;
+		smoke.width = 10;
+		smoke.height = 10;
+		smoke.rotation = 0;
+		smoke.alpha = 1;
+		smoke.scaleSpeed = 1;
+		smoke.alphaSpeed = 1;
+		smoke.rotationSpeed = 1;
+		smoke.scaleX = 1;
+		smoke.scaleY = 1;
+	 	this.activeSmoke.splice(this.activeSmoke.indexOf(smoke), 1);
+	 	// return the smoke back into the pool
+	 	this.smokePool.push(smoke);
+	};
+}
 function createShip(){
 	var ship = sprite(assets["ship.png"]);
 	ship.setPosition(g.canvas.width-150,32);
@@ -491,9 +565,10 @@ function createShip(){
 function createPlayerGroup(){
 	var o = group([player.grp,gun]);
 	o.isOnGround = false;
-	o.building_id = "";
+	o.building_index = undefined;
+	o.checkColl = true;
 	o.item = gun;
-	o.setPosition(150,300);
+	o.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	return	o;
 }
 function createGun(){
@@ -516,6 +591,18 @@ function createMGun(){
 	return mGun;
 }
 function end(){
+	//pause the game
+	g.pause();
+	//stop the player
+	playerGroup.vy = 0;
+	player.stop();
+
+	//publish score to storage
+	score.publishHScore();
+	//stop the background music
+	sBox.pause(sBox.bgMusic);
+	ai.state = 'end';
+
 	//remove aliens
 	for(var i=aliens.activeAliens.length-1;i>=0;i--){
 		aliens.freeAlien(aliens.activeAliens[i]);
@@ -524,62 +611,73 @@ function end(){
 	for(var i=bullets.activeBullets.length-1;i>=0;i--){
 		bullets.freeBullet(bullets.activeBullets[i]);
 	}
+	//remove smoke particles
+	for(var i=smokes.activeSmoke.length-1;i>=0;i--){
+		smokes.freeSmoke(smokes.activeSmoke[i]);
+	}
 
-	//Display the 'titleScene' and fade the 'gameScene' in bg
+	//Display the 'gameoverScene'
 	toggleMenu(undefined,gameoverScene);
+	gameoverScene.showOverScreen();
 	//Assign a new button 'press' action to restart the game
-	titleScene.playRect.release = function(){
+	titleScene.playBtn.onclick = function(){
 		toggleMenu(titleScene,undefined);
 		restarHandler();
 	};
-	gameoverScene.restartBtn.release = function(){
+	gameoverScene.restartBtn.onclick = function(){
 		toggleMenu(gameoverScene,undefined);
 		restarHandler();
 	};
-	gameoverScene.showOverScreen();
-	//publish score to storage
-	score.publishHScore();
-	sBox.pause(sBox.bgMusic);
 }
 function restart(){
-	// gameScene.visible = true;
-	playerGroup.setPosition(150,300);
+	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
+	playerGroup.building_index = undefined;
 	topBar.reset(5);
 	bd.pattern = designs[randomInt(0,4)];
 	contr.design = bd.pattern;
 	contr.distance = 0;
-	bd.resetBuildings(bd.pattern); //reset the building designs
+	 //reset the building designs
+	bd.resetBuildings(bd.pattern);
 	//restart the bg music
 	sBox.restart(sBox.bgMusic);
+	ai.state = 'play';
 }
 function Buildings(){
 	//variables for building blocks
 	this.numOfBuilding = 4;
-	this.buildingWidth = 300;
-	this.buildingHeight = null;
+	this.buildingWidth = g.canvas.width*.36;
+	this.buildingHeight = g.canvas.height*.65;
 	this.row = 7;
 	this.columns = 11;
+	this.endGap = this.buildingWidth*.25;
+	this.strtGap = this.endGap*.6;
+	this.hGap = this.buildingHeight*.1;
 	this.shake = false;
 	//Create a 'group' for all the buildings
 	blocks = group([]);
 	//attracts Arrays
 	this.attracts = [];
 
+	//selected pattern for building background
+	this.pattern = designs[randomInt(0,4)];
+
+	if(g.mobile === true){
+		this.row = 5;
+		this.columns = 7;
+	}
+
 	this.width = this.buildingWidth /this.row;
 	this.height = this.buildingHeight/this.columns;
 
-	this.pattern = designs[randomInt(0,4)];
-
 	this.createBuildings = function(){
-		blocks.nextPos = { X: 0, Y:400 };
+		blocks.nextPos = { X: 0, Y: this.buildingHeight };
 		//Procedural Generation of buildings
 		for (var k =0; k < this.numOfBuilding; k++){
-			this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
-			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,
-				blocks.nextPos.X,blocks.nextPos.Y);
+			// this.buildingHeight = g.canvas.height - blocks.nextPos.Y;
+			var building = this.designBuidlings(this.buildingWidth,this.buildingHeight,this.pattern,blocks.nextPos.X,blocks.nextPos.Y);
 			blocks.addChild(building);
-			blocks.nextPos.X=building.x + randomInt(350,400);
-			blocks.nextPos.Y=375 + randomInt(-30,30);
+			blocks.nextPos.X = building.x + building.width + randomInt(this.strtGap,this.endGap);
+			blocks.nextPos.Y = this.buildingHeight + randomInt(-this.hGap,this.hGap);
 
 			var cBox = rectangle(25,g.canvas.height,"#272726","grey",1,building.x + building.width,0);
 			cBox.visible = false;
@@ -632,22 +730,24 @@ function Buildings(){
 	};
 }
 function Score(){
-	this.hkills = null;
-	this.hlevel = null;
-	this.hscore = null;
-	this.kills = null;
-	this.level = null;
-	this.score = null;
+	this.hkills = 0;
+	this.hlevel = 0;
+	this.hscore = 0;
+	this.kills = 0;
+	this.level = 0;
+	this.score = 0;
 	this.scoreText = text("Score 0", "10px PetMe64", "white",32,32);
 	this.scoreText.setPosition(g.canvas.width- 1.5*this.scoreText.width,this.scoreText.height);
 
 	this.init = function(){
 		//get high score from storage
 		//call here and update below variables
-
-		this.hkills = 0;
-		this.hlevel = 0;
-		this.hscore = 0;
+		var data = ds.retrieveData();
+		if(data){
+			this.hkills = data.kills;
+			this.hlevel = data.level;
+			this.hscore = data.score;
+		}
 
 		this.kills = 0;
 		this.level = 0;
@@ -663,7 +763,13 @@ function Score(){
 			this.hscore = this.score;
 
 			//publish to database/storage
-			//function cal here
+			ds.saveData({
+				playerName: "Test Player",
+				kills: this.hkills,
+				level: 	this.hlevel,
+				score: this.hscore,
+				coins: 100
+			});
 		}
 	};
 
@@ -701,10 +807,11 @@ function TopBar(){
 			}
 		}
 		else{
-			playerGroup.vy = 0;
-			player.stop();
-			g.pause();
-			setTimeout(end,1000);
+			for(var i=0;i < this.maxLife;i++){
+					this.container.children[i].visible = false;
+			}
+			end();
+			// setTimeout(end,1000);
 		}
 	};
 	this.reset = function(){
@@ -794,7 +901,7 @@ function ItemManager(){
     gameScene.addChild(item);
   };
 }
-	// The 'gameScene' sprites
+// The 'gameScene' sprites
 function GameScene(){
 	//Make the sky background
 	sky = getSkyBackground();
@@ -804,8 +911,7 @@ function GameScene(){
 	ship = createShip();
 	//draw moon sprites
 	moon = drawMoon();
-	//Add a black border along the top of the screen
-	//create life sprite pool
+	//create life bar sprite pool
 	topBar = new TopBar();
 	topBar.create();
 	topBar.update(0);
@@ -825,30 +931,18 @@ function GameScene(){
 	bd = new Buildings();
 	bd.createBuildings();
 
-	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText]);
-}
-function getTitleScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-	//title scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//title scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("ALIEN HUNT", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
+	//create the touch controls
+	touchCtrl = TouchControls();
 
-	//playBtn
-	o.playRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0)
-	playBtn = text("PLAY", "35px " + o.contextFont, "white",0);
-	o.playRect.addChild(playBtn);
-	o.playRect.release = function(){
+	return group([sky,topBar.container,score.score,moon,blocks,ship,car,playerGroup,itemGroup,score.scoreText,
+		touchCtrl.jumpTBtn,touchCtrl.fireTBtn,touchCtrl.jumpText,touchCtrl.fireText]);
+}
+//Title menu scene
+function getTitleScene(){
+	var o = {};
+	o.div = document.getElementById("titleScene");
+	o.playBtn = document.getElementById("m1playBtn");
+	o.playBtn.onclick = function(){
 		// focusText.focus();
 		playerGroup.visible = true;
 		ship.visible = true;
@@ -858,398 +952,108 @@ function getTitleScene(){
 		sBox.play(sBox.bgMusic);
 		ai.init(Date.now());
 	};
-	o.playRect.over = function(){o.playRect.fillStyle = o.hoverColor;};
-	o.playRect.out = function(){o.playRect.fillStyle = o.color;};
-	//stats of the player
-	o.statsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	statsBtn = text("STATS", "35px " + o.contextFont, "white");
-	o.statsRect.addChild(statsBtn);
-	o.statsRect.release = function(){
+	o.scoreBtn = document.getElementById("m1scoreBtn");
+	o.scoreBtn.onclick = function(){
 		toggleMenu(o,scoreScene);
 		scoreScene.show();
 	};
-	o.statsRect.over = function(){o.statsRect.fillStyle = o.hoverColor;};
-	o.statsRect.out = function(){o.statsRect.fillStyle = o.color;};
-
-	//options
-	o.optionsRect = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	optionsBtn = text("OPTIONS", "35px " + o.contextFont, "white");
-	o.optionsRect.addChild(optionsBtn);
-	o.optionsRect.release = function(){
-			toggleMenu(o,optionScene);
+	o.optionsBtn = document.getElementById("m1optionsBtn");
+	o.optionsBtn.onclick = function(){
+		toggleMenu(o,optionScene);
 	};
-	o.optionsRect.over = function(){o.optionsRect.fillStyle = o.hoverColor;};
-	o.optionsRect.out = function(){o.optionsRect.fillStyle = o.color;};
-
-	//store button
-	o.storeRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	storeBtn = text("STORE", "35px " + o.contextFont, "white");
-	o.storeRect.addChild(storeBtn);
-	o.storeRect.release = function(){
+	o.storeBtn = document.getElementById("m1storeBtn");
+	o.storeBtn.onclick = function(){
 		toggleMenu(o,storeScene);
 	};
-	o.storeRect.over = function(){o.storeRect.fillStyle = o.hoverColor;};
-	o.storeRect.out = function(){o.storeRect.fillStyle = o.color;};
-
-	//credit button
-	o.creditRect = rectangle(g.canvas.width,50,o.color,o.borderColor,0);
-	creditBtn = text("CREDITS", "35px " + o.contextFont, "white");
-	o.creditRect.addChild(creditBtn);
-	o.creditRect.release = function(){
+	o.creditsBtn = document.getElementById("m1creditsBtn");
+	o.creditsBtn.onclick = function(){
 		toggleMenu(o,creditScene);
 	};
-	o.creditRect.over = function(){o.creditRect.fillStyle = o.hoverColor;};
-	o.creditRect.out = function(){o.creditRect.fillStyle = o.color;};
-
-	//title scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " + o.footerFont, "white");
-	copyrightText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-	o.footer.addChild(copyrightText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.playRect.putCenter(playBtn);
-	o.statsRect.putCenter(statsBtn);
-	o.optionsRect.putCenter(optionsBtn);
-	o.storeRect.putCenter(storeBtn);
-	o.creditRect.putCenter(creditBtn);
-	o.footer.putCenter(footerText);
-	o.footer.putCenter(copyrightText,0,30);
-	o.frontBg.putCenter(o.footer,0,225);
-
-	o.header.putBottom(o.playRect,0,100);
-	o.playRect.putBottom(o.statsRect);
-	o.statsRect.putBottom(o.optionsRect);
-	o.optionsRect.putBottom(o.storeRect);
-	o.storeRect.putBottom(o.creditRect);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.playRect);
-	o.addChild(o.statsRect);
-	o.addChild(o.optionsRect);
-	o.addChild(o.storeRect);
-	o.addChild(o.creditRect);
-	o.addChild(o.footer);
 	return o;
 }
+//score menu option
 function ScoreScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 20;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//ScoreScene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Score scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("SCORE", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//playBtn
-	o.noOfKills = text("kills: 2324", "20px " + o.contextFont, "white",0);
-	o.deaths = text("deaths: 123", "20px " + o.contextFont, "white",0);
-	o.score = text("score: 15000", "20px " + o.contextFont, "white",0);
-	o.highScore = text("high score: 250000", "20px " + o.contextFont, "white",0);
-
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("scoreScene");
+	o.kills = document.getElementById("m2kills");
+	o.level = document.getElementById("m2level");
+	o.hscore = document.getElementById("m2hscore");
+	o.backBtn = document.getElementById("m2backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//title scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.header.putBottom(o.noOfKills,0,125);
-	o.noOfKills.putBottom(o.deaths,o.hOffset,o.vOffset);
-	o.deaths.putBottom(o.score,o.hOffset,o.vOffset);
-	o.score.putBottom(o.highScore,o.hOffset,o.vOffset);
-	o.highScore.putBottom(o.backBtn,0,75);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.noOfKills);
-	o.addChild(o.deaths)
-	o.addChild(o.score);
-	o.addChild(o.highScore);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	o.show = function(){
-		o.noOfKills.content = "kills: " + score.kills;
-		o.deaths.content = "level: " + score.level;
-		o.score.content = "score: " + score.score;
-		o.highScore.content = "high score: 2500";
+		o.kills.textContent = score.hkills;
+		o.level.textContent = score.hlevel;
+		o.hscore.textContent = score.hscore;
 	};
-
 	return o;
 }
-
+//options scene for settings
 function OptionScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("OPTIONS", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("z / ↑ to Jump,  x / → to fire, Space to pause/resume", "10px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("optionScene");
+	o.backBtn = document.getElementById("m3backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	return o;
 }
+//store scene for buying life
 function StoreScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("STORE", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("In Game Purchases (Under Construction)", "10px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("storeScene");
+	o.backBtn = document.getElementById("m4backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	return o;
 }
+//game credits
 function CreditScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.vOffset = 10;
-	o.hOffset = 0;
-	o.alpha = contr.menuAlpha;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	//Store scene header
-	o.header = rectangle(g.canvas.width,50,o.color,o.borderColor)
-	title = text("CREDITS", "50px " +  o.headerFont, "white");
-	o.header.addChild(title);
-
-	//content
-	o.content = text("Developer/Designer: Akshay Bairagi", "10px " +  o.headerFont, "white");
-
-	// back button
-	o.backBtn = text("back", "20px " + o.contextFont, "white",0);
-	o.backBtn.release = function(){
+	var o = {};
+	o.div = document.getElementById("creditScene");
+	o.backBtn = document.getElementById("m5backBtn");
+	o.backBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.backBtn.over = function(){o.backBtn.fillStyle = o.hoverColor;};
-	o.backBtn.out = function(){o.backBtn.fillStyle = "white";};
-
-	//Store scene footer
-	o.footer = rectangle(g.canvas.width,50,o.color,o.borderColor);
-	footerText = text("\u00a9copyright: 3riM", "8px " + o.footerFont, "white");
-	o.footer.addChild(footerText);
-
-	o.frontBg.putCenter(o.header,0,-250);
-	o.header.putCenter(title);
-	o.footer.putCenter(footerText);
-	o.frontBg.putCenter(o.footer,0,250);
-
-	o.frontBg.putCenter(o.backBtn,0,100);
-	o.frontBg.putCenter(o.content)
-
-	o.addChild(o.frontBg);
-	o.addChild(o.header);
-	o.addChild(o.content);
-	o.addChild(o.backBtn);
-	o.addChild(o.footer);
-
 	return o;
 }
+//show game over menu
 function GameOverScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.alpha = 0.7;
-	o.visible = false;
+	var o = {};
+	o.div = document.getElementById("gameOverScene");
+	o.kills = document.getElementById("m6kills");
+	o.level = document.getElementById("m6level");
+	o.score = document.getElementById("m6score");
+	o.hscore = document.getElementById("m6hscore");
 
-	//GameOver Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-
-	o.overText = text("GAME OVER", "40px " + o.contextFont, "white",0);
-
-	o.noOfKills = text("kills: " + score.kills, "20px " + o.contextFont, "white",0);
-	o.deaths = text("level: " + score.level, "20px " + o.contextFont, "white",0);
-	o.score = text("score: " + score.score, "20px " + o.contextFont, "white",0);
-	o.highScore = text("high score: 2500", "20px " + o.contextFont, "white",0);
-
-	o.restartBtn = text("restart >", "15px " + o.contextFont, "white",0);
-	o.restartBtn.release = function(){
-	};
-	o.restartBtn.over = function(){o.restartBtn.fillStyle = o.hoverColor;};
-	o.restartBtn.out = function(){o.restartBtn.fillStyle = "white";};
-	o.menuBtn = text("< menu", "15px " + o.contextFont, "white",0);
-	o.menuBtn.release = function(){
+	o.menuBtn = document.getElementById("m6menuBtn");
+	o.menuBtn.onclick = function(){
 		toggleMenu(o,titleScene);
 	};
-	o.menuBtn.over = function(){o.menuBtn.fillStyle = o.hoverColor;};
-	o.menuBtn.out = function(){o.menuBtn.fillStyle = "white";};
 
-	o.frontBg.putCenter(o.overText,0,-200);
-	o.overText.putBottom(o.noOfKills,0,50);
-	o.noOfKills.putBottom(o.deaths,0,20);
-	o.deaths.putBottom(o.score,0,20);
-	o.score.putBottom(o.highScore,0,20);
-	o.overText.putCenter(o.restartBtn,75,250);
-	o.overText.putCenter(o.menuBtn,-100,250);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.overText);
-	o.addChild(o.noOfKills);
-	o.addChild(o.deaths);
-	o.addChild(o.score);
-	o.addChild(o.highScore);
-	o.addChild(o.restartBtn);
-	o.addChild(o.menuBtn);
+	o.restartBtn = document.getElementById("m6restartBtn");
 
 	o.showOverScreen = function(){
-		o.noOfKills.content = "kills: " + score.kills;
-		o.deaths.content = "level: " + score.level;
-		o.score.content = "score: " + score.score;
-		o.highScore.content = "high score: 2500";
+		o.kills.textContent = score.kills;
+		o.level.textContent = score.level;
+		o.score.textContent = score.score;
+		o.hscore.textContent = score.hscore;
 	};
 	return o;
 }
+//show pause screen
 function PauseScene(){
-	var o = group([]);
-	o.color = "rgba(0, 0, 200, 0)"; 					//"#3b3224"
-	o.borderColor = "rgba(0, 0, 200, 0)";		// "#3b3224"
-	o.hoverColor = "#1d1812"; 	// "#1d1812"
-	o.headerFont = "PetMe64";
-	o.footerFont = "PetMe64";
-	o.contextFont = "PetMe64";
-	o.alpha = 0.5;
-	o.visible = false;
-
-	//Store Scene background
-	o.frontBg = rectangle(g.canvas.width,g.canvas.height,"#3b3224","#3b3224");
-	o.frontBg.release = function(){
-		toggleMenu(o,gameScene);
+	var o = {};
+	o.div = document.getElementById("pauseScene");
+	o.div.onclick = function(){
+		toggleMenu(o,undefined);
 		// focusText.focus();
 		g.resume();
 		sBox.restart(sBox.bgMusic);
 		player.walk();
 	};
-	o.frontBg.over = function(){o.frontBg.fillStyle = o.hoverColor;};
-	o.frontBg.out = function(){o.frontBg.fillStyle = "white";};
-
-	// back button
-	o.pauseText = text("GAME PAUSED", "40px " + o.contextFont, "white",0);
-	o.backBtn = text("click to continue..", "15px " + o.contextFont, "white",0);
-
-	o.frontBg.putCenter(o.pauseText,0,-50);
-	o.pauseText.putBottom(o.backBtn,0,20);
-
-	o.addChild(o.frontBg);
-	o.addChild(o.pauseText);
-	o.addChild(o.backBtn);
 	return o;
 }
 //Managing focus on game window
@@ -1317,8 +1121,26 @@ function SoundBox(){
 	};
 
 }
+//Store the game data
+function Storage(){
+	var o = {};
+	o.saveData = function(gameData){
+		var gameDataJSON = JSON.stringify(gameData);
+		localStorage.setItem("gameData", gameDataJSON);
+	};
+	o.retrieveData = function(){
+		var loadedData = localStorage.getItem("gameData");
+		if(loadedData){
+			var data = JSON.parse(loadedData);
+			return data;
+		}
+		return null;
+	};
+	return o;
+}
 //game AI to Introduce items/aliens in the game
 function gameAI(){
+	//Game level Information
 	this.levels = [
 		/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
 		[1,1,1],		//Level 0
@@ -1333,15 +1155,22 @@ function gameAI(){
 		[4,5,40], 	//Level 9
 		[5,6,40] 		//Level 10
 	];
+	//game state
+	this.state = '';// 'play' 'end' 'pause'
 
-	this.startTime = null;
-	this.lastUpdAtime = null;
-	this.lastUpdPtime = null;
-	this.curr_level = null;
-	this.scoreCtr = null;
-	this.minAlien = null;
-	this.maxAlien = null;
-	this.alienToKill = null;
+	this.startTime = 0;
+	this.lastUpdAtime = 0;
+	this.lastUpdPtime = 0;
+	this.curr_level = 0;
+	this.scoreCtr = 0;
+	this.minAlien = 0;
+	this.maxAlien = 0;
+	this.alienToKill = 0;
+
+	//Time based motion
+	this.t0 = 0;
+	this.t1 = 0;
+	this.dt = 0;
 
 	this.init = function(delta){
 		this.startTime = delta;
@@ -1353,13 +1182,21 @@ function gameAI(){
 		this.minAlien = this.levels[this.curr_level][0];
 		this.maxAlien = this.levels[this.curr_level][1];
 		this.alienToKill = this.levels[this.curr_level][2];
+
+		//initalize the time based variables
+		this.t0 = delta;
+		this.t1 = delta;
 	};
 
 	this.setAlien = function(currTime){
+		this.t1 = currTime;
+		// this.dt = (currTime-this.t0)*(60/1000);
+		this.dt = 1;
+
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
-				var randomNo = randomInt(this.minAlien,this.maxAlien);
-				for(var i = 0; i < randomNo; i++){
+				// var randomNo = randomInt(this.minAlien,this.maxAlien);
+				for(var i = 0; i < randomInt(this.minAlien,this.maxAlien); i++){
 					setTimeout(function(){
 						aliens.getAlien();
 					},i*350);
@@ -1372,12 +1209,9 @@ function gameAI(){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-					blocks.children.forEach(function(building){
-						if(building.gx > g.canvas.width){
-							itemGroup.setPosition(building.gx + randomInt(50,250),building.gy-50);
-						}
-					});
+				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*2);
 				this.lastUpdPtime =  currTime;
+				item = null;
 			}
 		}
 
@@ -1404,6 +1238,7 @@ function gameAI(){
 				fadeOutTweenPlayer.onComplete = function(){
 													levelText.visible = false;
 													levelText.alpha = 1;
+													fadeOutTweenPlayer = null;
 												};
 			}
 		}

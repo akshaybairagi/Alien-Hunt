@@ -29,6 +29,16 @@ function makeCanvas(width, height,border,backgroundColor) {
 	return canvas;
 }
 
+function getCanvas(border,backgroundColor){
+	var canvas = document.getElementById("game");
+	canvas.style.border = border;
+	canvas.style.backgroundColor = backgroundColor;
+	//Create the context as a property of the canvas
+	canvas.ctx = canvas.getContext("2d");
+	//Return the canvas
+	return canvas;
+}
+
 function DisplayObject(){
 	//The sprite's position and size
 	this.x = 0;
@@ -183,7 +193,7 @@ DisplayObject.prototype = {
 	//method to create and intialize pattern
 	setPattern: function(image,pattern){
 		this.pattern = true;
-		this.pattern = canvas.ctx.createPattern(image,pattern);
+		this.pattern = g.canvas.ctx.createPattern(image,pattern);
 	},
 
 	//The `localBounds` and `globalBounds` methods return an object
@@ -484,7 +494,7 @@ function Group(spritesToGroup){
 Group.prototype = new DisplayObject();
 Group.prototype.constructor = Group;
 
-Group.prototype.addChild = function(sprite) {
+Group.prototype.addChild = function(sprite){
 	if (sprite.parent) {
 		sprite.parent.removeChild(sprite);
 	}
@@ -723,11 +733,11 @@ Sprite.prototype.gotoAndStop = function(frameNumber) {
 Sprite.prototype.render = function(ctx) {
 	ctx.drawImage(
 	  this.source,
-	  Math.round(this.sourceX), Math.round(this.sourceY),
-	  Math.round(this.sourceWidth), Math.round(this.sourceHeight),
-	  Math.round(-this.width * this.pivotX),
-	  Math.round(-this.height * this.pivotY),
-	  Math.round(this.width), Math.round(this.height)
+	  this.sourceX, this.sourceY,
+		this.sourceWidth, this.sourceHeight,
+	  (-this.width * this.pivotX),
+	  (-this.height * this.pivotY),
+	  this.width, this.height
 	);
 };
 
@@ -889,8 +899,8 @@ function renderWithInterpolation(canvas, lagOffset){
 
 function Button(source, x, y){
 	Sprite.call(this,source,x,y);
-	this.x = (typeof x !== 'undefined') ? x : 0;
-	this.y = (typeof y !== 'undefined') ? y : 0;
+	this.x = x || 0;
+	this.y = y || 0;
 	this.interactive = true;
 }
 
@@ -1042,15 +1052,15 @@ function grid(
     extra
   ){
 
-	var columns = (typeof columns !== 'undefined') ? columns : 0,
-	rows = (typeof rows !== 'undefined') ? rows : 0,
-	cellWidth = (typeof cellWidth !== 'undefined') ? cellWidth : 32,
-	cellHeight = (typeof cellHeight !== 'undefined') ? cellHeight : 32,
-	centerCell = (typeof centerCell !== 'undefined') ? centerCell : false,
-	xOffset = (typeof xOffset !== 'undefined') ? xOffset : 0,
-	yOffset = (typeof yOffset !== 'undefined') ? yOffset : 0,
-	makeSprite = (typeof makeSprite !== 'undefined') ? makeSprite : undefined,
-	extra = (typeof extra !== 'undefined') ? extra : undefined;
+	var columns = columns || 0,
+	rows = rows || 0,
+	cellWidth = cellWidth || 32,
+	cellHeight = cellHeight || 32,
+	centerCell = centerCell || false,
+	xOffset = xOffset || 0,
+	yOffset = yOffset || 0,
+	makeSprite = makeSprite || undefined,
+	extra = extra || undefined;
 
   //Create an empty group called `container`. This `container`
   //group is what the function returns back to the main program.
@@ -1235,7 +1245,7 @@ function reset(){
 }
 
 function filmstrip(image, frameWidth, frameHeight, spacing){
-	var spacing = (typeof spacing !== 'undefined')? spacing : 0;
+	var spacing = spacing || 0;
 	//An array to store the x and y positions of each frame
 	var positions = [];
 	//Find out how many columns and rows there are in the image
@@ -1331,8 +1341,8 @@ var progressBar = {
 
 
 function shake(sprite, magnitude, angular,noOfFrames){
-	var magnitude = checkIfUndefined(magnitude,16),
-		angular = checkIfUndefined(angular,false);
+	var magnitude = magnitude || 16,
+		angular = angular || false;
 	//A counter to count the number of shakes
 	var counter = 1;
 	//The total number of shakes (there will be 1 shake per frame)

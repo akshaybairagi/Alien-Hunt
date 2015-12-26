@@ -1,11 +1,12 @@
 //Game engine class
 function Game(width, height, setup, assetsToLoad, load){
 		//Make the canvas and initialize the stage
-		this.canvas = makeCanvas(width, height, "#cccccc","#3b3224");
+		// this.canvas = makeCanvas(width, height, "#cccccc","#3b3224");
+		this.canvas = getCanvas("#cccccc","#3b3224");
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 
-		//for mobile
+		//for mobile implementation
 		this.mobile = false;
 		//Make the pointer
 		this.pointer = makePointer(this.canvas);
@@ -93,7 +94,7 @@ Game.prototype = {
 		this.paused = false;
 	},
 	scaleToWindow: function(backgroundColor){
-		var backgroundColor = checkIfUndefined(backgroundColor,"#2C3539");
+		var backgroundColor = backgroundColor || "#2C3539";
 		var scaleX, scaleY, scale, center;
 		//1. Scale the canvas to the correct size
 		//Figure out the scale amount on each axis
@@ -142,7 +143,41 @@ Game.prototype = {
 		this.pointer.scale = scale;
 		this.scale = scale;
 	},
-	
+	setupMobile: function(){
+		var container = document.getElementById("container"),
+				hasTouch = !!('ontouchstart' in window),
+				w = window.innerWidth, h = window.innerHeight;
+		if(hasTouch){
+			this.mobile = true;
+		}
+		if(this.canvas.width >= 1280 || !hasTouch){
+			return false;
+		}
+		if(w < h){
+			alert("Please rotate the device and then click OK");
+			w = window.innerWidth; h = window.innerHeight;
+		}
+		container.style.height = h*2 + "px";
+		window.scrollTo(0,1);
+		h = window.innerHeight + 2;
+		container.style.height = h + "px";
+		container.style.width = w + "px";
+		container.style.padding = 0;
+		if(h >= this.canvas.height * 1.75 || w >= this.canvas.height * 1.75){
+			// this.canvasMultiplier = 2;
+			this.canvas.width = w / 2;
+			this.canvas.height = h / 2;
+			this.canvas.style.width = w + "px";
+			this.canvas.style.height = h + "px";
+		}
+		else{
+			this.canvas.width = w;
+			this.canvas.height = h;
+		}
+		this.canvas.style.position='absolute';
+		this.canvas.style.left="0px";
+		this.canvas.style.top="0px";
+	},
 	updateGameEffects: function(){
 		//Update the game logic
 		//Update all the buttons
@@ -188,8 +223,8 @@ Game.prototype = {
 	}
 };
 function game(width, height, setup, assetsToLoad, load){
-	var width = checkIfUndefined(width,256),
-		height = checkIfUndefined(height,256);
+	var width = width || 256,
+		height = height || 256;
 	return new Game(width, height, setup, assetsToLoad, load);
 }
 function capturePreviousPositions(stage){

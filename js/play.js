@@ -6,26 +6,24 @@ function play(){
 	sky.tileX += 1;
 
 	//Move the player by applying the new calculated velocity
-	playerGroup.vy += contr.gravity;
-	playerGroup.y += playerGroup.vy;
+	if(playerGroup.building_index===undefined){
+		playerGroup.vy += contr.gravity;
+		playerGroup.y += playerGroup.vy*ai.dt;
+	}
 
 	if(itemGroup.children.length > 0){
-			itemGroup.x -= contr.speed;
+			itemGroup.x -= contr.speed*ai.dt;
 			if(itemGroup.x + itemGroup.width < 0){
 				imgr.removeItem(itemGroup.children[0]);
 			}
 	}
 
 	blocks.children.forEach(function(building){
-		building.x -= contr.speed;
+		building.x -= contr.speed*ai.dt;
 		if(building.x <= 0-building.width-contr.speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
 			building.height = g.canvas.height - blocks.nextPos.Y;
-			//code to adjust the windows height and width
-			// var width = building.width /row;
-			// var height = building.height/coloums;
-			// var width = building.width /bd.row;
 			bd.height = building.height/bd.columns;
 			building.children.forEach(function(window){
 				//update the windows
@@ -34,36 +32,33 @@ function play(){
 				window.width =bd.width;
 				window.height = bd.height;
 			});
-
 			building.shake = false;
 		}
-		blocks.nextPos.X=building.x + building.width + randomInt(50,80);
-		blocks.nextPos.Y=375 + randomInt(-30,30);
-
+		blocks.nextPos.X=building.x + building.width + randomInt(bd.strtGap,bd.endGap);
+		blocks.nextPos.Y=bd.buildingHeight + randomInt(-bd.hGap,bd.hGap);
 		building.cBox.x = building.x + building.width;
 	});
 
 	//move aliens
 	aliens.activeAliens.forEach(function(alien){
-			alien.y += alien.vy;
 			alien.vy += contr.gravity;
+			alien.y += alien.vy*ai.dt;
 			alien.vx += alien.accelerationX;
-			alien.x += alien.vx;
+			alien.x += alien.vx*ai.dt;
 
 		if((alien.x + alien.width) < 0	|| alien.y > g.canvas.height){
 			aliens.freeAlien(alien);
 		}
-
 	});
 	//Move the bullet
 	bullets.activeBullets.forEach(function(bullet){
-		bullet.x += bullet.vx;
-		bullet.y += bullet.vy;
+		bullet.x += bullet.vx*ai.dt;
+		bullet.y += bullet.vy*ai.dt;
 		if(bullet.x > g.canvas.width){
 			bullets.freeBullet(bullet);
 		}
 	});
-
+//rotate car wheels
 	if(playerGroup.item.type == "car"){
 		car.start();
 	}
@@ -72,38 +67,62 @@ function play(){
 	if(playerGroup.y > g.canvas.height){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
-			playerGroup.setPosition(150,300);
-			// var _speed = contr.speed;
-			// contr.speed = 0;
+			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
+			playerGroup.building_index = undefined;
 			g.pause();
 			var fadeOutTweenPlayer = fadeOut(player.grp,20);
 				fadeOutTweenPlayer.onComplete = function(){
-													// contr.speed = _speed;
-													var fadeInTween = fadeIn(player.grp,50);
+													fadeIn(player.grp,50);
+													//resume the game
 													g.resume();
+													//reset the time for motion
+													ai.t0 = Date.now();
+													fadeOutTweenPlayer = null;
 												};
-
 		}
+	}
+
+//check player and building collision
+	if(playerGroup.building_index===undefined){
+			playerGroup.checkColl = true;
+	}
+	else{
+		var building = blocks.children[playerGroup.building_index];
+		if((building.gx+building.width)< (playerGroup.gx+playerGroup.width)){
+			//check collision
+			playerGroup.checkColl = true;
+			playerGroup.building_index = undefined;
+		}
+		else{
+			playerGroup.checkColl = false;
+		}
+		building = null;
+	}
+	if(playerGroup.checkColl){
+		blocks.children.forEach(function(building){
+			//Check players and block collision (buildings)
+			var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
+			if(colliPlayerBlock){
+				if(colliPlayerBlock == "bottom"){
+					// console.log(1);
+					playerGroup.isOnGround = true;
+					playerGroup.building_index = blocks.children.indexOf(building);
+					playerGroup.vy = 0;
+					if(player.state == "jump"){
+						player.walk();
+					}
+				}
+				else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
+					playerGroup.isOnGround = false;
+					playerGroup.building_index = undefined;
+				}
+			}
+			colliPlayerBlock = null;
+		});
 	}
 
 	//Check collision for various objects
 	blocks.children.forEach(function(building){
-		//Check players and block collision (buildings)
-		var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
-		if(colliPlayerBlock){
-			if(colliPlayerBlock == "bottom"){
-				playerGroup.isOnGround = true;
-				playerGroup.building_id = building.id;
-				playerGroup.vy = 0;
-				if(player.state == "jump"){
-					player.walk();
-				}
-			}
-			else if (colliPlayerBlock == "left" || colliPlayerBlock == "right") {
-				playerGroup.isOnGround = false;
-			}
-		}
-
 		//Check alien and collision with buildings //alien fall logic
 		aliens.activeAliens.forEach(function(alien){
 			if(alien.release == true){
@@ -117,11 +136,11 @@ function play(){
 					alien.isOnGround = true;
 					alien.vy = 0;
 					alien.accelerationX = 0;
-					alien.vx = -contr.speed;
+					alien.vx = -contr.speed*ai.dt;
 					alien.release = false;
 
 					if(alien.act=="run"){
-						alien.vx += -3;
+						alien.vx += -3*ai.dt;
 						alien.walk();
 					}
 					else{
@@ -129,17 +148,16 @@ function play(){
 					}
 					if(building.gx >= alien.x && alien.act=="run" && alien.canJump){
 						alien.vy = -contr.jumpForce;
-						alien.vx += -2;
+						alien.vx += -2*ai.dt;
 						alien.isOnGround = false;
 						alien.jump();
 					}
 					// building.y += -0.05;
 					//shake the building only once
 					if(building.shake === false){
-						shake(building, 0.02, true,120);
+						// shake(building, 0.02, true,120);
 						building.shake = true;
 					}
-
 				}
 		});
 	});
@@ -149,7 +167,9 @@ function play(){
 		bullets.activeBullets.forEach(function(bullet){
 		//Check for a collision with the alien
 			if(hitTestRectangle(bullet.cBox, alien,true)){
-				smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
+				if(g.mobile === false){
+					smokeEmitter(alien.centerX,alien.centerY,assets["smoke.png"]);
+				}
 				sBox.play(sBox.explosionSound);
 				bullet.visible = false;
 				score.update();
@@ -165,7 +185,8 @@ function play(){
 				topBar.update(-1);
 				var fadeOutTweenPlayer = fadeOut(player.grp,10);
 				fadeOutTweenPlayer.onComplete = function(){
-													var fadeInTween = fadeIn(player.grp,20);
+													fadeIn(player.grp,20);
+													fadeOutTweenPlayer = null;
 												};
 			}
 			if(playerGroup.item.type == "car"){
@@ -191,6 +212,7 @@ function play(){
 					playerGroup.addChild(car);
 
 					playerGroup.item = car;
+					playerGroup.building_index = undefined;
 					setTimeout(car.remove,8000);
 					sBox.restart(sBox.carSound);
 				}
@@ -202,4 +224,6 @@ function play(){
 			}
 		}
 	});
+	//Assign current time equal to last update time for time based motion
+	ai.t0 = ai.t1;
 }

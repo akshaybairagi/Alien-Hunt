@@ -2,7 +2,7 @@ function smokeEmitter(x,y,source){
 	particleEffect(
 		x, //The particle's starting x position
 		y, //The particle's starting y position
-		function () { return sprite(source); },
+		function() { return smokes.getSmoke(); },//get smoke sprite function() { return sprite(source); }
 		2, //Number of particles
 		0, //Gravity
 		true, //Random spacing
@@ -63,24 +63,16 @@ function Bullet(){
 }
 function toggleMenu(caller,callee){
 	if(caller !== undefined){
-		caller.visible = false;
-		caller.children.forEach(function(scene){
-			if(scene.release){
-				scene.interactive = false;
-				scene.state ="up";
-			}
-		});
+		caller.div.style.visibility = "hidden";
 	}
 	if(callee !== undefined){
-		callee.visible = true;
-		callee.children.forEach(function(scene){
-			if(scene.release){
-				scene.interactive = true;
-			}
-		});
+		callee.div.style.visibility = "visible";
+		menu.style.visibility = "visible";
+	}
+	else{
+		menu.style.visibility = "hidden";
 	}
 }
-
 
 function aliencBoxCol(r1, r2, bounce, global) {
 

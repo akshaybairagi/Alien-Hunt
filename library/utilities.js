@@ -289,9 +289,9 @@ function outsideBounds(sprite, bounds, extra){
 		return collision;
 };
 
-function checkIfUndefined(varToCheck,defaultValue){
-	return ( typeof varToCheck !== 'undefined')? varToCheck : defaultValue;
-}
+// function checkIfUndefined(varToCheck,defaultValue){
+// 	return ( typeof varToCheck !== 'undefined')? varToCheck : defaultValue;
+// }
 
 
 /*
