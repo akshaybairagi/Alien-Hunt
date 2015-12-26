@@ -591,11 +591,13 @@ function createMGun(){
 }
 //end the game
 function end(){
-	//pause the game
-	g.pause();
 	//stop the player
 	playerGroup.vy = 0;
 	player.stop();
+	playerGroup.visible = false;
+	playerGroup.isOnGround = false;
+	//pause the game
+	g.pause();
 
 	//publish score to storage
 	score.publishHScore();
@@ -637,8 +639,10 @@ function end(){
 }
 //restart the game
 function restart(){
+	playerGroup.visible = true;
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	playerGroup.building_index = undefined;
+	player.state = "jump"
 	topBar.reset(5);
 	bd.pattern = designs[randomInt(0,4)];
 	contr.design = bd.pattern;
