@@ -17,7 +17,7 @@ function play(){
 				imgr.removeItem(itemGroup.children[0]);
 			}
 	}
-
+	//move buildings
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*ai.dt;
 		if(building.x <= 0-building.width-contr.speed){
@@ -57,7 +57,7 @@ function play(){
 	}
 
 	//check if player fell on the ground and stop the game loop
-	if(playerGroup.y > g.canvas.height){
+	if(playerGroup.y > g.canvas.height && playerGroup.x + playerGroup.width/2 < 0){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);

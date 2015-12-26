@@ -589,6 +589,7 @@ function createMGun(){
 	}
 	return mGun;
 }
+//end the game
 function end(){
 	//pause the game
 	g.pause();
@@ -628,6 +629,7 @@ function end(){
 		restarHandler();
 	};
 }
+//restart the game
 function restart(){
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	playerGroup.building_index = undefined;
