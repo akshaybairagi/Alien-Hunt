@@ -57,7 +57,7 @@ function play(){
 	}
 
 	//check if player fell on the ground and stop the game loop
-	if(playerGroup.y > g.canvas.height && playerGroup.x + playerGroup.width/2 < 0){
+	if(playerGroup.y > g.canvas.height || playerGroup.x + playerGroup.width <= 0){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
@@ -72,6 +72,9 @@ function play(){
 													ai.t0 = Date.now();
 													fadeOutTweenPlayer = null;
 												};
+		}
+		else{
+			return;
 		}
 	}
 
@@ -181,6 +184,9 @@ function play(){
 														fadeIn(player.grp,20);
 														fadeOutTweenPlayer = null;
 												};
+				}
+				else{
+					return;
 				}
 			}
 			if(playerGroup.item.type == "car"){
