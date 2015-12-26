@@ -59,7 +59,6 @@ window.addEventListener("resize", function(event){
 	g.setupMobile();
 });
 
-
 //Global variables
 var player,sky,ship,gun,mGun,car;
 //Global groups
