@@ -60,6 +60,10 @@ function play(){
 	if(playerGroup.y > g.canvas.height || playerGroup.x + playerGroup.width <= 0){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
+			//remove car
+			if(playerGroup.item!==gun){
+				car.remove();
+			}
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 			playerGroup.building_index = undefined;
 			g.pause();

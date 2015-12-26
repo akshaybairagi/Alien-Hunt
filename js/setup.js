@@ -596,6 +596,10 @@ function end(){
 	player.stop();
 	playerGroup.visible = false;
 	playerGroup.isOnGround = false;
+	//remove car
+	if(playerGroup.item!==gun){
+		car.remove();
+	}
 	//pause the game
 	g.pause();
 
