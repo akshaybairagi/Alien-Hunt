@@ -1230,15 +1230,15 @@ function gameAI(){
 			}
 		}
 	};
-//Introduce the powerUps/items in the game
+	//Introduce the powerUps/items in the game
 	this.getItem = function(currTime,building){
-		if(currTime-this.lastUpdPtime >= 1000){
+		if(currTime-this.lastUpdPtime >= 10000){
 			if(itemGroup.children.length === 0){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
 				itemGroup.x = building.gx + randomInt(0,building.width);
-				itemGroup.y = building.gy-playerGroup.height-bd.hGap;
+				itemGroup.y = building.gy-playerGroup.height;
 				this.lastUpdPtime =  currTime;
 				item = null;
 			}
