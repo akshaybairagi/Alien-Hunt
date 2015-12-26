@@ -97,7 +97,6 @@ function play(){
 			var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
 			if(colliPlayerBlock){
 				if(colliPlayerBlock == "bottom"){
-					// console.log(1);
 					playerGroup.isOnGround = true;
 					playerGroup.building_index = blocks.children.indexOf(building);
 					playerGroup.vy = 0;
@@ -176,11 +175,13 @@ function play(){
 			alien.isUnderCol = true;
 			if(player.grp.visible){
 				topBar.update(-1);
-				var fadeOutTweenPlayer = fadeOut(player.grp,10);
-				fadeOutTweenPlayer.onComplete = function(){
-													fadeIn(player.grp,20);
-													fadeOutTweenPlayer = null;
+				if(topBar.noLife > 0){
+					var fadeOutTweenPlayer = fadeOut(player.grp,10);
+					fadeOutTweenPlayer.onComplete = function(){
+														fadeIn(player.grp,20);
+														fadeOutTweenPlayer = null;
 												};
+				}
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;

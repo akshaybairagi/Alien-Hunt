@@ -615,19 +615,25 @@ function end(){
 	for(var i=smokes.activeSmoke.length-1;i>=0;i--){
 		smokes.freeSmoke(smokes.activeSmoke[i]);
 	}
-
-	//Display the 'gameoverScene'
-	toggleMenu(undefined,gameoverScene);
-	gameoverScene.showOverScreen();
 	//Assign a new button 'press' action to restart the game
 	titleScene.playBtn.onclick = function(){
 		toggleMenu(titleScene,undefined);
-		restarHandler();
+		setTimeout(function(){
+			restarHandler();
+		},500);
 	};
 	gameoverScene.restartBtn.onclick = function(){
 		toggleMenu(gameoverScene,undefined);
+		setTimeout(function(){
 		restarHandler();
+		},500);
 	};
+	//update gameOver screen variables
+	gameoverScene.showOverScreen();
+	//Display the 'gameoverScene' after some delay
+	setTimeout(function(){
+		toggleMenu(undefined,gameoverScene);
+	},500);
 }
 //restart the game
 function restart(){
@@ -947,11 +953,13 @@ function getTitleScene(){
 		// focusText.focus();
 		playerGroup.visible = true;
 		ship.visible = true;
-		toggleMenu(o,undefined);
-		g.state = play;
 		// bgMusic.play();
 		sBox.play(sBox.bgMusic);
-		ai.init(Date.now());
+		toggleMenu(o,undefined);
+		setTimeout(function(){
+			g.state = play;
+			ai.init(Date.now());
+		},200)
 	};
 	o.scoreBtn = document.getElementById("m1scoreBtn");
 	o.scoreBtn.onclick = function(){
