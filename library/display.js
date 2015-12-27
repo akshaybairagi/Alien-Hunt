@@ -116,9 +116,6 @@ function DisplayObject(){
 	//Is the sprite `interactive`? If it is, it can become clickable
 	//or touchable
 	this._interactive = false;
-
-	//To move the object as per frames angle -- custome animation
-	this.animate = {};
 }
 
 DisplayObject.prototype = {
