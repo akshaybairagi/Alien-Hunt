@@ -2,7 +2,7 @@
 function Game(width, height, setup, assetsToLoad, load){
 		//Make the canvas and initialize the stage
 		// this.canvas = makeCanvas(width, height, "#cccccc","#3b3224");
-		this.canvas = getCanvas("#cccccc","#3b3224");
+		this.canvas = getCanvas(width, height, "#cccccc","#3b3224");
 		stage.width = this.canvas.width;
 		stage.height = this.canvas.height;
 
