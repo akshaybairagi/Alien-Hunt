@@ -657,6 +657,7 @@ function restart(){
 	sBox.restart(sBox.bgMusic);
 	ai.state = 'play';
 }
+//buildings in the game
 function Buildings(){
 	//variables for building blocks
 	this.numOfBuilding = 4;
@@ -744,6 +745,7 @@ function Buildings(){
 		});
 	};
 }
+//score
 function Score(){
 	this.hkills = 0;
 	this.hlevel = 0;
@@ -1160,17 +1162,17 @@ function gameAI(){
 	//Game level Information
 	this.levels = [
 		/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
-		[1,1,1],		//Level 0
-		[1,2,5],		//Level 1
-		[1,3,5],		//Level 2
-		[2,3,10],		//Level 3
-		[1,4,20],		//Level 4
-		[2,4,20],		//Level 5
-		[3,4,20],		//Level 6
-		[2,5,40], 	//Level 7
-		[3,5,40],		//Level 8
-		[4,5,40], 	//Level 9
-		[5,6,40] 		//Level 10
+		[1,1,3],		//Level 0
+		[1,2,10],		//Level 1
+		[1,3,10],		//Level 2
+		[2,3,25],		//Level 3
+		[1,4,30],		//Level 4
+		[2,4,35],		//Level 5
+		[3,4,40],		//Level 6
+		[2,5,45], 	//Level 7
+		[3,5,60],		//Level 8
+		[4,5,80], 	//Level 9
+		[5,7,101] 	//Level 10
 	];
 	//game state
 	this.state = '';// 'play' 'end' 'pause'

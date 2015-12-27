@@ -57,7 +57,7 @@ function play(){
 	}
 
 	//check if player fell on the ground and stop the game loop
-	if(playerGroup.y > g.canvas.height || playerGroup.x + playerGroup.width <= 0){
+	if(playerGroup.y > g.canvas.height || playerGroup.x < 0){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
 			//remove car
