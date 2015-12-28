@@ -1,3 +1,4 @@
+//create game object instance
 if(Modernizr.webaudio){
 	var g = game(800, 600, setup,
 				[	"json/sticky.png",
