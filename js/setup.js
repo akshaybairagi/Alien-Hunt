@@ -1209,8 +1209,8 @@ function gameAI(){
 
 	this.setAlien = function(currTime){
 		this.t1 = currTime;
-		// this.dt = (currTime-this.t0)*(60/1000);
-		this.dt = 1;
+		this.dt = (currTime-this.t0)*(60/1000);
+		// this.dt = 1;
 
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
