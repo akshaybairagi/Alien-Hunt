@@ -223,6 +223,7 @@ function keyHandler(){
 	//pause function for stopping the game
 	function pauseGame(){
 		if(g.paused && ai.state == 'pause'){
+			ai.t0 = Date.now();
 			g.resume();
 			toggleMenu(pauseScene,undefined);
 			sBox.restart(sBox.bgMusic);
@@ -1069,6 +1070,7 @@ function PauseScene(){
 	o.div.onclick = function(){
 		toggleMenu(o,undefined);
 		// focusText.focus();
+		ai.t0 = Date.now();
 		g.resume();
 		sBox.restart(sBox.bgMusic);
 		player.walk();
