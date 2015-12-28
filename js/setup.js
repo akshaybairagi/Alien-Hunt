@@ -59,7 +59,6 @@ window.addEventListener("resize", function(event){
 	g.setupMobile();
 });
 
-
 //Global variables
 var player,sky,ship,gun,mGun,car;
 //Global groups
@@ -590,12 +589,19 @@ function createMGun(){
 	}
 	return mGun;
 }
+//end the game
 function end(){
-	//pause the game
-	g.pause();
 	//stop the player
 	playerGroup.vy = 0;
 	player.stop();
+	playerGroup.visible = false;
+	playerGroup.isOnGround = false;
+	//remove car
+	if(playerGroup.item!==gun){
+		car.remove();
+	}
+	//pause the game
+	g.pause();
 
 	//publish score to storage
 	score.publishHScore();
@@ -615,23 +621,32 @@ function end(){
 	for(var i=smokes.activeSmoke.length-1;i>=0;i--){
 		smokes.freeSmoke(smokes.activeSmoke[i]);
 	}
-
-	//Display the 'gameoverScene'
-	toggleMenu(undefined,gameoverScene);
-	gameoverScene.showOverScreen();
 	//Assign a new button 'press' action to restart the game
 	titleScene.playBtn.onclick = function(){
 		toggleMenu(titleScene,undefined);
-		restarHandler();
+		setTimeout(function(){
+			restarHandler();
+		},500);
 	};
 	gameoverScene.restartBtn.onclick = function(){
 		toggleMenu(gameoverScene,undefined);
+		setTimeout(function(){
 		restarHandler();
+		},500);
 	};
+	//update gameOver screen variables
+	gameoverScene.showOverScreen();
+	//Display the 'gameoverScene' after some delay
+	setTimeout(function(){
+		toggleMenu(undefined,gameoverScene);
+	},500);
 }
+//restart the game
 function restart(){
+	playerGroup.visible = true;
 	playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 	playerGroup.building_index = undefined;
+	player.state = "jump"
 	topBar.reset(5);
 	bd.pattern = designs[randomInt(0,4)];
 	contr.design = bd.pattern;
@@ -642,6 +657,7 @@ function restart(){
 	sBox.restart(sBox.bgMusic);
 	ai.state = 'play';
 }
+//buildings in the game
 function Buildings(){
 	//variables for building blocks
 	this.numOfBuilding = 4;
@@ -729,6 +745,7 @@ function Buildings(){
 		});
 	};
 }
+//score
 function Score(){
 	this.hkills = 0;
 	this.hlevel = 0;
@@ -946,11 +963,13 @@ function getTitleScene(){
 		// focusText.focus();
 		playerGroup.visible = true;
 		ship.visible = true;
-		toggleMenu(o,undefined);
-		g.state = play;
 		// bgMusic.play();
 		sBox.play(sBox.bgMusic);
-		ai.init(Date.now());
+		toggleMenu(o,undefined);
+		setTimeout(function(){
+			g.state = play;
+			ai.init(Date.now());
+		},200)
 	};
 	o.scoreBtn = document.getElementById("m1scoreBtn");
 	o.scoreBtn.onclick = function(){
@@ -1143,17 +1162,17 @@ function gameAI(){
 	//Game level Information
 	this.levels = [
 		/*0: min no of aliens, 1: max no if aliens, 2: kills for level up*/
-		[1,1,1],		//Level 0
-		[1,2,5],		//Level 1
-		[1,3,5],		//Level 2
-		[2,3,10],		//Level 3
-		[1,4,20],		//Level 4
-		[2,4,20],		//Level 5
-		[3,4,20],		//Level 6
-		[2,5,40], 	//Level 7
-		[3,5,40],		//Level 8
-		[4,5,40], 	//Level 9
-		[5,6,40] 		//Level 10
+		[1,1,3],		//Level 0
+		[1,2,10],		//Level 1
+		[1,3,10],		//Level 2
+		[2,3,25],		//Level 3
+		[1,4,30],		//Level 4
+		[2,4,35],		//Level 5
+		[3,4,40],		//Level 6
+		[2,5,45], 	//Level 7
+		[3,5,60],		//Level 8
+		[4,5,80], 	//Level 9
+		[5,7,101] 	//Level 10
 	];
 	//game state
 	this.state = '';// 'play' 'end' 'pause'
@@ -1190,29 +1209,17 @@ function gameAI(){
 
 	this.setAlien = function(currTime){
 		this.t1 = currTime;
-		// this.dt = (currTime-this.t0)*(60/1000);
-		this.dt = 1;
+		this.dt = (currTime-this.t0)*(60/1000);
+		// this.dt = 1;
 
 		// send aliens in the game
 		if(currTime-this.lastUpdAtime >= 3000){
-				// var randomNo = randomInt(this.minAlien,this.maxAlien);
 				for(var i = 0; i < randomInt(this.minAlien,this.maxAlien); i++){
 					setTimeout(function(){
 						aliens.getAlien();
 					},i*350);
 				}
 				this.lastUpdAtime =  currTime;
-		}
-		//Introduce the powerUps/items in the game
-		if(currTime-this.lastUpdPtime >= 10000){
-			if(itemGroup.children.length === 0){
-				var item = imgr.getItem();
-				item.visible= true;
-				itemGroup.addChild(item);
-				itemGroup.setPosition(g.canvas.width,bd.buildingHeight-bd.hGap*2);
-				this.lastUpdPtime =  currTime;
-				item = null;
-			}
 		}
 
 		// Update level and change building design
@@ -1240,6 +1247,20 @@ function gameAI(){
 													levelText.alpha = 1;
 													fadeOutTweenPlayer = null;
 												};
+			}
+		}
+	};
+	//Introduce the powerUps/items in the game
+	this.getItem = function(currTime,building){
+		if(currTime-this.lastUpdPtime >= 10000){
+			if(itemGroup.children.length === 0){
+				var item = imgr.getItem();
+				item.visible= true;
+				itemGroup.addChild(item);
+				itemGroup.x = building.gx + randomInt(0,building.width);
+				itemGroup.y = building.gy-playerGroup.height;
+				this.lastUpdPtime =  currTime;
+				item = null;
 			}
 		}
 	};

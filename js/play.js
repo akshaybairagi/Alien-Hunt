@@ -17,22 +17,15 @@ function play(){
 				imgr.removeItem(itemGroup.children[0]);
 			}
 	}
-
+	//move buildings
 	blocks.children.forEach(function(building){
 		building.x -= contr.speed*ai.dt;
 		if(building.x <= 0-building.width-contr.speed){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
-			building.height = g.canvas.height - blocks.nextPos.Y;
-			bd.height = building.height/bd.columns;
-			building.children.forEach(function(window){
-				//update the windows
-				window.x = bd.width*window.j;
-				window.y = bd.height*window.i;
-				window.width =bd.width;
-				window.height = bd.height;
-			});
 			building.shake = false;
+			//insert item
+			ai.getItem(ai.t1,building);
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(bd.strtGap,bd.endGap);
 		blocks.nextPos.Y=bd.buildingHeight + randomInt(-bd.hGap,bd.hGap);
@@ -64,9 +57,13 @@ function play(){
 	}
 
 	//check if player fell on the ground and stop the game loop
-	if(playerGroup.y > g.canvas.height){
+	if(playerGroup.y > g.canvas.height || playerGroup.x < 0){
 		topBar.update(-1);
 		if(topBar.noLife > 0){
+			//remove car
+			if(playerGroup.item!==gun){
+				car.remove();
+			}
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 			playerGroup.building_index = undefined;
 			g.pause();
@@ -79,6 +76,9 @@ function play(){
 													ai.t0 = Date.now();
 													fadeOutTweenPlayer = null;
 												};
+		}
+		else{
+			return;
 		}
 	}
 
@@ -104,7 +104,6 @@ function play(){
 			var colliPlayerBlock = rectangleCollision(playerGroup,building,false,true);
 			if(colliPlayerBlock){
 				if(colliPlayerBlock == "bottom"){
-					// console.log(1);
 					playerGroup.isOnGround = true;
 					playerGroup.building_index = blocks.children.indexOf(building);
 					playerGroup.vy = 0;
@@ -183,11 +182,16 @@ function play(){
 			alien.isUnderCol = true;
 			if(player.grp.visible){
 				topBar.update(-1);
-				var fadeOutTweenPlayer = fadeOut(player.grp,10);
-				fadeOutTweenPlayer.onComplete = function(){
-													fadeIn(player.grp,20);
-													fadeOutTweenPlayer = null;
+				if(topBar.noLife > 0){
+					var fadeOutTweenPlayer = fadeOut(player.grp,10);
+					fadeOutTweenPlayer.onComplete = function(){
+														fadeIn(player.grp,20);
+														fadeOutTweenPlayer = null;
 												};
+				}
+				else{
+					return;
+				}
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;

@@ -29,8 +29,18 @@ function makeCanvas(width, height,border,backgroundColor) {
 	return canvas;
 }
 
-function getCanvas(border,backgroundColor){
+function getCanvas(width, height,border,backgroundColor){
+	var container = document.getElementById("container");
+	container.style.width = width + "px";
+	container.style.height = height + "px";
+
+	var menu = document.getElementById("menu");
+	menu.style.width = width + "px";
+	menu.style.height = height + "px";
+
 	var canvas = document.getElementById("game");
+	canvas.width = width;
+	canvas.height = height;
 	canvas.style.border = border;
 	canvas.style.backgroundColor = backgroundColor;
 	//Create the context as a property of the canvas
@@ -106,9 +116,6 @@ function DisplayObject(){
 	//Is the sprite `interactive`? If it is, it can become clickable
 	//or touchable
 	this._interactive = false;
-
-	//To move the object as per frames angle -- custome animation
-	this.animate = {};
 }
 
 DisplayObject.prototype = {
