@@ -912,12 +912,13 @@ function ItemManager(){
         console.log("Error in getting items");
     }
     if (item !== undefined){
+			item.setPosition(0,0);
       return item;
   	}
   };
   this.removeItem = function(item){
     item.visible= false;
-    gameScene.addChild(item);
+    stage.addChild(item);
   };
 }
 // The 'gameScene' sprites
@@ -1252,16 +1253,14 @@ function gameAI(){
 												};
 			}
 		}
-	};
-	//Introduce the powerUps/items in the game
-	this.getItem = function(currTime,building){
+
 		if(currTime-this.lastUpdPtime >= 10000){
 			if(itemGroup.children.length === 0){
 				var item = imgr.getItem();
 				item.visible= true;
 				itemGroup.addChild(item);
-				itemGroup.x = building.gx + randomInt(0,building.width);
-				itemGroup.y = building.gy-playerGroup.height;
+				itemGroup.x = g.canvas.width;
+				itemGroup.y = g.canvas.height*0.5;
 				this.lastUpdPtime =  currTime;
 				item = null;
 			}
