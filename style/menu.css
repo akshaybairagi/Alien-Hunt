@@ -115,14 +115,14 @@ a.button:hover {
 	visibility: hidden;
 }
 .credits h1 {
-  margin-bottom: 15%;
+  margin-bottom: 10%;
 }
 p.info {
   color: #fff;
   font-family: PetMe64;
   font-size: 15px;
-  margin: 4% 0%;
-  text-transform: capitalize;
+  margin: 2% 0%;
+  text-transform: lowercase;
 }
 .gameOver {
     float: left;
