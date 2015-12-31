@@ -195,6 +195,7 @@ function play(){
 			}
 			if(playerGroup.item.type == "car"){
 				alien.vx  = 10;
+				score.update();
 				aliens.freeAlien(alien);
 			}
 		}
