@@ -1254,7 +1254,7 @@ function gameAI(){
 			}
 		}
 
-		if(currTime-this.lastUpdPtime >= 100){
+		if(currTime-this.lastUpdPtime >= 10000){
 			if(itemGroup.children.length === 0){
 				var item = imgr.getItem();
 				item.visible= true;

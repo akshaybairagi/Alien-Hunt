@@ -24,8 +24,6 @@ function play(){
 			building.x = blocks.nextPos.X;
 			building.y = blocks.nextPos.Y;
 			building.shake = false;
-			//insert item
-			// ai.getItem(ai.t1,building);
 		}
 		blocks.nextPos.X=building.x + building.width + randomInt(bd.strtGap,bd.endGap);
 		blocks.nextPos.Y=bd.buildingHeight + randomInt(-bd.hGap,bd.hGap);
