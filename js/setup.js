@@ -249,16 +249,16 @@ function keyHandler(){
 			}
 	}
 	//slide the player with downArrow
-	var dwnArrow = keyboard(40);
-	dwnArrow.press = function(){
-		playerGroup.rotation = -1.45;
-		player.slide();
-	};
-	//unslide the player
-	dwnArrow.release = function(){
-		playerGroup.rotation = 0;
-		player.unSlide();
-	};
+	// var dwnArrow = keyboard(40);
+	// dwnArrow.press = function(){
+	// 	playerGroup.rotation = -1.45;
+	// 	player.slide();
+	// };
+	// //unslide the player
+	// dwnArrow.release = function(){
+	// 	playerGroup.rotation = 0;
+	// 	player.unSlide();
+	// };
 }
 //support for touch controls - mobile phones
 function TouchControls(){
@@ -418,6 +418,15 @@ function createCar(){
 		playerGroup.item = gun;
 		playerGroup.building_index = undefined;
 		ai.hasItem = false;
+
+		//remove aliens
+		for(var i=aliens.activeAliens.length-1;i>=0;i--){
+			aliens.freeAlien(aliens.activeAliens[i]);
+		}
+		//remove bullets
+		for(var i=bullets.activeBullets.length-1;i>=0;i--){
+			bullets.freeBullet(bullets.activeBullets[i]);
+		}
 	}
 	return car;// return a car object
 }

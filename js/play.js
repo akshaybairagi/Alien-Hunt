@@ -193,6 +193,14 @@ function play(){
 					var fadeOutTweenPlayer = fadeOut(player.grp,10);
 					fadeOutTweenPlayer.onComplete = function(){
 														fadeIn(player.grp,20);
+														//remove aliens
+														for(var i=aliens.activeAliens.length-1;i>=0;i--){
+															aliens.freeAlien(aliens.activeAliens[i]);
+														}
+														//remove bullets
+														for(var i=bullets.activeBullets.length-1;i>=0;i--){
+															bullets.freeBullet(bullets.activeBullets[i]);
+														}
 														fadeOutTweenPlayer = null;
 												};
 				}
