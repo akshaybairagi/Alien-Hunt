@@ -62,6 +62,15 @@ function play(){
 			if(playerGroup.item!==gun){
 				car.remove();
 			}
+			//remove aliens
+			for(var i=aliens.activeAliens.length-1;i>=0;i--){
+				aliens.freeAlien(aliens.activeAliens[i]);
+			}
+			//remove bullets
+			for(var i=bullets.activeBullets.length-1;i>=0;i--){
+				bullets.freeBullet(bullets.activeBullets[i]);
+			}
+
 			playerGroup.setPosition((g.canvas.width*.36)/2,g.canvas.height/2);
 			playerGroup.building_index = undefined;
 			g.pause();
