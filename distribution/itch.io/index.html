@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset ="utf-8" />
+		<title>Alient Hunt By 3rimgames</title>
+		<link rel="stylesheet" href="style/style.css" type="text/css" />
+		<link rel="stylesheet" href="style/menu.css" type="text/css" />
+		<link rel=icon href=images/favicon.png sizes="16x16" type="image/png">
+
+		<meta name="viewport" content="width=device-width, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	</head>
+	<body>
+		<!-- <script src="js/fbsocial.js?1326075236"></script> -->
+		<div id='container'>
+			<div class="menu" id="menu">
+				<div class="list" id="titleScene">
+					<h1>alien hunt</h1>
+					<ul>
+						<a id="m1playBtn"><li>play</li></a>
+						<a id="m1scoreBtn"><li>score</li></a>
+						<a id="m1optionsBtn"><li>options</li></a>
+						<a id="m1storeBtn"><li>store</li></a>
+						<a id="m1creditsBtn"><li>credits</li></a>
+					</ul>
+					<p class="nav">z / ↑ to Jump,  x / → to Fire, Space to pause/resume</p>
+				</div>
+				<div class="score" id="scoreScene">
+					<h1>score</h1>
+					<ul>
+						<li>kills:<span id="m2kills">0</span></li>
+						<li>level:<span id="m2level">0</span></li>
+						<li>high score:<span id="m2hscore">0</span></li>
+					</ul>
+					<a class="button" id="m2backBtn">back</a>
+				</div>
+				<div class="options" id="optionScene">
+					<h1>options</h1>
+					<ul>
+						<li>z / ↑ to Jump</li>
+						<li>x / → to Fire</li>
+						<li>Space to pause/resume</li>
+					</ul>
+					<a class="button" id="m3backBtn">back</a>
+				</div>
+
+				<div class="store" id="storeScene">
+					<h1>store</h1>
+					<p>in game purchases (under construction)</p>
+					<a class="button" id="m4backBtn">back</a>
+				</div>
+
+				<div class="credits" id="creditScene">
+					<h1>credits</h1>
+					<p class="info">3rimgames</p>
+					<p class="info">akshay bairagi</p>
+					<p class="info">pooja vaishnav</p>
+					<p class="info">Team Alien</p>
+					<p class="info">alok</p>
+					<p class="info">gaurang</p>
+					<a class="button" id="m5backBtn">back</a>
+				</div>
+				<div class="gameOver" id="gameOverScene">
+					<h1>GAME OVER</h1>
+					<ul>
+						<li>kills:<span id="m6kills">0</span></li>
+						<li>level:<span id="m6level">0</span></li>
+						<li>score:<span id="m6score">0</span></li>
+						<li>high score:<span id="m6hscore">0</span></li>
+						<li><span id="m6menuBtn" class="goverMargin">menu</span></li>
+						<li><span id="m6restartBtn" class="goverMargin">restart</span></li>
+					</ul>
+				</div>
+				<div class="pauseScene" id="pauseScene">
+					<h1>GAME PAUSED</h1>
+					<a class="button" id="m7backBtn">click on screen to continue...</a>
+				</div>
+
+				<span class="copy">&copycopyright: 3rimgames</span>
+			</div>
+			<canvas id='game' width='800' height='600'>Please upgrade your browser</canvas>
+		</div>
+		<!-- <h1 id="fb-welcome"></h1> -->
+
+		<script src="library/modernizr.min.js"></script>
+		<script src="library/Font.min.js"></script>
+		<script src="library/engine.min.js"></script>
+		<script src="js/game.min.js"></script>
+	</body>
+</html>
