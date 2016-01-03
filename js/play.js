@@ -146,7 +146,7 @@ function play(){
 					alien.release = false;
 
 					if(alien.act=="run"){
-						alien.vx += -3*ai.dt;
+						alien.vx += -3;
 						alien.walk();
 					}
 					else{
@@ -154,7 +154,7 @@ function play(){
 					}
 					if(building.gx >= alien.x && alien.act=="run" && alien.canJump){
 						alien.vy = -contr.jumpForce;
-						alien.vx += -2*ai.dt;
+						alien.vx += -2;
 						alien.isOnGround = false;
 						alien.jump();
 					}
