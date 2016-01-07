@@ -152,7 +152,7 @@ function setup(){
 	//Assign the key events
 	keyHandler();
 
-	focusText = focusManager();
+	// focusText = focusManager();
 	//Game AI object
 	ai = new gameAI();
 	ai.init(Date.now());
@@ -174,7 +174,7 @@ function setup(){
 	menu = document.getElementById("menu");
 }
 function restarHandler(){
-	focusText.focus();
+	// focusText.focus();
 	restart();
 	//set the score to initials
 	score.init();
@@ -972,7 +972,7 @@ function getTitleScene(){
 	o.div = document.getElementById("titleScene");
 	o.playBtn = document.getElementById("m1playBtn");
 	o.playBtn.onclick = function(){
-		focusText.focus();
+		// focusText.focus();
 		playerGroup.visible = true;
 		ship.visible = true;
 		// bgMusic.play();
@@ -1080,7 +1080,7 @@ function PauseScene(){
 	o.div = document.getElementById("pauseScene");
 	o.div.onclick = function(){
 		toggleMenu(o,undefined);
-		focusText.focus();
+		// focusText.focus();
 		ai.t0 = Date.now();
 		g.resume();
 		sBox.restart(sBox.bgMusic);
