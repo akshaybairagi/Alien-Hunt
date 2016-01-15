@@ -16,7 +16,7 @@ gulp.task('libraryJS', function() {
                     './library/engine.js'
                   ])
     .pipe(concat('engine.js'))
-    .pipe(gulp.dest('./bin/'));
+    .pipe(gulp.dest('./bin/'))
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('./bin/'))
@@ -28,7 +28,7 @@ gulp.task('gameJS', function() {
                     './js/play.js'
                   ])
     .pipe(concat('game.js'))
-    .pipe(gulp.dest('./bin/'));
+    .pipe(gulp.dest('./bin/'))
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('./bin/'))
