@@ -35,7 +35,11 @@ gulp.task('gameJS', function() {
 });
 
 gulp.task('watchers', function(){
-  gulp.watch('js/**/*.js', ['js']);
+  gulp.watch('js/**/*.js', ['gameJS']);
+});
+
+gulp.task('watchers', function(){
+  gulp.watch('library/**/*.js', ['libraryJS']);
 });
 
 gulp.task('default', ['libraryJS', 'gameJS', 'watchers']);
