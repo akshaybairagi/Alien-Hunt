@@ -173,3 +173,18 @@ span#m6menuBtn {
 #m1storeBtn{
   visibility: hidden;
 }
+body {
+    background-image: url(../images/old_moon.png);
+    background-repeat: repeat;
+}
+.fb-like.fb_iframe_widget {
+    float: left;
+    width: 77%;
+    margin-top: 10px;
+    text-align: center;
+}
+.fb-comments.fb_iframe_widget {
+    float: left;
+    width: 83%;
+    text-align: center;
+}
