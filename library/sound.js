@@ -1,3 +1,6 @@
+//check the support for web audio api
+if(Modernizr.webaudio){
+
 //Create the audio context
 var actx = new AudioContext();
 
@@ -197,9 +200,9 @@ function makeSound(source, loadHandler) {
 
 function impulseResponse(duration, decay, reverse){
 	var
-		duration = (typeof duration !== 'undefined')? duration : 2,
-		decay = (typeof decay !== 'undefined')? decay : 2,
-		reverse = (typeof reverse !== 'undefined')? reverse : false;
+		duration = duration || 2,
+		decay = decay || 2,
+		reverse = reverse || false;
 	//The length of the buffer
 	//(The AudioContext's default sample rate is 44100)
 	var length = actx.sampleRate * duration;
@@ -231,8 +234,8 @@ function impulseResponse(duration, decay, reverse){
 
 function playNote(frequency, decay, type){
 	var
-		decay = (typeof decay !== 'undefined')? decay : 1,
-		type = (typeof type !== 'undefined')? type : 'sine';
+		decay = decay || 1,
+		type = type || 'sine';
 	//Create an oscillator and a gain node, and connect them
 	//together to the destination
 	var oscillator = actx.createOscillator(),
@@ -266,18 +269,18 @@ function soundEffect(
 	reverb
 ){
 	var
-		attack = checkIfUndefined(attack,0),
-		decay = checkIfUndefined(decay,1),
-		type = checkIfUndefined(type,'sine'),
-		volumeValue = checkIfUndefined(volumeValue,1),
-		panValue = checkIfUndefined(panValue,0),
-		wait = checkIfUndefined(wait,0),
-		pitchBendAmount = checkIfUndefined(pitchBendAmount,0),
-		reverse = checkIfUndefined(reverse,false),
-		randomValue = checkIfUndefined(randomValue,0),
-		dissonance = checkIfUndefined(dissonance,0),
-		echo = checkIfUndefined(echo,undefined),
-		reverb = checkIfUndefined(reverb,undefined);
+		attack = attack || 0,
+		decay = decay || 1,
+		type = type || 'sine',
+		volumeValue = volumeValue || 1,
+		panValue = panValue || 0,
+		wait = wait || 0,
+		pitchBendAmount = pitchBendAmount || 0,
+		reverse = reverse || false,
+		randomValue = randomValue || 0,
+		dissonance = dissonance || 0,
+		echo = echo || undefined,
+		reverb = reverb || undefined;
 
 		//console.log(panValue);
 	//Create oscillator, gain and pan nodes, and connect them
@@ -511,4 +514,6 @@ function jumpSound() {
 		undefined, //echo array: [delay, feedback, filter]
 		undefined //reverb array: [duration, decay, reverse?]
 	);
+}
+
 }

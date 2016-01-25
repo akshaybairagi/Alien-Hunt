@@ -29,6 +29,26 @@ function makeCanvas(width, height,border,backgroundColor) {
 	return canvas;
 }
 
+function getCanvas(width, height,border,backgroundColor){
+	var container = document.getElementById("container");
+	container.style.width = width + "px";
+	container.style.height = height + "px";
+
+	var menu = document.getElementById("menu");
+	menu.style.width = width + "px";
+	menu.style.height = height + "px";
+
+	var canvas = document.getElementById("game");
+	canvas.width = width;
+	canvas.height = height;
+	canvas.style.border = border;
+	canvas.style.backgroundColor = backgroundColor;
+	//Create the context as a property of the canvas
+	canvas.ctx = canvas.getContext("2d");
+	//Return the canvas
+	return canvas;
+}
+
 function DisplayObject(){
 	//The sprite's position and size
 	this.x = 0;
@@ -76,9 +96,6 @@ function DisplayObject(){
 	//Optional blend mode property
 	this.blendMode = undefined;
 
-	//radial gradient
-	this.gradient = false;
-
 	//pattern
 	this.pattern = false;
 
@@ -99,9 +116,6 @@ function DisplayObject(){
 	//Is the sprite `interactive`? If it is, it can become clickable
 	//or touchable
 	this._interactive = false;
-
-	//To move the object as per frames angle -- custome animation
-	this.animate = {};
 }
 
 DisplayObject.prototype = {
@@ -183,17 +197,10 @@ DisplayObject.prototype = {
 		this.y = y;
 	},
 
-	//method to create and intialize radial gradient variables
-	setRadialGradient: function(startColor,endColor,x0, y0, r0, x1, y1, r1){
-		this.gradient = true;
-		this.gradient = canvas.ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
-		this.gradient.addColorStop(0,startColor);
-		this.gradient.addColorStop(1,endColor);
-	},
 	//method to create and intialize pattern
 	setPattern: function(image,pattern){
 		this.pattern = true;
-		this.pattern = canvas.ctx.createPattern(image,pattern);
+		this.pattern = g.canvas.ctx.createPattern(image,pattern);
 	},
 
 	//The `localBounds` and `globalBounds` methods return an object
@@ -431,8 +438,8 @@ function render(canvas) {
 
 	//Clear the canvas
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//Loop through each sprite object in the stage's `children` array
 
+	//Loop through each sprite object in the stage's `children` array
 	stage.children.forEach(displaySprite);
 	function displaySprite(sprite) {
 		//Only display the sprite if it's visible
@@ -494,7 +501,7 @@ function Group(spritesToGroup){
 Group.prototype = new DisplayObject();
 Group.prototype.constructor = Group;
 
-Group.prototype.addChild = function(sprite) {
+Group.prototype.addChild = function(sprite){
 	if (sprite.parent) {
 		sprite.parent.removeChild(sprite);
 	}
@@ -733,11 +740,11 @@ Sprite.prototype.gotoAndStop = function(frameNumber) {
 Sprite.prototype.render = function(ctx) {
 	ctx.drawImage(
 	  this.source,
-	  Math.round(this.sourceX), Math.round(this.sourceY),
-	  Math.round(this.sourceWidth), Math.round(this.sourceHeight),
-	  Math.round(-this.width * this.pivotX),
-	  Math.round(-this.height * this.pivotY),
-	  Math.round(this.width), Math.round(this.height)
+	  this.sourceX, this.sourceY,
+		this.sourceWidth, this.sourceHeight,
+	  (-this.width * this.pivotX),
+	  (-this.height * this.pivotY),
+	  this.width, this.height
 	);
 };
 
@@ -846,14 +853,14 @@ function renderWithInterpolation(canvas, lagOffset){
 		  ctx.save();
 		  //Interpolation
 		  if (sprite.previousX !== undefined) {
-			sprite.renderX = (sprite.x - sprite.previousX) * lagOffset + sprite.previousX;
-		  } else {
-			sprite.renderX = sprite.x;
+				sprite.renderX = (sprite.x - sprite.previousX) * lagOffset + sprite.previousX;
+		  }else{
+				sprite.renderX = sprite.x;
 		  }
 		  if (sprite.previousY !== undefined) {
-			sprite.renderY = (sprite.y - sprite.previousY) * lagOffset + sprite.previousY;
-		  } else {
-			sprite.renderY = sprite.y;
+				sprite.renderY = (sprite.y - sprite.previousY) * lagOffset + sprite.previousY;
+		  }else{
+				sprite.renderY = sprite.y;
 		  }
 
 		  //Draw the sprite at its interpolated position
@@ -876,16 +883,15 @@ function renderWithInterpolation(canvas, lagOffset){
 		  }
 
 		  //Display the optional blend mode
-		  if (sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
+		  if(sprite.blendMode) ctx.globalCompositeOperation = sprite.blendMode;
 
 		  //Use the sprite's own `render` method to draw the sprite
-		  if (sprite.render) sprite.render(ctx);
+		  if(sprite.render) sprite.render(ctx);
 
 		  //If the sprite contains child sprites in its
 		  //`children` array, display them by recursively calling this very same
 		  //`displaySprite` function again
-``
-		  if (sprite.children && sprite.children.length > 0){
+		  if(sprite.children && sprite.children.length > 0){
 				//Reset the context back to the parent sprite's top left corner,
 				//relative to the pivot point
 				ctx.translate(-sprite.width * sprite.pivotX , -sprite.height * sprite.pivotY);
@@ -900,8 +906,8 @@ function renderWithInterpolation(canvas, lagOffset){
 
 function Button(source, x, y){
 	Sprite.call(this,source,x,y);
-	this.x = (typeof x !== 'undefined') ? x : 0;
-	this.y = (typeof y !== 'undefined') ? y : 0;
+	this.x = x || 0;
+	this.y = y || 0;
 	this.interactive = true;
 }
 
@@ -1053,15 +1059,15 @@ function grid(
     extra
   ){
 
-	var columns = (typeof columns !== 'undefined') ? columns : 0,
-	rows = (typeof rows !== 'undefined') ? rows : 0,
-	cellWidth = (typeof cellWidth !== 'undefined') ? cellWidth : 32,
-	cellHeight = (typeof cellHeight !== 'undefined') ? cellHeight : 32,
-	centerCell = (typeof centerCell !== 'undefined') ? centerCell : false,
-	xOffset = (typeof xOffset !== 'undefined') ? xOffset : 0,
-	yOffset = (typeof yOffset !== 'undefined') ? yOffset : 0,
-	makeSprite = (typeof makeSprite !== 'undefined') ? makeSprite : undefined,
-	extra = (typeof extra !== 'undefined') ? extra : undefined;
+	var columns = columns || 0,
+	rows = rows || 0,
+	cellWidth = cellWidth || 32,
+	cellHeight = cellHeight || 32,
+	centerCell = centerCell || false,
+	xOffset = xOffset || 0,
+	yOffset = yOffset || 0,
+	makeSprite = makeSprite || undefined,
+	extra = extra || undefined;
 
   //Create an empty group called `container`. This `container`
   //group is what the function returns back to the main program.
@@ -1246,7 +1252,7 @@ function reset(){
 }
 
 function filmstrip(image, frameWidth, frameHeight, spacing){
-	var spacing = (typeof spacing !== 'undefined')? spacing : 0;
+	var spacing = spacing || 0;
 	//An array to store the x and y positions of each frame
 	var positions = [];
 	//Find out how many columns and rows there are in the image
@@ -1341,13 +1347,13 @@ var progressBar = {
 };
 
 
-function shake(sprite, magnitude, angular){
-	var magnitude = checkIfUndefined(magnitude,16),
-		angular = checkIfUndefined(angular,false);
+function shake(sprite, magnitude, angular,noOfFrames){
+	var magnitude = magnitude || 16,
+		angular = angular || false;
 	//A counter to count the number of shakes
 	var counter = 1;
 	//The total number of shakes (there will be 1 shake per frame)
-	var numberOfShakes = 10;
+	var numberOfShakes = noOfFrames || 10;
 	//Capture the sprite's position and angle so you can
 	//restore them after the shaking has finished
 	var startX = sprite.x,

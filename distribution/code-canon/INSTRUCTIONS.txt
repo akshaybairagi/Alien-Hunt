@@ -1,0 +1,25 @@
+**Game Info**
+
+Alien Hunt is a Video game about shooting alien invaders.
+Aliens are being dispatched from their spaceships and attacking the city in great numbers.
+Alien Hunter (stick figure) has the weapon and ability to stop the aliens.
+Attack intensity increases with time, can you stop them?
+
+Controls: z / ? to Jump, x / ? to Fire, Space to pause/resume
+Category: Action, Run n Gun, Endless Runner
+
+**Tech Details**
+
+This game is made in HTML5. This game is not supported for mobile.
+Resolution: 800 * 600
+Supported Desktop Browsers: Chrome, Firefox, Edge, IE10,IE11(no sound), Opera, Safari
+Requirment: To run the game on internet upload it on web server, for running on local use local server e.g., IIS, Apache etc
+
+**Details You Can Edit**
+Open the file index.html from the package. To changes the text of the various screens, header, footer etc search for that screen name and
+change the text as you want.
+It is self explanatory as you only have to edit html -- very easy. No edit in the js files is required.
+
+For example: If you want to change the footer text search for the current footer text in this html5 files i.e., 3rimgames and replace with you_name.
+
+Follow same process for the other Texts

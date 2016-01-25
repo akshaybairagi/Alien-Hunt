@@ -19,9 +19,7 @@ Rectangle.prototype.constructor=Rectangle;
 Rectangle.prototype.render= function(ctx) {
 		ctx.strokeStyle = this.strokeStyle;
 		ctx.lineWidth = this.lineWidth;
-		if (this.gradient)
-			ctx.fillStyle = this.gradient;
-		else if(this.pattern)
+		 if(this.pattern)
 			ctx.fillStyle = this.pattern;
 		else
 			ctx.fillStyle = this.fillStyle;
@@ -56,12 +54,12 @@ function Circle(diameter,fillStyle,strokeStyle,lineWidth,x,y) {
 	this.circular = true;
 
 	//Assign the argument values to this sprite
-	this.diameter = (typeof diameter !== 'undefined') ? diameter : 32;
-	this.fillStyle = (typeof fillStyle !== 'undefined') ? fillStyle : "#d3d3d3";
-	this.strokeStyle = (typeof strokeStyle !== 'undefined') ? strokeStyle : "#d3d3d3";
-	this.lineWidth = (typeof lineWidth !== 'undefined') ? lineWidth : 0;
-	this.x = (typeof x !== 'undefined') ? x : 0;
-	this.y = (typeof y !== 'undefined') ? y : 0;
+	this.diameter = diameter || 32;
+	this.fillStyle = fillStyle || "#d3d3d3";
+	this.strokeStyle = strokeStyle || "#d3d3d3";
+	this.lineWidth = lineWidth || 0;
+	this.x = x || 0;
+	this.y = y || 0;
 	//Add a `mask` property to enable optional masking
 	this.mask = false;
 }
@@ -71,12 +69,7 @@ Circle.prototype.constructor=Circle;
 Circle.prototype.render= function(ctx) {
 		ctx.strokeStyle = this.strokeStyle;
 		ctx.lineWidth = this.lineWidth;
-		if (this.gradient){
-			ctx.fillStyle = this.gradient;
-		}
-		else{
-				ctx.fillStyle = this.fillStyle;
-		}
+		ctx.fillStyle = this.fillStyle;
 		ctx.beginPath();
 		ctx.arc(
 			this.radius + (-this.diameter * this.pivotX),
@@ -90,7 +83,7 @@ Circle.prototype.render= function(ctx) {
 	if (this.mask && this.mask === true) ctx.clip();
 };
 //A higher level wrapper for the circle sprite
-function circle(diameter, fillStyle, strokeStyle, lineWidth, x, y) {
+function circle(diameter, fillStyle, strokeStyle, lineWidth, x, y){
 	var sprite = new Circle(diameter, fillStyle, strokeStyle, lineWidth, x, y);
 	stage.addChild(sprite);
 	return sprite;
@@ -105,9 +98,9 @@ function Ellipse(x, y, width, height,fillStyle, strokeStyle, lineWidth){
 	this.width = width;
 	this.height = height;
 
-	this.fillStyle = (typeof fillStyle !== 'undefined') ? fillStyle : "black";
-	this.strokeStyle = (typeof strokeStyle !== 'undefined') ? strokeStyle : "#d3d3d3";
-	this.lineWidth = (typeof lineWidth !== 'undefined') ? lineWidth : 0;
+	this.fillStyle = fillStyle || "black";
+	this.strokeStyle = strokeStyle || "#d3d3d3";
+	this.lineWidth = lineWidth || 0;
 
 	//Add a `mask` property to enable optional masking
 	this.mask = false;
@@ -153,10 +146,10 @@ function Line(strokeStyle,lineWidth,ax,ay,bx,by) {
 	DisplayObject.call(this);
 
 	//Assign the argument values to this sprite
-	this.ax = (typeof ax !== 'undefined') ? ax : 0;
-	this.ay = (typeof ay !== 'undefined') ? ay : 0;
-	this.bx = (typeof bx !== 'undefined') ? bx : 32;
-	this.by = (typeof by !== 'undefined') ? by : 32;
+	this.ax = ax || 0;
+	this.ay = ay || 0;
+	this.bx = bx || 32;
+	this.by = by || 32;
 
 	this.strokeStyle = strokeStyle || "#d3d3d3";
 	this.lineWidth = lineWidth || 0;
@@ -201,10 +194,10 @@ function Text(content,font,fillStyle,x,y) {
 	//Set `strokeText` to "none"
 	this.strokeText = "none";
 
-	canvas.ctx.font = this.font;
-	canvas.ctx.textBaseline = "top";
-	this.width = canvas.ctx.measureText(this.content).width;
-	this.height = canvas.ctx.measureText("M").width;
+	g.canvas.ctx.font = this.font;
+	g.canvas.ctx.textBaseline = "top";
+	this.width = g.canvas.ctx.measureText(this.content).width;
+	this.height = g.canvas.ctx.measureText("M").width;
 }
 Text.prototype = new DisplayObject();
 Text.prototype.constructor = Text;

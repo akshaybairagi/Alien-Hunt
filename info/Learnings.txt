@@ -1,0 +1,37 @@
+Below are the points on which you need to work on the basis of experience gained from "Alien Hunt":
+
+*Design*
+1. Images have better performance then graphics drawn with the Canvas API.
+2. Learn a design tool (gimp,inkscape,photoshop,illustrator)
+3. Practice designing a game prototype daily - keep practicing forever :)
+4. Keep in mind graphics scaling (up and down)
+
+*Programming*
+1. Learn ray based collision for bullet objects.
+2. Improve time based motion-physics.
+3. Write optimized code for better performance.
+4. Learn how to scale game on various screen sizes.
+5. Make games mobile phone compatible.
+6. Enable sound on IE11 and lower version browsers.
+
+*Game Engine*
+1. Use node.js in the engine
+2. Seperate rendering,physics and sound.
+3. Refer phaser and pixi.js for code style and implementation reference as they are open source.
+
+*Business and Developmennt*
+1. Use facebook features to get approval on App Store
+2. Create promotion content and presskit()
+3. Create animation, art everyday - publish on youtube if possible.
+
+
+Major Actions To Be Accomplished:
+1. Game A Day - prepare a game prototype daily. Learn the art of prototyping. Follow below steps:
+	- Game concept
+	- Code
+	- Art 
+	- Sound
+	- Menu
+ Time limit max two hours i.e., by 10.30 AM
+
+2. Learn game design/art - expertise on the tool (gimp.inkscape), draw some stuff on daily basis.

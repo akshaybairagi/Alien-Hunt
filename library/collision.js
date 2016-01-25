@@ -103,8 +103,8 @@ The sprites can contain an optional mass property that should be greater than 1.
 
 */
 function circleCollision(c1, c2, bounce, global) {
-  var global = (typeof global !== 'undefined') ? global : false,
-	  bounce = (typeof bounce !== 'undefined') ? bounce : false;
+  var global = global || false,
+	  bounce = bounce || false;
   var magnitude, combinedRadii, overlap,
     vx, vy, dx, dy, s = {},
     hit = false;
@@ -183,7 +183,7 @@ The sprites can contain an optional mass property that should be greater than 1.
 
 */
 function movingCircleCollision(c1, c2, global) {
-  var global = (typeof global !== 'undefined') ? global : false;
+  var global = global || false;
   var combinedRadii, overlap, xSide, ySide,
     //`s` refers to the distance vector between the circles
     s = {},
@@ -322,7 +322,7 @@ all the other circles in an array, using `movingCircleCollision` (above)
 */
 function multipleCircleCollision(arrayOfCircles, global) {
 
-	var global = (typeof global !== 'undefined')? global : false;
+	var global = global || false;
   //marble collisions
   for (var i = 0; i < arrayOfCircles.length; i++) {
     //The first marble to use in the collision check
@@ -350,7 +350,7 @@ b. A point object with `x` and `y` properties.
 
 */
 function hitTestCirclePoint(c1, point, global) {
-   var global = (typeof global !== 'undefined')? global : false;
+   var global = global || false;
   //A point is just a circle with a diameter of
   //1 pixel, so we can cheat. All we need to do is an ordinary circle vs. circle
   //Collision test. Just supply the point with the properties
@@ -376,8 +376,8 @@ b. A point object with `x` and `y` properties.
 
 */
 function circlePointCollision(c1, point, bounce, global) {
-	  var global = (typeof global !== 'undefined')? global : false,
-	     bounce = (typeof bounce !== 'undefined')? bounce : false;
+	  var global = global || false,
+	     bounce = bounce || false;
   //A point is just a circle with a diameter of
   //1 pixel, so we can cheat. All we need to do is an ordinary circle vs. circle
   //Collision test. Just supply the point with the properties
@@ -403,7 +403,7 @@ b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` prope
 
 */
 function hitTestRectangle(r1, r2, global) {
-   var global = (typeof global !== 'undefined')? global : false;
+   var global = global || false;
   var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 
   //A variable to determine whether there's a collision
@@ -578,7 +578,7 @@ b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` prope
 function hitTestCircleRectangle(c1, r1, global) {
 
   var region, collision, c1x, c1y, r1x, r1y;
-  var global = (typeof global !== 'undefined')? global : false;
+  var global = global || false;
 
   //Use either global or local coordinates
   if (global) {
@@ -695,8 +695,8 @@ b. A sprite object with `centerX`, `centerY`, `halfWidth` and `halfHeight` prope
 */
 function circleRectangleCollision(c1, r1, bounce, global){
 	var region, collision, c1x, c1y, r1x, r1y;
-	var global = (typeof global !== 'undefined')? global : false,
-		bounce = (typeof bounce !== 'undefined')? bounce : false;
+	var global = global || false,
+		bounce = bounce || false;
   //Use either the global or local coordinates
   if (global) {
     c1x = c1.gx;
@@ -804,9 +804,9 @@ function hit(a, b, react, bounce, global, extra) {
     aIsASprite = a.parent !== undefined,
     bIsASprite = b.parent !== undefined;
 
-  var react = (typeof react !== 'undefined')? react : false,
-		bounce = (typeof bounce !== 'undefined')? bounce : false,
-		extra =  (typeof extra !== 'undefined')? extra : undefined;
+  var react = react || false,
+		bounce = bounce || false,
+		extra =  extra || undefined;
 
   //Check to make sure one of the arguments isn't an array
   if (aIsASprite && b instanceof Array || bIsASprite && a instanceof Array) {

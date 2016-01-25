@@ -109,9 +109,9 @@ var ease = {
 
 		// Assign default values
 		var
-			type = checkIfUndefined(type,["smoothstep"]),
-			yoyo = checkIfUndefined(yoyo,false),
-			delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
+			type = type || ["smoothstep"],
+			yoyo = yoyo || false,
+			delayBeforeRepeat = delayBeforeRepeat || 0;
 
 		//Create the tween object
 		var o = {};
@@ -202,7 +202,7 @@ var ease = {
 
 //fade in
 function fadeIn(sprite, frames) {
-	var frames = checkIfUndefined(frames,60);
+	var frames = frames || 60;
 
 	return tweenProperty(
 		sprite, "alpha", sprite.alpha, 1, frames, ["sine"]
@@ -211,7 +211,7 @@ function fadeIn(sprite, frames) {
 
 //fade out
 function fadeOut(sprite, frames) {
-	var frames = checkIfUndefined(frames,60);
+	var frames = frames || 60;
 	return tweenProperty(
 		sprite, "alpha", sprite.alpha, 0, frames, ["sine"]
 	);
@@ -220,8 +220,8 @@ function fadeOut(sprite, frames) {
 //pulse
 function pulse(sprite, frames , minAlpha) {
 	var
-	frames = checkIfUndefined(frames,60),
-	minAlpha = checkIfUndefined(minAlpha,0);
+	frames = frames || 60,
+	minAlpha = minAlpha || 0;
 
 	return tweenProperty(
 		sprite, "alpha", sprite.alpha, minAlpha, frames, ["smoothstep"], true
@@ -239,10 +239,10 @@ function slide(
 		delayBeforeRepeat
 	) {
 		var
-			frames = checkIfUndefined(frames,60),
-			type = checkIfUndefined(type,["smoothstep"]),
-			yoyo = checkIfUndefined(yoyo,false),
-			delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
+			frames = frames || 60,
+			type = type || ["smoothstep"],
+			yoyo = yoyo || false,
+			delayBeforeRepeat = delayBeforeRepeat || 0;
 
 	return makeTween([
 		//The x axis tween
@@ -319,8 +319,8 @@ function breathe(
 		frames, yoyo, delayBeforeRepeat
 	) {
 		var
-			yoyo= checkIfUndefined(yoyo,true),
-			delayBeforeRepeat= checkIfUndefined(delayBeforeRepeat,0);
+			yoyo= yoyo || true,
+			delayBeforeRepeat= delayBeforeRepeat || 0;
 	return makeTween([
 		//Create the scaleX tween
 		[
@@ -337,7 +337,7 @@ function breathe(
 
 //scale
 function scale(sprite, endScaleX, endScaleY, frames) {
-	var frame = checkIfUndefined(frames,60);
+	var frame = frames || 60;
 	return makeTween([
 		//Create the scaleX tween
 		[
@@ -358,12 +358,12 @@ sprite, scaleFactor, startMagnitude, endMagnitude,
 frames, yoyo, delayBeforeRepeat
 ) {
 	var
-		scaleFactor = checkIfUndefined(scaleFactor,1.3),
-		startMagnitude = checkIfUndefined(startMagnitude,10),
-		endMagnitude = checkIfUndefined(endMagnitude,20),
-		frames = checkIfUndefined(frames,10),
-		yoyo = checkIfUndefined(yoyo,true),
-		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
+		scaleFactor = scaleFactor || 1.3,
+		startMagnitude = startMagnitude || 10,
+		endMagnitude = endMagnitude || 20,
+		frames = frames || 10,
+		yoyo = yoyo || true,
+		delayBeforeRepeat = delayBeforeRepeat || 0;
 
 	return makeTween([
 		//Create the scaleX tween
@@ -395,16 +395,16 @@ function wobble(
 	delayBeforeRepeat
 ){
 	var
-		scaleFactorX = checkIfUndefined(scaleFactorX,1.2),
-		scaleFactorY = checkIfUndefined(scaleFactorY,1.2),
-		frames = checkIfUndefined(frames,10),
-		xStartMagnitude = checkIfUndefined(xStartMagnitude,10),
-		xEndMagnitude = checkIfUndefined(xEndMagnitude,10),
-		yStartMagnitude = checkIfUndefined(yStartMagnitude,-10),
-		yEndMagnitude = checkIfUndefined(yEndMagnitude,-10),
-		friction = checkIfUndefined(friction,0.98),
-		yoyo = checkIfUndefined(yoyo,true),
-		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat,0);
+		scaleFactorX = scaleFactorX || 1.2,
+		scaleFactorY = scaleFactorY || 1.2,
+		frames = frames || 10,
+		xStartMagnitude = xStartMagnitude || 10,
+		xEndMagnitude = xEndMagnitude || 10,
+		yStartMagnitude = yStartMagnitude || -10,
+		yEndMagnitude = yEndMagnitude || -10,
+		friction = friction || 0.98,
+		yoyo = yoyo || true,
+		delayBeforeRepeat = delayBeforeRepeat || 0;
 
 	var o = makeTween([
 		//Create the scaleX tween
@@ -449,11 +449,11 @@ function walkPath(
 	delayBetweenSections//Delay, in milliseconds, between sections
 ) {
 	var
-		totalFrames = checkIfUndefined(totalFrames,300),
-		type = checkIfUndefined(type,["smoothstep"]),
-		loop = checkIfUndefined(loop,false),
-		yoyo = checkIfUndefined(yoyo,false),
-		delayBetweenSections = checkIfUndefined(delayBetweenSections,0);
+		totalFrames = totalFrames || 300,
+		type = type || ["smoothstep"],
+		loop = loop || false,
+		yoyo = yoyo || false,
+		delayBetweenSections = delayBetweenSections || 0;
 
 	//Clone the path array so that any possible references to sprite
 	//properties are converted into ordinary numbers
@@ -584,11 +584,11 @@ function walkCurve(
 		delayBeforeContinue //Delay, in milliseconds, between sections
 	) {
 	var
-		totalFrames = checkIfUndefined(totalFrames,300),
-		type = checkIfUndefined(type,["smoothstep"]),
-		loop = checkIfUndefined(loop,false),
-		yoyo = checkIfUndefined(yoyo,false),
-		delayBeforeContinue = checkIfUndefined(delayBeforeContinue,0);
+		totalFrames = totalFrames || 300,
+		type = type || ["smoothstep"],
+		loop = loop || false,
+		yoyo = yoyo || false,
+		delayBeforeContinue = delayBeforeContinue || 0;
 	//Divide the `totalFrames` into sections for each part of the path
 	var frames = totalFrames / pathArray.length;
 	//Set the current curve to 0, which will be the first one
@@ -668,9 +668,9 @@ function followCurve(
   delayBeforeRepeat
 ) {
 	var
-		type = checkIfUndefined(type, ["smoothstep"]),
-		yoyo = checkIfUndefined(yoyo, false),
-		delayBeforeRepeat = checkIfUndefined(delayBeforeRepeat, 0);
+		type = type ||  ["smoothstep"],
+		yoyo = yoyo ||  false,
+		delayBeforeRepeat = delayBeforeRepeat ||  0;
   //Create the tween object
   var o = {};
 

@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.9.4</string>
+        <string>3.9.2</string>
         <key>fileName</key>
-        <string>E:/Apps/GitHub/Alient-Hunter/texture packer/sticky.tps</string>
+        <string>E:/Apps/Github/Alient-Hunter/texture packer/sticky.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -190,15 +190,15 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../Game Art/Alient hunter/images/player/_0000_slide.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0001_jump.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0002_frame7.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0003_frame6.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0004_frame5.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0005_frame4.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0006_frame3.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0007_frame2.png</filename>
-            <filename>../../../Game Art/Alient hunter/images/player/_0008_frame1.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0000_slide.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0001_jump.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0002_frame7.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0003_frame6.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0004_frame5.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0005_frame4.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0006_frame3.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0007_frame2.png</filename>
+            <filename>../../../Art/Alient hunter/images/player/_0008_frame1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

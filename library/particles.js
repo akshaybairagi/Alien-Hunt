@@ -5,38 +5,38 @@ A particle stream effect
 
 */
 function particleEffect(
-  x, y, 
+  x, y,
   spriteFunction,
   numberOfParticles ,
   gravity,
   randomSpacing,
   minAngle, maxAngle,
-  minSize, maxSize, 
+  minSize, maxSize,
   minSpeed, maxSpeed,
   minScaleSpeed, maxScaleSpeed,
   minAlphaSpeed, maxAlphaSpeed,
   minRotationSpeed, maxRotationSpeed
 ) {
-  var 	x = (typeof x !== 'undefined')? x : 0,
-		y = (typeof y !== 'undefined')? y : 0,
-		numberOfParticles = (typeof numberOfParticles !== 'undefined')? numberOfParticles : 10,
-		spriteFunction = (typeof spriteFunction !== 'undefined')? spriteFunction : function() { return circle(10, "red"); },
-		gravity = (typeof gravity !== 'undefined')? gravity : 0,
-		randomSpacing = (typeof randomSpacing !== 'undefined')? randomSpacing : true,
-		minAngle = (typeof minAngle !== 'undefined')? minAngle : 0,
-		maxAngle = (typeof maxAngle !== 'undefined')? maxAngle : 6.28,
-		minSize = (typeof minSize !== 'undefined')? minSize : 4,
-		maxSize = (typeof maxSize !== 'undefined')? maxSize : 16,
-		minSpeed = (typeof minSpeed !== 'undefined')? minSpeed : 0.1,
-		maxSpeed = (typeof maxSpeed !== 'undefined')? maxSpeed : 1,
-		minScaleSpeed = (typeof minScaleSpeed !== 'undefined')? minScaleSpeed : 0.01,
-		maxScaleSpeed = (typeof maxScaleSpeed !== 'undefined')? maxScaleSpeed : 0.05,
-		minAlphaSpeed = (typeof minAlphaSpeed !== 'undefined')? minAlphaSpeed : 0.02,
-		maxAlphaSpeed = (typeof maxAlphaSpeed !== 'undefined')? maxAlphaSpeed : 0.02,
-		minRotationSpeed = (typeof minRotationSpeed !== 'undefined')? minRotationSpeed : 0.01,
-		maxRotationSpeed = (typeof maxRotationSpeed !== 'undefined')? maxRotationSpeed : 0.03;
-		
-		
+  var 	x = x || 0,
+		y = y || 0,
+		numberOfParticles = numberOfParticles || 10,
+		spriteFunction = spriteFunction || function() { return circle(10, "red"); },
+		gravity = gravity || 0,
+		randomSpacing = randomSpacing || true,
+		minAngle = minAngle || 0,
+		maxAngle = maxAngle || 6.28,
+		minSize = minSize || 4,
+		maxSize = maxSize || 16,
+		minSpeed = minSpeed || 0.1,
+		maxSpeed = maxSpeed || 1,
+		minScaleSpeed = minScaleSpeed || 0.01,
+		maxScaleSpeed = maxScaleSpeed || 0.05,
+		minAlphaSpeed = minAlphaSpeed || 0.02,
+		maxAlphaSpeed = maxAlphaSpeed || 0.02,
+		minRotationSpeed = minRotationSpeed || 0.01,
+		maxRotationSpeed = maxRotationSpeed || 0.03;
+
+
   //`randomFloat` and `randomInt` helper functions
   var randomFloat = function(min, max){ return min + Math.random() * (max - min);},
       randomInt = function(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min;};
@@ -59,8 +59,8 @@ function particleEffect(
     if (randomSpacing) {
       angle = randomFloat(minAngle, maxAngle);
       angles.push(angle);
-    } 
-    
+    }
+
     //If `randomSpacing` is `false`, space each particle evenly,
     //starting with the `minAngle` and ending with the `maxAngle`
     else {
@@ -130,7 +130,8 @@ function particleEffect(
 
       //Remove the particle if its `alpha` reaches zero
       if (particle.alpha <= 0) {
-        remove([particle]);
+        // remove([particle]);
+        smokes.freeSmoke(particle);
         particles.splice(particles.indexOf(particle), 1);
       }
     };
