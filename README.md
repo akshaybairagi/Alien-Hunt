@@ -3,4 +3,4 @@ Alien Hunt is a game about shooting alien invaders.
 
 Genre: Endless Runner Shooter Bullet Hell
 
-Mady in HTML5 technology
+Made in HTML5
