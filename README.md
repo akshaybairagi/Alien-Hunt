@@ -1,5 +1,6 @@
-# Alient-Hunter
-Alien Hunter the game
-Open source html5 game
+# Alient-Hunt
+Alien Hunt is a game about shooting alien invaders.
 
-Project Demo URL: http://uakshay.github.io/Alient-Hunter
+Genre: Endless Runner Shooter Bullet Hell
+
+Mady in HTML5 technology
